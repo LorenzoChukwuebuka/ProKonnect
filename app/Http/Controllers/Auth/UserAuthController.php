@@ -208,18 +208,6 @@ class UserAuthController extends Controller
             'created_at' => Carbon::now(),
         ]);
 
-        //send mail to them
-
-        // $mail = "Below is the link to reset your password. Please if this isn't from you kindly ignore";
-
-        // $maildata = [
-        //     'title' => 'Reset Password',
-        //     'data' => $mail,
-        //     'usermail' => $request->email,
-        //     'url' => env("APP_URL"),
-        //     'token' => $token,
-        // ];
-
         MailMessages::UserResetPasswordMail($token, $request->email);
 
         return response()->json(['message' => 'Email has been sent']);
@@ -252,6 +240,66 @@ class UserAuthController extends Controller
             return response()->json(['message' => "Password has been updated"]);
         } else {
             return response(["error" => "Invalid token"]);
+        }
+
+    }
+
+    public function editUserCredentials(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'max:255',
+            'middle_name' => [],
+            'last_name' => 'max:255',
+            'username' => [],
+            'email' => 'email',
+            'phone_number' => 'max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
+
+        if ($request->hasFile('profile_image')) {
+            $profile_image = $request->profile_image->store('profile_images', 'public');
+        }
+
+        $user->first_name = $request->first_name ?? $user->first_name;
+        $user->middle_name = $request->middle_name ?? $user->middle_name;
+        $user->last_name = $request->last_name ?? $user->last_name;
+        $user->username = $request->username ?? $user->username;
+        $user->email = $request->email ?? $user->email;
+        $user->phone_number = $request->phone_number ?? $user->phone_number;
+        $user->profile_image = $profile_image ?? $user->profile_image;
+
+        $user->save();
+
+        return response(["message" => "Credentials updated"]);
+    }
+
+    public function update_profile_image(Request $request)
+    {
+        $user = auth()->user();
+
+        if ($request->hasFile('profile_image')) {
+            $validator = Validator::make($request->all(), [
+
+                'profile_images' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg|max:5048',
+
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['code' => 3, 'error' => $validator->errors()->first()], 401);
+            }
+            $profile_image = $request->profile_image->store('profile_images', 'public');
+
+            $user->profile_image = $profile_image;
+            $user->save();
+
+            return response(["message" => "Profile image has been updated", "code" => 1]);
+        } else {
+            return response(["message" => "Profile image has not been updated", "code" => 3]);
         }
 
     }
