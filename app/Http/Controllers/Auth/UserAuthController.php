@@ -237,7 +237,7 @@ class UserAuthController extends Controller
             $user = User::where('email', $request->email)->update(['password' => Hash::make($request->password)]);
             DB::table('password_resets')->where(['email' => $request->email])->delete();
 
-            return response()->json(['message' => "Password has been updated"]);
+            return response()->json(["code" => 1, 'message' => "Password has been updated"]);
         } else {
             return response(["error" => "Invalid token"]);
         }

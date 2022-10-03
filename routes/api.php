@@ -22,9 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/register_user', [UserAuthController::class, 'create_user']);
 Route::post('/verify_user', [UserAuthController::class, 'verify_user']);
 Route::post('/login_user', [UserAuthController::class, 'login_user']);
-Route::post('/user_forget_password',[UserAuthController::class,'user_forget_password']);
-Route::post('/user_reset_password',[UserAuthController::class,'user_reset_password']);
-
+Route::post('/user_forget_password', [UserAuthController::class, 'user_forget_password']);
+Route::post('/user_reset_password', [UserAuthController::class, 'user_reset_password']);
+Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
+Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
+Route::post('/change_user_password', [UserAuthController::class, 'user_change_password']);
 
 Route::fallback(function () {
     return response()->json([
