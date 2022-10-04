@@ -28,6 +28,10 @@ Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCrede
 Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
 Route::post('/change_user_password', [UserAuthController::class, 'user_change_password']);
 
+Route::group(['middleware' => 'App\Http\Middleware\ApiMiddleware'], function () {
+
+});
+
 Route::fallback(function () {
     return response()->json([
         'code' => 404,
