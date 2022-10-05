@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Validator;
-use Illuminate\Http\Request;
-use App\Models\Qualifications;
 use App\Http\Controllers\Controller;
+use App\Models\Qualifications;
+use Illuminate\Http\Request;
+use Validator;
 
 class QualificationsController extends Controller
 {
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         try {
             $validator = Validator::make($request->all(), [
                 "qualification" => 'required|max:255|string',
@@ -30,20 +31,50 @@ class QualificationsController extends Controller
         }
     }
 
-    public function show($id){
+    public function show($id)
+    {
 
     }
 
+    public function findAll()
+    {
+        try {
+            $qualifications = Qualifications::all();
+            if ($qualifications->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
 
-    public function findAll(){
-
+            return response(["code" => 1, "data" => $qualifications]);
+        } catch (\Throwable$th) {
+            return $th;
+        }
     }
 
-    public function update(){
+    public function update(Request $request, $id)
+    {
+        try {
+            $qualifications = Qualifications::find($id);
 
+            $qualifications->qualification = $request->qualification ?? $qualifications->qualification;
+
+            $qualifications->save();
+
+            return response(["code" => 1, "message" => "updated successfully"]);
+        } catch (\Throwable$th) {
+            return $th;
+        }
     }
 
-    public function delete(){
+    public function delete()
+    {
+        try {
+            $qualifications = Qualifications::find($id)->delete();
 
+            if ($qualifications) {
+                return response()->json(["message" => 'Qualification has been deleted!']);
+            }
+        } catch (\Throwable$th) {
+            return $th;
+        }
     }
 }

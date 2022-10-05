@@ -21,7 +21,7 @@ class UserAuthController extends Controller
                 'full_name' => 'required|max:255',
                 'username' => [],
                 'email' => 'required|email|unique:users',
-                'country' => 'max:255',
+                'country_id' => [],
                 'qualification_id' => 'required',
                 'interests' => [],
                 'specialization' => [],
@@ -46,6 +46,16 @@ class UserAuthController extends Controller
                 'password' => Hash::make($request->password),
                 'profile_image' => $profile_image ?? null,
             ]));
+
+            if ($request->interests != null) {
+                //create interests
+            }
+
+            #create specialization
+
+            if ($request->specialization != null) {
+                //create interests
+            }
 
             #create otp and send mail
 

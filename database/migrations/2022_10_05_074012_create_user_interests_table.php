@@ -13,10 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('qualifications', function (Blueprint $table) {
-            $table->increments('id');
-            $table->foreignId('user_id')->unsigned()->index();
-            $table->string('qualification');
+        Schema::create('user_interests', function (Blueprint $table) {
+            $table->id();
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('qualifications');
+        Schema::dropIfExists('user_interests');
     }
 };

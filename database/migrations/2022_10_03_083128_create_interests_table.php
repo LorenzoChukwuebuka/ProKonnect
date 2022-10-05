@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('interests', function (Blueprint $table) {
             $table->increments('id');
+            $table->foreignId('user_id')->unsigned()->index();
             $table->string('interests');
             $table->timestamps();
         });

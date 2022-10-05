@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('username')->nullable();
             $table->string('email')->unique();
             $table->string('profile_image')->nullable();
-            $table->string('country')->nullable();
-            $table->unsignedInteger('qualification_id')->nullable();
+            $table->unsignedInteger('country_id')->nullable();
+            $table->unsignedBigInteger('university_id')->nullable();
             $table->string('user_type')->default('student');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
