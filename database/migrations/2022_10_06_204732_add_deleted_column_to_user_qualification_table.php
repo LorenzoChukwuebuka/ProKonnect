@@ -13,11 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_interests', function (Blueprint $table) {
-            $table->increments('id');
-            $table->foreignId('user_id')->unsignedInteger()->index();
-            $table->foreignId('interest_id')->unsignedInteger()->index();
-            $table->timestamps();
+        Schema::table('user_qualifications', function (Blueprint $table) {
+            $table->softDeletes();
         });
     }
 
@@ -28,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_interests');
+        Schema::table('user_qualifications', function (Blueprint $table) {
+            //
+        });
     }
 };

@@ -6,6 +6,8 @@ use App\Custom\MailMessages;
 use App\Http\Controllers\Controller;
 use App\Models\OTPToken;
 use App\Models\User;
+use App\Models\UserInterests;
+use App\Models\UserSpecialization;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -22,9 +24,10 @@ class UserAuthController extends Controller
                 'username' => [],
                 'email' => 'required|email|unique:users',
                 'country_id' => [],
-                'qualification_id' => 'required',
-                'interests' => [],
+                'qualification' => [],
+                'interest' => [],
                 'specialization' => [],
+                'university' => [],
                 'user_type' => 'required',
                 'password' => 'required|min:8',
             ]);
@@ -42,19 +45,42 @@ class UserAuthController extends Controller
                 $profile_image = $request->profile_image->store('user_profile_images', 'public');
             }
 
-            $userCreate = User::create(array_merge($validator->validated(), [
-                'password' => Hash::make($request->password),
+            $userCreate = User::create([
+                'full_name' => $request->full_name,
+                'email' => $request->email,
+                'country_id' => $request->country_id,
+                'user_type' => $request->user_type,
+                'university_id' => $request->university_id,
+                'password' => Hash::make($request->password) ?? null,
                 'profile_image' => $profile_image ?? null,
-            ]));
+            ]);
 
-            if ($request->interests != null) {
-                //create interests
+            #create interest
+            if ($request->interest != null) {
+
+                $interest = json_decode($request->interest);
+
+                foreach ($interest as $key => $value) {
+                    UserInterests::create([
+                        "user_id" => $userCreate->id,
+                        "interest_id" => $value,
+                    ]);
+                }
+
             }
 
             #create specialization
 
             if ($request->specialization != null) {
-                //create interests
+                $specilization = json_decode($request->specialization);
+
+                foreach ($specilization as $key => $value) {
+                    UserSpecialization::create([
+                        "user_id" => $userCreate->id,
+                        "specialization_id" => $value,
+                    ]);
+                }
+
             }
 
             #create otp and send mail
@@ -75,12 +101,40 @@ class UserAuthController extends Controller
         }
     }
 
+    public function create_user_password(Request $request)
+    {
+
+        try {
+            $validator = Validator::make($request->all(), [
+
+                'password' => 'required_with:password_confirmation|same:password_confirmation|min:6',
+                'password_confirmation' => 'min:6',
+                'user_id' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 401);
+            }
+            $user = User::find($request->user_id);
+
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return response(["message" => "Password has been updated", "code" => 1]);
+
+        } catch (\Throwable$th) {
+            return response(['code' => 3, "message" => $th->getMessage()]);
+        }
+
+    }
+
     public function verify_user(Request $request)
     {
         try {
 
             $validator = Validator::make($request->all(), [
                 'verify_token' => ['required', 'string', 'max:200'],
+
             ]);
 
             if ($validator->fails()) {

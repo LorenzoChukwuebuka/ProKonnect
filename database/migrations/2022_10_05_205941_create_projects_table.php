@@ -13,10 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_interests', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->increments('id');
             $table->foreignId('user_id')->unsignedInteger()->index();
-            $table->foreignId('interest_id')->unsignedInteger()->index();
+            $table->string('project_name')->nullable();
+            $table->string('country_id')->nullable();
+            $table->string('start_date')->nullable();
+            $table->string('end_date')->nullable();
+            $table->text('overview')->nullable();
+            $table->string('project_type')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -28,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_interests');
+        Schema::dropIfExists('projects');
     }
 };

@@ -13,10 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_interests', function (Blueprint $table) {
-            $table->increments('id');
-            $table->foreignId('user_id')->unsignedInteger()->index();
-            $table->foreignId('interest_id')->unsignedInteger()->index();
+        Schema::create('ApiKey', function (Blueprint $table) {
+            $table->id();
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_interests');
+        Schema::dropIfExists('ApiKey');
     }
 };

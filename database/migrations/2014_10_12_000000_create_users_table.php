@@ -21,9 +21,10 @@ return new class extends Migration
             $table->string('profile_image')->nullable();
             $table->unsignedInteger('country_id')->nullable();
             $table->unsignedBigInteger('university_id')->nullable();
+            $table->text('bio')->nullable();
             $table->string('user_type')->default('student');
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
