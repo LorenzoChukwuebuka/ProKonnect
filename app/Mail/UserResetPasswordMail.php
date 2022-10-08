@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -16,9 +15,16 @@ class UserResetPasswordMail extends Mailable
      *
      * @return void
      */
-    public function __construct()
+
+    public $message;
+    public $subject;
+    public $otp;
+
+    public function __construct($subject, $message, $otp)
     {
-        //
+        $this->message = $message;
+        $this->subject = $subject;
+        $this->otp = $otp;
     }
 
     /**
@@ -28,6 +34,10 @@ class UserResetPasswordMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('mail.user-reset-password-mail');
+
+        $subject = $this->subject;
+        $message = $this->message;
+        $otp = $this->otp;
+        return $this->markdown('mail.user-reset-password-mail', compact('subject', 'message', 'otp'));
     }
 }

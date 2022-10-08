@@ -11,6 +11,7 @@ use App\Models\UserSpecialization;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Validator;
 
@@ -179,7 +180,7 @@ class UserAuthController extends Controller
             }
 
             if (!auth()->attempt($request->only(['email', 'password']))) {
-                return response()->json(["error" => "Invalid email or passsword"], 401);
+                return response()->json(["code" => 3, "error" => "Invalid email or passsword"], 401);
             }
 
             $user = User::where('email', $request['email'])->where('status', 'active')->first();
@@ -303,13 +304,14 @@ class UserAuthController extends Controller
 
             return response()->json(["code" => 1, 'message' => "Password has been updated"]);
         } else {
-            return response(["error" => "Invalid token"]);
+            return response(["code" => 3, "error" => "Invalid token"]);
         }
 
     }
 
     public function editUserCredentials(Request $request)
     {
+
         $user = User::find(Auth::user()->id);
 
         $validator = Validator::make($request->all(), [

@@ -24,8 +24,9 @@ Route::post('/verify_user', [UserAuthController::class, 'verify_user']);
 Route::post('/login_user', [UserAuthController::class, 'login_user']);
 Route::post('/user_forget_password', [UserAuthController::class, 'user_forget_password']);
 Route::post('/user_reset_password', [UserAuthController::class, 'user_reset_password']);
+Route::post('/create_user_password', [UserAuthController::class, 'create_user_password']);
 
-Route::group(['middleware' => 'App\Http\Middleware\ApiMiddleware'], function () {
+Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
     Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
     Route::post('/change_user_password', [UserAuthController::class, 'user_change_password']);

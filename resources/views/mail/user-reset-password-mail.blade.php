@@ -1,10 +1,10 @@
 @component('mail::message')
-    # {{ $subject }}
+# {{ $subject }}
 
-    {{ $msg }}
+{{ $message }}
 
-    ## {{ $otp }}
+## {{ $otp }}
 
-    Thanks,<br>
-    {{ config('app.name') }}
+Thanks,<br>
+{{ config('app.name') }}
 @endcomponent
