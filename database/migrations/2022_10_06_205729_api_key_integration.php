@@ -15,6 +15,9 @@ return new class extends Migration
     {
         Schema::create('ApiKey', function (Blueprint $table) {
             $table->id();
+            $table->string('api_id');
+            $table->string('api_key');
+            $table->string('status');
             $table->timestamps();
         });
     }

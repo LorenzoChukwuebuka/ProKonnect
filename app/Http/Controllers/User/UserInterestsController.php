@@ -34,6 +34,31 @@ class UserInterestsController extends Controller
         }
     }
 
+    public function get_all_user_user_interests()
+    {
+        try {
+            $interests = auth()->user()->user_interests()->latest()->get();
 
-    
+            if ($interests->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+
+            return response(["code" => 1, "data" => $interests]);
+        } catch (\Throwable$th) {
+            return $th;
+        }
+    }
+
+    public function delete_interests($id)
+    {
+        try {
+            $deleteInterests = UserInterests::find($id)->delete();
+
+            return response(["code" => 1, "message" => "interest deleted "]);
+        } catch (\Throwable$th) {
+            return $th;
+        }
+
+    }
+
 }
