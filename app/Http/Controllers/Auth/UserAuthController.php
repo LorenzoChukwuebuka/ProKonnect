@@ -351,7 +351,7 @@ class UserAuthController extends Controller
         if ($request->hasFile('profile_image')) {
             $validator = Validator::make($request->all(), [
 
-                'profile_images' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg|max:5048',
+                'profile_image' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg|max:5048',
 
             ]);
 
