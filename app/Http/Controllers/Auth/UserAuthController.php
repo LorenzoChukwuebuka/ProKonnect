@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Custom\MailMessages;
 use App\Http\Controllers\Controller;
 use App\Models\OTPToken;
+use App\Models\Referal;
 use App\Models\User;
 use App\Models\UserInterests;
 use App\Models\UserSpecialization;
@@ -13,6 +14,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Str;
 use Validator;
 
 class UserAuthController extends Controller
@@ -31,6 +33,7 @@ class UserAuthController extends Controller
                 'university' => [],
                 'user_type' => 'required',
                 'password' => 'required|min:8',
+                'referal_code' => [],
             ]);
 
             if ($validator->fails()) {
@@ -46,6 +49,8 @@ class UserAuthController extends Controller
                 $profile_image = $request->profile_image->store('user_profile_images', 'public');
             }
 
+            #create a referal
+
             $userCreate = User::create([
                 'full_name' => $request->full_name,
                 'email' => $request->email,
@@ -54,6 +59,8 @@ class UserAuthController extends Controller
                 'university_id' => $request->university_id,
                 'password' => Hash::make($request->password) ?? null,
                 'profile_image' => $profile_image ?? null,
+                'referal_code' => Str::random(12),
+
             ]);
 
             #create interest
@@ -81,6 +88,18 @@ class UserAuthController extends Controller
                         "specialization_id" => $value,
                     ]);
                 }
+
+            }
+
+            #referal code if any
+
+            if ($request->referal_code != null) {
+                $user = User::where('referal_code', $request->referal_code)->first();
+
+                Referal::create([
+                    "referal_id" => $user->id,
+                    "referee_id" => $userCreate->id,
+                ]);
 
             }
 
@@ -367,6 +386,18 @@ class UserAuthController extends Controller
         } else {
             return response(["message" => "Profile image has not been updated", "code" => 3]);
         }
+
+    }
+
+    public function create_referal_code(Request $request)
+    {
+        $user = auth()->user();
+
+        $user->referal_code = $request->referal_code;
+
+        $user->save();
+
+        return response(["code" => 1, "message" => "created referal code successfull"]);
 
     }
 

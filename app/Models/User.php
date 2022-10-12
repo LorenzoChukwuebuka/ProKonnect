@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Project;
+use App\Models\Referal;
 use App\Models\UserInterests;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -42,6 +44,14 @@ class User extends Authenticatable
     public function userinterests()
     {
         return $this->hasMany(UserInterests::class);
+    }
+
+    public function referal(){
+        return $this->hasMany(Referal::class);
+    }
+
+    public function project(){
+        return $this->hasMany(Project::class);
     }
 
 }

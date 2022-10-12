@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\Auth\UserAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\User\fetchCountriesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,8 @@ Route::post('/login_user', [UserAuthController::class, 'login_user']);
 Route::post('/user_forget_password', [UserAuthController::class, 'user_forget_password']);
 Route::post('/user_reset_password', [UserAuthController::class, 'user_reset_password']);
 Route::post('/create_user_password', [UserAuthController::class, 'create_user_password']);
+Route::get('/get_countries', [fetchCountriesController::class, 'getAllCountries']);
+Route::get('/get_states/{id}',[fetchCountriesController::class,'getStatesWithCountry']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
