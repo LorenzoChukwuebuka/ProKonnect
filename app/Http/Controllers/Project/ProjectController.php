@@ -19,6 +19,7 @@ class ProjectController extends Controller
                 "end_date" => [],
                 "overview" => [],
                 "project_type" => "required",
+                'proguide_id' => "required"
 
             ]);
 
@@ -55,9 +56,18 @@ class ProjectController extends Controller
     public function get_projects_by_id($id)
     {
         try {
-            $project = Project::with(["user"]);
-        } catch (\Throwable $th) {
-            //throw $th;
+            $project = Project::with(["user"])->where('id', $id)->first();
+
+            if ($project == null) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+        } catch (Throwable $th) {
+            throw $th;
         }
+    }
+
+
+    public function edit_project($id){
+
     }
 }

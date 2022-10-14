@@ -363,6 +363,15 @@ class UserAuthController extends Controller
         return response(["message" => "Credentials updated"]);
     }
 
+    public function update_bio()
+    {
+        try {
+            $user = auth()->user();
+        } catch (\Throwable$th) {
+            //throw $th;
+        }
+    }
+
     public function update_profile_image(Request $request)
     {
         $user = auth()->user();
