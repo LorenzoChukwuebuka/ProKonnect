@@ -19,7 +19,7 @@ class ProjectController extends Controller
                 "end_date" => [],
                 "overview" => [],
                 "project_type" => "required",
-                'proguide_id' => "required"
+                'proguide_id' => "required",
 
             ]);
 
@@ -29,7 +29,13 @@ class ProjectController extends Controller
 
             $projectCreate = Project::create([
                 "user_id" => auth()->user()->id,
-                array_merge($validator->validated()),
+                "project_name" => $request->project_name,
+                "country_id" => $request->country_id,
+                "start_date" => $request->start_date,
+                "end_date" => $request->end_date,
+                "overview" => $request->overview,
+                "project_type" => $request->project_type,
+                "proguide_id" => $request->proguide_id,
             ]);
 
             return \response(["code" => 1, "message" => "created project successfully"]);
@@ -42,7 +48,9 @@ class ProjectController extends Controller
     public function get_all_projects()
     {
         try {
-            $project = auth()->user()->projects()->latest()->get();
+
+            $id = auth()->user()->id;
+            $project = Project::with('user', 'country')->where('user_id', $id)->latest()->paginate(20);
 
             if ($project->count() == 0) {
                 return response(["code" => 3, "message" => "No records found"]);
@@ -66,8 +74,36 @@ class ProjectController extends Controller
         }
     }
 
+    public function edit_project($id, Request $request)
+    {
+        try {
+            $project = Project::find($id);
 
-    public function edit_project($id){
+            $project->project_name = $request->project_name ?? $project->project_name;
+            $project->country_id = $request->country_id ?? $project->country_id;
+            $project->start_date = $request->start_date ?? $project->start_date;
+            $project->end_date = $request->end_date ?? $project->end_date;
+            $project->overview = $request->overview ?? $project->overview;
+            $project->project_type = $request->project_type ?? $project->project_type;
+            $project->proguide_id = $request->proguide_id ?? $project->proguide_id;
 
+            $project->save();
+
+            return response(["code" => 1, "message" => "project updated successfully"]);
+
+        } catch (\Throwable$th) {
+            return $th;
+        }
+    }
+
+    #find proguides by user interests
+
+    public function find_proguides_by_user_interests()
+    {
+        try {
+
+        } catch (\Throwable$th) {
+            return $th;
+        }
     }
 }

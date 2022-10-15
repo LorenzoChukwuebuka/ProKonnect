@@ -2,7 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatsController;
 use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\Project\ProjectController;
 use App\Http\Controllers\User\fetchCountriesController;
 
 /*
@@ -27,13 +29,32 @@ Route::post('/user_forget_password', [UserAuthController::class, 'user_forget_pa
 Route::post('/user_reset_password', [UserAuthController::class, 'user_reset_password']);
 Route::post('/create_user_password', [UserAuthController::class, 'create_user_password']);
 Route::get('/get_countries', [fetchCountriesController::class, 'getAllCountries']);
-Route::get('/get_states/{id}',[fetchCountriesController::class,'getStatesWithCountry']);
+Route::get('/get_states/{id}', [fetchCountriesController::class, 'getStatesWithCountry']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
     Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
     Route::post('/change_user_password', [UserAuthController::class, 'user_change_password']);
+
+    #project api
+
+    Route::post('/create_project',[ProjectController::class,'create_project']);
+    Route::get('/get_all_projects',[ProjectController::class,'get_all_projects']);
+    Route::get('/get_one_project',[ProjectController::class,'get_projects_by_id']);
+    // Route::put();
+    // Route::delete();
+
+    # messages
+    Route::post('/create_message', [ChatsController::class, 'store']);
+    Route::put('/update_message/{id}', [ChatsController::class, 'update']);
+    Route::delete('/delete_message/{id}', [ChatssController::class, 'destroy']);
+    Route::get('/get_messages', [ChatsController::class, 'index']);
+    Route::get('/get_message', [ChatsController::class, 'getMessages']);
+    Route::get('/get_message_by_user/{id}', [ChatsController::class, 'show']);
 });
+
+require __DIR__ . '/admin.php';
+
 
 Route::fallback(function () {
     return response()->json([

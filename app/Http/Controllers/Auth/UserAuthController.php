@@ -32,7 +32,7 @@ class UserAuthController extends Controller
                 'specialization' => [],
                 'university' => [],
                 'user_type' => 'required',
-                'password' => 'required|min:8',
+                'password' => [],
                 'referal_code' => [],
             ]);
 
@@ -48,8 +48,6 @@ class UserAuthController extends Controller
                 }
                 $profile_image = $request->profile_image->store('user_profile_images', 'public');
             }
-
-            #create a referal
 
             $userCreate = User::create([
                 'full_name' => $request->full_name,
@@ -96,15 +94,19 @@ class UserAuthController extends Controller
             if ($request->referal_code != null) {
                 $user = User::where('referal_code', $request->referal_code)->first();
 
+                if ($user == null) {
+                    goto create_token;
+                }
+
                 Referal::create([
                     "referal_id" => $user->id,
                     "referee_id" => $userCreate->id,
                 ]);
 
             }
-
             #create otp and send mail
 
+            create_token:
             $otp_token = $this->generateRandom(4);
 
             OTPToken::create([

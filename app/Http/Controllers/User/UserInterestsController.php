@@ -30,7 +30,7 @@ class UserInterestsController extends Controller
             return response(["code" => 1, "message" => "created successfully"]);
 
         } catch (\Throwable$th) {
-           return $th;
+            return $th;
         }
     }
 

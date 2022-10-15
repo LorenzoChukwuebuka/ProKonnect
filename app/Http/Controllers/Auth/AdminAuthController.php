@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use DB;
-use Validator;
-use App\Models\Admin;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
+use DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
+use Validator;
 
 class AdminAuthController extends Controller
 {
@@ -23,20 +22,22 @@ class AdminAuthController extends Controller
             return response()->json(['error' => $validator->errors()], 401);
         }
 
-        if (!Auth::guard('admin')->attempt($request->only('email', 'password'), $request->filled('remember'))) {
-            throw ValidationException::withMessages([
-                'email' => 'Invalid email or password',
-            ]);
+        $credentials = $request->only('email', 'password');
+
+        if (!auth()->attempt($credentials)) {
+            return response()->json(["error" => "Invalid email or passsword"]);
         }
-        $admin = Admin::where('email', $request->email)->first();
-        $token = $admin->createToken('myapptoken')->plainTextToken;
-        return response()->json([
-            'code' => 1,
-            'message' => 'success',
-            'type' => 'admin',
-            'token' => $token,
-            'data' => $admin,
-        ]);
+
+        if (Admin::where('email', $request['email'])->first()) {
+            $status = 200;
+            $response = [
+                'owner' => Auth::admin(),
+                'token' => Auth::admin()->createToken('owner_token')->plainTextToken,
+            ];
+            return response()->json($response, $status);
+        } else {
+            return response()->json(['error' => "No admin with that email"]);
+        }
 
     }
 
