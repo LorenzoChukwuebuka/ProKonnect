@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('qualifications', function (Blueprint $table) {
             $table->increments('id');
-            $table->foreignId('user_id')->unsigned()->index();
             $table->string('qualification');
             $table->timestamps();
         });

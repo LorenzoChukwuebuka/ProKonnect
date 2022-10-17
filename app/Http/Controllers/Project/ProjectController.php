@@ -49,8 +49,7 @@ class ProjectController extends Controller
     {
         try {
 
-            $id = auth()->user()->id;
-            $project = Project::with('user', 'country')->where('user_id', $id)->latest()->paginate(20);
+            $project = auth()->user()->project()->with('user', 'country')->latest()->get();
 
             if ($project->count() == 0) {
                 return response(["code" => 3, "message" => "No records found"]);
@@ -64,7 +63,7 @@ class ProjectController extends Controller
     public function get_projects_by_id($id)
     {
         try {
-            $project = Project::with(["user"])->where('id', $id)->first();
+            return $project = auth()->user()->project()->with('user', 'country')->where('id', $id)->first();
 
             if ($project == null) {
                 return response(["code" => 3, "message" => "No record found"]);
@@ -96,11 +95,40 @@ class ProjectController extends Controller
         }
     }
 
+    public function delete_project($id)
+    {
+        try {
+            $project = Project::find($id)->delete();
+
+            return response(["code" => 1, "message" => "Project deleted successfully"]);
+        } catch (\Throwable$th) {
+            return $th;
+        }
+    }
+
+    public function toggle_status($id)
+    {
+        try {
+            $project = Project::find($id);
+
+            ($project->status == "active") ? "inactive" : "active";
+
+            $project->save();
+
+            return response(["code" => 1, "status updated"]);
+
+        } catch (\Throwable$th) {
+            return $th;
+        }
+    }
+
     #find proguides by user interests
 
     public function find_proguides_by_user_interests()
     {
         try {
+
+            $interests = auth()->user();
 
         } catch (\Throwable$th) {
             return $th;

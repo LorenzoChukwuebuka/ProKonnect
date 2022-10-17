@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Validator;
+use App\Http\Resources\MessageResource;
 use App\Models\Chats;
 use Illuminate\Http\Request;
-use App\Http\Resources\MessageResource;
+use Validator;
 
 class ChatsController extends Controller
 {
@@ -38,7 +38,7 @@ class ChatsController extends Controller
 
             return response()->json(['code' => 1, 'success' => 'Messages sent successfully'], 200);
         } catch (\Throwable$th) {
-            return response()->json(['code' => 3, 'error' => 'Something went wrong'], 500);
+            return $th;
         }
 
     }
@@ -48,13 +48,7 @@ class ChatsController extends Controller
     {
         try {
 
-            $messages = Chats::with(['sender' => function ($query) {
-                $query->select('id', 'username', 'first_name', 'last_name', 'profile_image');
-            },
-                'receiver' => function ($query) {
-                    $query->select('id', 'username', 'first_name', 'last_name', 'profile_image');
-                },
-            ])
+            $messages = Chats::with(['sender', 'receiver'])
                 ->where('sender_id', $id)
                 ->where('receiver_id', auth()->user()->id)
                 ->orWhere(function ($query) use ($id) {
@@ -76,48 +70,43 @@ class ChatsController extends Controller
 
     }
 
-     #edit message
+    #edit message
 
-     public function update(Request $request, $id)
-     {
-         try {
-             $validator = Validator::make($request->all(), [
-                 'message' => 'max:500',
-             ]);
+    public function update(Request $request, $id)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'message' => 'max:500',
+            ]);
 
-             if ($validator->fails()) {
-                 return response()->json(['error' => $validator->errors()], 401);
-             }
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 401);
+            }
 
-             $message = Chats::find($id);
-             if (!$message) {
-                 return response(['code' => 3, 'message' => "No record found"]);
-             }
+            $message = Chats::find($id);
+            if (!$message) {
+                return response(['code' => 3, 'message' => "No record found"]);
+            }
 
-             $message->update([
-                 'message' => $request->message ?? $message->message,
-                 'receiver_id' => $request->receiver_id ?? $message->receiver_id,
+            $message->update([
+                'message' => $request->message ?? $message->message,
+                'receiver_id' => $request->receiver_id ?? $message->receiver_id,
 
-             ]);
+            ]);
 
-             return response()->json(['code' => 1, 'success' => 'Messages updated successfully'], 200);
-         } catch (\Throwable$th) {
-             return response()->json(['code' => 3, 'error' => 'Something went wrong'], 500);
-         }
-     }
+            return response()->json(['code' => 1, 'success' => 'Messages updated successfully'], 200);
+        } catch (\Throwable$th) {
+            return response()->json(['code' => 3, 'error' => 'Something went wrong'], 500);
+        }
+    }
 
-      #  last messages for a user
+    #  last messages for a user
     public function getMessages()
     {
 
         try {
             # this method fetches list of chatted users conversations
-            $message = Messages::with(['sender' => function ($query) {
-                $query->select('id', 'first_name', 'last_name', 'profile_image');
-            },
-                'receiver' => function ($query) {
-                    $query->select('id', 'first_name', 'last_name', 'profile_image');
-                },
+            $message = Chats::with(['sender', 'receiver',
             ])->where('sender_id', auth()->user()->id)
                 ->orWhere('receiver_id', auth()->user()->id)
                 ->orderBy('created_at', 'desc')

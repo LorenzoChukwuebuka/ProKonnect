@@ -6,10 +6,10 @@ namespace App\Models;
 use App\Models\Project;
 use App\Models\Referal;
 use App\Models\UserInterests;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -46,11 +46,23 @@ class User extends Authenticatable
         return $this->hasMany(UserInterests::class);
     }
 
-    public function referal(){
+    public function userqualification()
+    {
+        return $this->hasMany(UserQualification::class);
+    }
+
+    public function userspecialization()
+    {
+        return $this->hasMany(UserSpecialization::class);
+    }
+
+    public function referal()
+    {
         return $this->hasMany(Referal::class);
     }
 
-    public function project(){
+    public function project()
+    {
         return $this->hasMany(Project::class);
     }
 

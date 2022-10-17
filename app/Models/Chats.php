@@ -10,15 +10,15 @@ class Chats extends Model
 {
     use HasFactory,SoftDeletes;
 
-    protected $gurarded = [];
+    protected $guarded = [];
 
     public function sender()
     {
-        return $this->belongsTo(User::class, 'sender_id');
+        return $this->belongsTo(User::class, 'sender_id')->select('id','full_name','profile_image');
     }
 
     public function receiver()
     {
-        return $this->belongsTo(User::class, 'receiver_id');
+        return $this->belongsTo(User::class, 'receiver_id')->select('id','full_name','profile_image');
     }
 }

@@ -40,17 +40,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/create_project',[ProjectController::class,'create_project']);
     Route::get('/get_all_projects',[ProjectController::class,'get_all_projects']);
-    Route::get('/get_one_project',[ProjectController::class,'get_projects_by_id']);
-    // Route::put();
-    // Route::delete();
+    Route::get('/get_one_project/{id}',[ProjectController::class,'get_projects_by_id']);
+    Route::put('/edit_project/{id}',[ProjectController::class,'edit_project']);
+    Route::delete('/delete_project/{id}',[ProjectController::class,'']);
 
     # messages
     Route::post('/create_message', [ChatsController::class, 'store']);
     Route::put('/update_message/{id}', [ChatsController::class, 'update']);
     Route::delete('/delete_message/{id}', [ChatssController::class, 'destroy']);
     Route::get('/get_messages', [ChatsController::class, 'index']);
-    Route::get('/get_message', [ChatsController::class, 'getMessages']);
-    Route::get('/get_message_by_user/{id}', [ChatsController::class, 'show']);
+    Route::get('/get_last_messages_in_chatlist', [ChatsController::class, 'getMessages']);
+    Route::get('/get_messages_between_two_users/{id}', [ChatsController::class, 'show']);
 });
 
 require __DIR__ . '/admin.php';
