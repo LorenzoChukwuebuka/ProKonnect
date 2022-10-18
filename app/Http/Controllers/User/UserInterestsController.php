@@ -20,10 +20,16 @@ class UserInterestsController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
-            foreach ($variable as $key => $value) {
-                $userInterests = UserInterests::create([
+            $len = count($request->data);
+
+            $data = $request->data;
+
+            $i = 0;
+
+            for ($i; $i < $len; $i++) {
+                UserInterests::create([
                     "user_id" => auth()->user()->id,
-                    "interest_id" => $value,
+                    "interest_id" => $data[$i]["interests"],
                 ]);
             }
 
@@ -34,10 +40,10 @@ class UserInterestsController extends Controller
         }
     }
 
-    public function get_all_user_user_interests()
+    public function get_all_user_interests()
     {
         try {
-            $interests = auth()->user()->user_interests()->latest()->get();
+            $interests = auth()->user()->userinterests()->latest()->get();
 
             if ($interests->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
@@ -59,6 +65,37 @@ class UserInterestsController extends Controller
             return $th;
         }
 
+    }
+
+    public function edit_user_interests(Request $request)
+    {
+           try {
+             #delete all interests where the id matches the user id
+
+             $interests = auth()->user()->userinterests()->latest()->get();
+
+             foreach ($interests as $interest) {
+                $interest->delete();
+             }
+
+             $len = count($request->data);
+
+             $data = $request->data;
+
+             $i = 0;
+
+             for ($i; $i < $len; $i++) {
+                 UserInterests::create([
+                     "user_id" => auth()->user()->id,
+                     "interest_id" => $data[$i]["interests"],
+                 ]);
+             }
+
+             return response(["code" => 1, "message" => "updated successfully"]);
+
+           } catch (\Throwable $th) {
+            return  $th;
+           }
     }
 
 }

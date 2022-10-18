@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatsController;
 use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\User\UserInterestsController;
 use App\Http\Controllers\User\fetchCountriesController;
 
 /*
@@ -51,6 +52,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/get_messages', [ChatsController::class, 'index']);
     Route::get('/get_last_messages_in_chatlist', [ChatsController::class, 'getMessages']);
     Route::get('/get_messages_between_two_users/{id}', [ChatsController::class, 'show']);
+
+    #user interests
+
+    Route::post('/create_user_interests',[UserInterestsController::class,'create_user_interests']);
+    Route::get('/get_all_user_interests',[UserInterestsController::class,'get_all_user_interests']);
+    Route::post('/edit_user_interests',[UserInterestsController::class,'edit_user_interests']);
 });
 
 require __DIR__ . '/admin.php';
