@@ -5,12 +5,12 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\UserQualification;
 use Illuminate\Http\Request;
+use Validator;
 
 class UserQualificationController extends Controller
 {
     public function create_user_qualification(Request $request)
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 "qualification_id" => [],
@@ -20,10 +20,16 @@ class UserQualificationController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
-            foreach ($variable as $key => $value) {
-                $userInterests = UserQualification::create([
+            $len = count($request->data);
+
+            $data = $request->data;
+
+            $i = 0;
+
+            for ($i; $i < $len; $i++) {
+                UserQualification::create([
                     "user_id" => auth()->user()->id,
-                    "qualification_id" => $value,
+                    "qualification_id" => $data[$i]["qualification"],
                 ]);
             }
 
@@ -35,12 +41,12 @@ class UserQualificationController extends Controller
 
     }
 
-    public function get_all_user_user_interests()
+    public function get_all_user_qualifications()
     {
         try {
-            $qualifications = auth()->user()->user_qualifications()->latest()->get();
+            $qualifications = auth()->user()->userqualification()->latest()->get();
 
-            if ($interests->count() == 0) {
+            if ($qualifications->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
             }
 
@@ -50,7 +56,7 @@ class UserQualificationController extends Controller
         }
     }
 
-    public function delete_interests($id)
+    public function delete_user_qualification($id)
     {
         try {
             $deleteInterests = UserQualification::find($id)->delete();
@@ -60,6 +66,36 @@ class UserQualificationController extends Controller
             return $th;
         }
 
+    }
+
+    public function edit_user_qualification(Request $request){
+        try {
+            #delete all interests where the id matches the user id
+
+            $qualifications = auth()->user()->userqualification()->latest()->get();
+
+            foreach ($qualifications as $qualification) {
+                $qualification->delete();
+            }
+
+            $len = count($request->data);
+
+            $data = $request->data;
+
+            $i = 0;
+
+            for ($i; $i < $len; $i++) {
+             UserQualification::create([
+                    "user_id" => auth()->user()->id,
+                    "qualification_id" => $data[$i]["qualification"],
+                ]);
+            }
+
+            return response(["code" => 1, "message" => "updated successfully"]);
+
+        } catch (\Throwable$th) {
+            return $th;
+        }
     }
 
 }

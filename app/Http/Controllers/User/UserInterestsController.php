@@ -69,33 +69,33 @@ class UserInterestsController extends Controller
 
     public function edit_user_interests(Request $request)
     {
-           try {
-             #delete all interests where the id matches the user id
+        try {
+            #delete all interests where the id matches the user id
 
-             $interests = auth()->user()->userinterests()->latest()->get();
+            $interests = auth()->user()->userinterests()->latest()->get();
 
-             foreach ($interests as $interest) {
+            foreach ($interests as $interest) {
                 $interest->delete();
-             }
+            }
 
-             $len = count($request->data);
+            $len = count($request->data);
 
-             $data = $request->data;
+            $data = $request->data;
 
-             $i = 0;
+            $i = 0;
 
-             for ($i; $i < $len; $i++) {
-                 UserInterests::create([
-                     "user_id" => auth()->user()->id,
-                     "interest_id" => $data[$i]["interests"],
-                 ]);
-             }
+            for ($i; $i < $len; $i++) {
+                UserInterests::create([
+                    "user_id" => auth()->user()->id,
+                    "interest_id" => $data[$i]["interests"],
+                ]);
+            }
 
-             return response(["code" => 1, "message" => "updated successfully"]);
+            return response(["code" => 1, "message" => "updated successfully"]);
 
-           } catch (\Throwable $th) {
-            return  $th;
-           }
+        } catch (\Throwable$th) {
+            return $th;
+        }
     }
 
 }

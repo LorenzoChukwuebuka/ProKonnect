@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\Project\ProjectController;
 use App\Http\Controllers\User\UserInterestsController;
 use App\Http\Controllers\User\fetchCountriesController;
+use App\Http\Controllers\User\UserQualificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,11 +40,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     #project api
 
-    Route::post('/create_project',[ProjectController::class,'create_project']);
-    Route::get('/get_all_projects',[ProjectController::class,'get_all_projects']);
-    Route::get('/get_one_project/{id}',[ProjectController::class,'get_projects_by_id']);
-    Route::put('/edit_project/{id}',[ProjectController::class,'edit_project']);
-    Route::delete('/delete_project/{id}',[ProjectController::class,'']);
+    Route::post('/create_project', [ProjectController::class, 'create_project']);
+    Route::get('/get_all_projects', [ProjectController::class, 'get_all_projects']);
+    Route::get('/get_one_project/{id}', [ProjectController::class, 'get_projects_by_id']);
+    Route::put('/edit_project/{id}', [ProjectController::class, 'edit_project']);
+    Route::delete('/delete_project/{id}', [ProjectController::class, '']);
 
     # messages
     Route::post('/create_message', [ChatsController::class, 'store']);
@@ -55,13 +56,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     #user interests
 
-    Route::post('/create_user_interests',[UserInterestsController::class,'create_user_interests']);
-    Route::get('/get_all_user_interests',[UserInterestsController::class,'get_all_user_interests']);
-    Route::post('/edit_user_interests',[UserInterestsController::class,'edit_user_interests']);
+    Route::post('/create_user_interests', [UserInterestsController::class, 'create_user_interests']);
+    Route::get('/get_all_user_interests', [UserInterestsController::class, 'get_all_user_interests']);
+    Route::post('/edit_user_interests', [UserInterestsController::class, 'edit_user_interests']);
+
+    #user qualifications
+
+    Route::post('/create_user_qualifications', [UserQualificationController::class, 'create_user_qualification']);
+    Route::get('/get_user_qualifications', [UserQualificationController::class, 'get_all_user_qualifications']);
+    Route::post('/edit_user_qualifications', [UserQualificationController::class, 'edit_user_qualification']);
 });
 
 require __DIR__ . '/admin.php';
-
 
 Route::fallback(function () {
     return response()->json([
