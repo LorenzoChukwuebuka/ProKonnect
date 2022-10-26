@@ -13,11 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('specializations', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('specialization');
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table('bank_details', function (Blueprint $table) {
+            $table->string("account_number")->nullable();
         });
     }
 
@@ -28,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('specializations');
+        Schema::table('bank_details', function (Blueprint $table) {
+            //
+        });
     }
 };

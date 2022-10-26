@@ -3,11 +3,13 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatsController;
+use App\Http\Controllers\BankDetailsController;
 use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\Project\ProjectController;
 use App\Http\Controllers\User\UserInterestsController;
 use App\Http\Controllers\User\fetchCountriesController;
 use App\Http\Controllers\User\UserQualificationController;
+use App\Http\Controllers\User\UserSpecializationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +67,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/create_user_qualifications', [UserQualificationController::class, 'create_user_qualification']);
     Route::get('/get_user_qualifications', [UserQualificationController::class, 'get_all_user_qualifications']);
     Route::post('/edit_user_qualifications', [UserQualificationController::class, 'edit_user_qualification']);
+
+    #user specialization
+
+    Route::post('/create_user_specialization',[UserSpecializationController::class,'create_user_specialization']);
+    Route::get('/get_user_specialization',[UserSpecializationController::class,'get_all_user_specialization']);
+    Route::post('/edit_user_specialization',[UserSpecializationController::class,'edit_user_specialization']);
+
+    #bank details
+
+    Route::post('/create_bank_details',[BankDetailsController::class,'create_bank_details']);
+    Route::get('/get_bank_details',[BankDetailsController::class,'get_bank_details']);
+    Route::get('/get_user_bank_details',[BankDetailsController::class,'get_bank_details_for_a_particular_user']);
 });
 
 require __DIR__ . '/admin.php';

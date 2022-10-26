@@ -20,6 +20,10 @@ class UserInterestsController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
+            if(!$request->data){
+                return response(["code"=>3,"message"=>"No request was sent"]);
+            }
+
             $len = count($request->data);
 
             $data = $request->data;

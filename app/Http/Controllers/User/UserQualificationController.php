@@ -20,6 +20,10 @@ class UserQualificationController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
+            if(!$request->data){
+                return response(["code"=>3,"message"=>"No request was sent"]);
+            }
+
             $len = count($request->data);
 
             $data = $request->data;
@@ -68,7 +72,8 @@ class UserQualificationController extends Controller
 
     }
 
-    public function edit_user_qualification(Request $request){
+    public function edit_user_qualification(Request $request)
+    {
         try {
             #delete all interests where the id matches the user id
 
@@ -85,7 +90,7 @@ class UserQualificationController extends Controller
             $i = 0;
 
             for ($i; $i < $len; $i++) {
-             UserQualification::create([
+                UserQualification::create([
                     "user_id" => auth()->user()->id,
                     "qualification_id" => $data[$i]["qualification"],
                 ]);

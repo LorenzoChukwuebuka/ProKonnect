@@ -2,28 +2,39 @@
 
 namespace App\Http\Controllers\User;
 
-use Illuminate\Http\Request;
-use App\Models\UserSpecialization;
 use App\Http\Controllers\Controller;
+use App\Models\UserSpecialization;
+use Illuminate\Http\Request;
+use Validator;
 
 class UserSpecializationController extends Controller
 {
-    public function create_user_qualification(Request $request)
+    public function create_user_specialization(Request $request)
     {
 
         try {
             $validator = Validator::make($request->all(), [
-                "qualification_id" => [],
+                "data" => [],
             ]);
 
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
-            foreach ($variable as $key => $value) {
-                $userInterests = UserSpecialization::create([
+            if (!$request->data) {
+                return response(["code" => 3, "message" => "No request was sent"]);
+            }
+
+            $len = count($request->data);
+
+            $data = $request->data;
+
+            $i = 0;
+
+            for ($i; $i < $len; $i++) {
+                UserSpecialization::create([
                     "user_id" => auth()->user()->id,
-                    "qualification_id" => $value,
+                    "specialization_id" => $data[$i]["specialization"],
                 ]);
             }
 
@@ -35,22 +46,22 @@ class UserSpecializationController extends Controller
 
     }
 
-    public function get_all_user_user_interests()
+    public function get_all_user_specialization()
     {
         try {
-            $qualifications = auth()->user()->user_qualifications()->latest()->get();
+            $specialization = auth()->user()->userspecialization()->latest()->get();
 
-            if ($interests->count() == 0) {
+            if ($specialization->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
             }
 
-            return response(["code" => 1, "data" => $qualifications]);
+            return response(["code" => 1, "data" => $specialization]);
         } catch (\Throwable$th) {
             return $th;
         }
     }
 
-    public function delete_interests($id)
+    public function delete_specialization($id)
     {
         try {
             $deleteInterests = UserSpecialization::find($id)->delete();
@@ -60,5 +71,35 @@ class UserSpecializationController extends Controller
             return $th;
         }
 
+    }
+
+    public function edit_user_specialization(Request $request)
+    {
+        try {
+            #delete all interests where the id matches the user id
+
+            $specialization = auth()->user()->userspecialization()->latest()->get();
+
+            foreach ($specialization as $specialization) {
+                $specialization->delete();
+            }
+
+            $len = count($request->data);
+
+            $data = $request->data;
+
+            $i = 0;
+
+            for ($i; $i < $len; $i++) {
+                UserSpecialization::create([
+                    "user_id" => auth()->user()->id,
+                    "specialization_id" => $data[$i]["specialization"],
+                ]);
+            }
+
+            return response(["code" => 1, "message" => "updated successfully"]);
+        } catch (Throwable $th) {
+            return $th;
+        }
     }
 }
