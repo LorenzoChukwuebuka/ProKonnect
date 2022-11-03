@@ -22,9 +22,7 @@ class AdminAuthController extends Controller
             return response()->json(['error' => $validator->errors()], 401);
         }
 
-        $credentials = $request->only('email', 'password');
-
-        if (!auth()->attempt($credentials)) {
+        if (!Auth::attempt($request->only(['email', 'password']))) {
             return response()->json(["error" => "Invalid email or passsword"]);
         }
 
@@ -38,7 +36,6 @@ class AdminAuthController extends Controller
         } else {
             return response()->json(['error' => "No admin with that email"]);
         }
-
     }
 
     public function ChangePassword(Request $request)

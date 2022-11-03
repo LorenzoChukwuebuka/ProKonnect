@@ -128,7 +128,7 @@ class ProjectController extends Controller
     {
         try {
 
-            $interests = auth()->user();
+            $interests = auth()->user()->user_interests();
 
         } catch (\Throwable$th) {
             return $th;
