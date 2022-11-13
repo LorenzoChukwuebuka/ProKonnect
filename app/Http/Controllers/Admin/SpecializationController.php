@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Models\Specialization;
+use Illuminate\Http\Request;
 
 class SpecializationController extends Controller
 {
@@ -25,7 +25,7 @@ class SpecializationController extends Controller
             return response(["code" => 1, "message" => "Qualification created successfully"]);
 
         } catch (\Throwable$th) {
-            return $th;
+            return response(["code" => 3, "error" => $th]);
         }
     }
 
@@ -44,7 +44,7 @@ class SpecializationController extends Controller
 
             return response(["code" => 1, "data" => $qualifications]);
         } catch (\Throwable$th) {
-            return $th;
+            return response(["code" => 3, "error" => $th]);
         }
     }
 
@@ -59,7 +59,7 @@ class SpecializationController extends Controller
 
             return response(["code" => 1, "message" => "updated successfully"]);
         } catch (\Throwable$th) {
-            return $th;
+            return response(["code" => 3, "error" => $th]);
         }
     }
 
@@ -72,7 +72,7 @@ class SpecializationController extends Controller
                 return response()->json(["message" => 'Qualification has been deleted!']);
             }
         } catch (\Throwable$th) {
-            return $th;
+            return response(["code" => 3, "error" => $th]);
         }
     }
 }

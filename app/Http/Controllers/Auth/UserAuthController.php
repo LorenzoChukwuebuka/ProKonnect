@@ -119,7 +119,7 @@ class UserAuthController extends Controller
             return response(['code' => 1, 'message' => 'User successfully created']);
 
         } catch (\Throwable$th) {
-            return $th;
+            return response(["code" => 3, "error" => $th]);
         }
     }
 
@@ -183,7 +183,7 @@ class UserAuthController extends Controller
             }
 
         } catch (\Throwable$th) {
-            return $th;
+            return response(["code" => 3, "error" => $th]);
         }
     }
 
@@ -220,7 +220,7 @@ class UserAuthController extends Controller
             }
 
         } catch (\Throwable$th) {
-            return $th;
+            return response(["code" => 3, "error" => $th]);
         }
 
     }

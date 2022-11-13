@@ -14,7 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('services', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
+            $table->string('service')->nullable();
+            $table->string('status')->default('active');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

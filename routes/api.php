@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
     Route::post('/change_user_password', [UserAuthController::class, 'user_change_password']);
 
+
     #project api
 
     Route::post('/create_project', [ProjectController::class, 'create_project']);
@@ -47,6 +48,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/get_one_project/{id}', [ProjectController::class, 'get_projects_by_id']);
     Route::put('/edit_project/{id}', [ProjectController::class, 'edit_project']);
     Route::delete('/delete_project/{id}', [ProjectController::class, '']);
+     #get user proguides
+     Route::get('/get_user_proguides',[ProjectController::class,'find_proguides_by_user_interests']);
 
     # messages
     Route::post('/create_message', [ChatsController::class, 'store']);
@@ -79,6 +82,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/create_bank_details',[BankDetailsController::class,'create_bank_details']);
     Route::get('/get_bank_details',[BankDetailsController::class,'get_bank_details']);
     Route::get('/get_user_bank_details',[BankDetailsController::class,'get_bank_details_for_a_particular_user']);
+
+
 });
 
 require __DIR__ . '/admin.php';

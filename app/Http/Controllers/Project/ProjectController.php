@@ -45,6 +45,8 @@ class ProjectController extends Controller
         }
     }
 
+    
+
     public function get_all_projects()
     {
         try {
@@ -128,7 +130,14 @@ class ProjectController extends Controller
     {
         try {
 
-            $interests = auth()->user()->user_interests();
+            $interests = auth()->user()->userinterests()->latest()->get();
+
+            return $interests;
+
+            #get all proguides and fetch their interests
+
+            #only return proguides whose interests matches with that of the
+            #currently authenticated user
 
         } catch (\Throwable$th) {
             return $th;
