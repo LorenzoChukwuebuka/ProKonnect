@@ -17,6 +17,7 @@ class BankDetailsController extends Controller
                 "account_name" => "required",
                 "mri_code" => [],
                 "account_number" => "required|min:10",
+                "account_type"=> "required"
             ]);
 
             if ($validator->fails()) {
@@ -32,6 +33,7 @@ class BankDetailsController extends Controller
                     "account_name" => $request->account_name,
                     "mri_code" => $request->mri_code,
                     "account_number" => $request->account_number,
+                    "account_type" => $request->account_type
                 ]);
 
             return response(["code" => 1, "message" => "bank details created successfully"]);

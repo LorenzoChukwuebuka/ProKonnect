@@ -51,11 +51,11 @@ class SpecializationController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $qualifications = Specialization::find($id);
+            $specialization = Specialization::find($id);
 
-            $qualifications->qualification = $request->qualification ?? $qualifications->qualification;
+            $specialization->specialization = $request->specialization ?? $qualifications->specialization;
 
-            $qualifications->save();
+            $specialization->save();
 
             return response(["code" => 1, "message" => "updated successfully"]);
         } catch (\Throwable$th) {

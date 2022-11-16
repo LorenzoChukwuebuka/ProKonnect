@@ -30,8 +30,19 @@ class ServicesController extends Controller
         }
     }
 
+    public function get_all_services()
+    {
+        try {
+            $services = Service::all();
 
-    public function get_all_services(){
-        
+            if ($services->count() == 0) {
+                return response(["code" => 3, "message" => "no record found"]);
+            }
+
+            return response(["code" => 1, "data" => $services]);
+
+        } catch (\Throwable$th) {
+            return response(["code"=>3,"error"=>$th->getMessage()]);
+        }
     }
 }
