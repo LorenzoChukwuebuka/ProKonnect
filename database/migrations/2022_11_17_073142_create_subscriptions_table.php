@@ -13,15 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('payments', function (Blueprint $table) {
+        Schema::create('subscriptions', function (Blueprint $table) {
             $table->increments('id');
-            $table->foreignId('payer_id')->unsignedInteger()->index();
-            $table->foreignId('proguide_id')->unsignedInteger()->index();
+            $table->foreignId('user_id')->unsignedInteger()->index();
             $table->foreignId('plan_id')->unsignedInteger()->index();
-            $table->string('amount_paid')->nullable();
-            $table->string('payer_email')->nullable();
-            $table->string('payer_full_name')->nullable();
-            $table->string('status')->nullable();
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('end_date')->nullable();
             $table->timestamps();
         });
     }
@@ -33,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payments');
+        Schema::dropIfExists('subscriptions');
     }
 };
