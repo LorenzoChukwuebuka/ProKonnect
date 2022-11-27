@@ -77,7 +77,7 @@ class PlanController extends Controller
 
             $plan->save();
 
-            return response(["code"=>1,"message"=>"plan updated successfully"]);
+            return response(["code" => 1, "message" => "plan updated successfully"]);
 
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
@@ -86,6 +86,16 @@ class PlanController extends Controller
 
     public function delete_plan($id)
     {
+
+        try {
+
+            $plan = Plan::find($id)->delete();
+
+            return response(["code" => 1, "message" => "plan deleted successfully"]);
+
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
 
     }
 }

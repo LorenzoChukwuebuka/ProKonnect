@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\Controller;
+use App\Models\Referal;
+use App\Models\Referal_transaction;
+use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
@@ -96,13 +99,34 @@ class PaymentController extends Controller
         #start database transaction
 
         DB::transaction(function () {
-           
+
         });
 
     }
 
-    private function referal_check()
+    private function referal_check(int $user_id, int | float $amount_payable)
     {
+
+        $check_if_referred = Referal::where('referee_id', $user_id)->first();
+
+        if ($check_if_referred == null) {
+            return false;
+        }
+
+        $ref_transactions_check = Referal_transaction::where('referred_by', $check_if_referred->referal_id)->where('user_referred', $request->user_id)->first();
+
+        if ($ref_transactions_check == null) {
+            return false;
+        }
+
+        #create referal_transactions
+
+        #credit the proguides wallet
+
+        #send mail to proguide notifiying them
+        # of a credit transaction to their wallet
+
+        return "hello world";
 
     }
 }

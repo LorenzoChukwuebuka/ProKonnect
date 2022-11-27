@@ -57,7 +57,7 @@ class UserAuthController extends Controller
                 'university_id' => $request->university_id,
                 'password' => Hash::make($request->password) ?? null,
                 'profile_image' => $profile_image ?? null,
-                'referal_code' => Str::random(12),
+                'referal_code' => "prf".Str::random(12),
 
             ]);
 
