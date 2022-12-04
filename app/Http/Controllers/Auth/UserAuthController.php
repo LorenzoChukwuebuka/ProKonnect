@@ -57,7 +57,7 @@ class UserAuthController extends Controller
                 'university_id' => $request->university_id,
                 'password' => Hash::make($request->password) ?? null,
                 'profile_image' => $profile_image ?? null,
-                'referal_code' => "prf".Str::random(12),
+                'referal_code' => "prf" . Str::random(12),
 
             ]);
 
@@ -349,7 +349,7 @@ class UserAuthController extends Controller
         }
 
         if ($request->hasFile('profile_image')) {
-            $profile_image = $request->profile_image->store('profile_images', 'public');
+            $profile_image = $request->profile_image->store('user_profile_images', 'public');
         }
 
         $user->first_name = $request->first_name ?? $user->first_name;

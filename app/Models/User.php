@@ -6,6 +6,8 @@ namespace App\Models;
 use App\Models\Project;
 use App\Models\Referal;
 use App\Models\UserInterests;
+use App\Models\Wallet;
+use App\Models\WithdrawalRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -69,6 +71,16 @@ class User extends Authenticatable
     public function bank_details()
     {
         return $this->hasOne(BankDetails::class);
+    }
+
+    public function withdrawalRequest()
+    {
+        return $this->hasMany(WithdrawalRequest::class);
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
     }
 
 }
