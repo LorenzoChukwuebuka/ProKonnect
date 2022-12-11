@@ -42,7 +42,35 @@ class ServicesController extends Controller
             return response(["code" => 1, "data" => $services]);
 
         } catch (\Throwable$th) {
-            return response(["code"=>3,"error"=>$th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $services = Service::find($id);
+
+            $services->service = $request->service ?? $qualifications->service;
+
+            $services->save();
+
+            return response(["code" => 1, "message" => "updated successfully"]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th]);
+        }
+    }
+
+    public function delete()
+    {
+        try {
+            $services = Service::find($id)->delete();
+
+            if ($services) {
+                return response()->json(["message" => 'services has been deleted!']);
+            }
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th]);
         }
     }
 }

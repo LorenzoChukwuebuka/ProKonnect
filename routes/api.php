@@ -82,10 +82,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/get_bank_details', [BankDetailsController::class, 'get_bank_details']);
     Route::get('/get_user_bank_details', [BankDetailsController::class, 'get_bank_details_for_a_particular_user']);
 
-
     #withdrawal request
-
-     
 
 });
 

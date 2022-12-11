@@ -69,7 +69,7 @@ class SpecializationController extends Controller
             $qualifications = Specialization::find($id)->delete();
 
             if ($qualifications) {
-                return response()->json(["message" => 'Qualification has been deleted!']);
+                return response()->json(["message" => 'specilization has been deleted!']);
             }
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th]);
