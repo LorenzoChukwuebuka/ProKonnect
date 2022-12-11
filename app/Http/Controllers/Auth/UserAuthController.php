@@ -335,34 +335,19 @@ class UserAuthController extends Controller
 
         $user = User::find(Auth::user()->id);
 
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'max:255',
-            'middle_name' => [],
-            'last_name' => 'max:255',
-            'username' => [],
-            'email' => 'email',
-            'phone_number' => 'max:255',
-        ]);
+        // if ($request->hasFile('profile_image')) {
+        //     $profile_image = $request->profile_image->store('user_profile_images', 'public');
+        // }
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
-        }
-
-        if ($request->hasFile('profile_image')) {
-            $profile_image = $request->profile_image->store('user_profile_images', 'public');
-        }
-
-        $user->first_name = $request->first_name ?? $user->first_name;
-        $user->middle_name = $request->middle_name ?? $user->middle_name;
-        $user->last_name = $request->last_name ?? $user->last_name;
-        $user->username = $request->username ?? $user->username;
-        $user->email = $request->email ?? $user->email;
-        $user->phone_number = $request->phone_number ?? $user->phone_number;
-        $user->profile_image = $profile_image ?? $user->profile_image;
+        $user->full_name = $request->full_name ?? $user->full_name;
+        $user->email = $request->full_name ?? $user->full_name;
+        $user->bio = $request->bio ?? $user->bio;
+        $user->university_id = $request->university_id ?? $user->university_id;
+        $user->country_id = $request->country_id ?? $user->country_id;
 
         $user->save();
 
-        return response(["message" => "Credentials updated"]);
+        return response(["code" => 1, "message" => "Credentials updated"]);
     }
 
     public function update_bio()

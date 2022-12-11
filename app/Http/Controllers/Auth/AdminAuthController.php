@@ -22,20 +22,21 @@ class AdminAuthController extends Controller
             return response()->json(['error' => $validator->errors()], 401);
         }
 
-        if (!Auth::attempt($request->only(['email', 'password']))) {
-            return response()->json(["error" => "Invalid email or passsword"]);
+        if (!Auth::guard('admin')->attempt($request->only('email', 'password'), $request->filled('remember'))) {
+            throw ValidationException::withMessages([
+                'email' => 'Invalid email or password',
+            ]);
         }
 
-        if (Admin::where('email', $request['email'])->first()) {
-            $status = 200;
-            $response = [
-                'owner' => Auth::admin(),
-                'token' => Auth::admin()->createToken('owner_token')->plainTextToken,
-            ];
-            return response()->json($response, $status);
-        } else {
-            return response()->json(['error' => "No admin with that email"]);
-        }
+        $admin = Admin::where('email', $request->email)->first();
+        $token = $admin->createToken('myapptoken')->plainTextToken;
+        return response()->json([
+            'code' => 1,
+            'message' => 'success',
+            'type' => 'admin',
+            'token' => $token,
+            'data' => $admin,
+        ]);
     }
 
     public function ChangePassword(Request $request)

@@ -17,7 +17,7 @@ class BankDetailsController extends Controller
                 "account_name" => "required",
                 "mri_code" => [],
                 "account_number" => "required|min:10",
-                "account_type"=> "required"
+                "account_type" => "required",
             ]);
 
             if ($validator->fails()) {
@@ -33,7 +33,7 @@ class BankDetailsController extends Controller
                     "account_name" => $request->account_name,
                     "mri_code" => $request->mri_code,
                     "account_number" => $request->account_number,
-                    "account_type" => $request->account_type
+                    "account_type" => $request->account_type,
                 ]);
 
             return response(["code" => 1, "message" => "bank details created successfully"]);
@@ -61,16 +61,15 @@ class BankDetailsController extends Controller
 
             $bank_details = auth()->user()->bank_details()->first();
 
-            if($bank_details == null){
-                return \response(["code"=>3,"message"=>"no record found"]);
+            if ($bank_details == null) {
+                return \response(["code" => 3, "message" => "no record found"]);
             }
 
-            return response(["code"=>1,"data"=>$bank_details]);
+            return response(["code" => 1, "data" => $bank_details]);
 
         } catch (\Throwable$th) {
-            return  \response(["code"=>3,"error"=>$th->getMessage()]);
+            return \response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
-
 
 }
