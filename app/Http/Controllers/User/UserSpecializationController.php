@@ -41,7 +41,7 @@ class UserSpecializationController extends Controller
             return response(["code" => 1, "message" => "created successfully"]);
 
         } catch (\Throwable$th) {
-            return $th;
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
 
     }
@@ -57,7 +57,7 @@ class UserSpecializationController extends Controller
 
             return response(["code" => 1, "data" => $specialization]);
         } catch (\Throwable$th) {
-            return $th;
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -68,7 +68,7 @@ class UserSpecializationController extends Controller
 
             return response(["code" => 1, "message" => "interest deleted "]);
         } catch (\Throwable$th) {
-            return $th;
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
 
     }
@@ -99,7 +99,7 @@ class UserSpecializationController extends Controller
 
             return response(["code" => 1, "message" => "updated successfully"]);
         } catch (Throwable $th) {
-            return $th;
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 }

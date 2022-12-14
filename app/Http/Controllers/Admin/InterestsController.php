@@ -27,7 +27,7 @@ class InterestsController extends Controller
             return response(["code" => 1, "message" => "Interest created successfully"]);
 
         } catch (\Throwable$th) {
-             return response(["code" => 3, "error" => $th]);
+             return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -46,7 +46,7 @@ class InterestsController extends Controller
 
             return response(["code" => 1, "data" => $interests]);
         } catch (\Throwable$th) {
-            return  $th;
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -61,7 +61,7 @@ class InterestsController extends Controller
 
             return response(["code" => 1, "message" => "updated successfully"]);
         } catch (\Throwable$th) {
-             return response(["code" => 3, "error" => $th]);
+             return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -74,7 +74,7 @@ class InterestsController extends Controller
                 return response()->json(["message" => 'Interest has been deleted!']);
             }
         } catch (\Throwable $th) {
-             return response(["code" => 3, "error" => $th]);
+             return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 }

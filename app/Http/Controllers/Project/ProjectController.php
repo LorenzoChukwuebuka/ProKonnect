@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -41,11 +42,9 @@ class ProjectController extends Controller
             return \response(["code" => 1, "message" => "created project successfully"]);
 
         } catch (\Throwable$th) {
-            return $th;
+           return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
-
-    
 
     public function get_all_projects()
     {
@@ -93,7 +92,7 @@ class ProjectController extends Controller
             return response(["code" => 1, "message" => "project updated successfully"]);
 
         } catch (\Throwable$th) {
-            return $th;
+           return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -104,7 +103,7 @@ class ProjectController extends Controller
 
             return response(["code" => 1, "message" => "Project deleted successfully"]);
         } catch (\Throwable$th) {
-            return $th;
+           return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -120,7 +119,7 @@ class ProjectController extends Controller
             return response(["code" => 1, "status updated"]);
 
         } catch (\Throwable$th) {
-            return $th;
+           return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -132,15 +131,25 @@ class ProjectController extends Controller
 
             $interests = auth()->user()->userinterests()->latest()->get();
 
-            return $interests;
+            $i = 0;
+            $len = count($interests);
 
-            #get all proguides and fetch their interests
+            $intnewarr = [];
 
-            #only return proguides whose interests matches with that of the
-            #currently authenticated user
+            for ($i; $i < $len; $i++) {
+
+                $proguides = User::with(['userinterests'])->where('user_type', 'proguide')->get();
+
+                if (count($proguides)) {
+                    foreach ($proguides as $proguide) {
+                        return $proguide['userinterests'];
+                    }
+                }
+
+            }
 
         } catch (\Throwable$th) {
-            return $th;
+           return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 }

@@ -38,7 +38,7 @@ class ChatsController extends Controller
 
             return response()->json(['code' => 1, 'success' => 'Messages sent successfully'], 200);
         } catch (\Throwable$th) {
-            return $th;
+             return response(["code" => 3, "error" => $th->getMessage()]);
         }
 
     }
@@ -64,7 +64,7 @@ class ChatsController extends Controller
 
             return response()->json(['code' => 1, 'data' => $messages]);
         } catch (\Throwable$th) {
-            return $th;
+             return response(["code" => 3, "error" => $th->getMessage()]);
             return response()->json(['code' => 3, 'error' => 'Something went wrong'], 500);
         }
 

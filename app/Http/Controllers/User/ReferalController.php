@@ -19,7 +19,7 @@ class ReferalController extends Controller
             return response(["code" => 1, "data" => $referals]);
 
         } catch (\Throwable$th) {
-            return $th;
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 }
