@@ -1,15 +1,19 @@
 <?php
 
-use App\Http\Controllers\Auth\UserAuthController;
-use App\Http\Controllers\BankDetailsController;
-use App\Http\Controllers\ChatsController;
-use App\Http\Controllers\Project\ProjectController;
-use App\Http\Controllers\User\fetchCountriesController;
-use App\Http\Controllers\User\UserInterestsController;
-use App\Http\Controllers\User\UserQualificationController;
-use App\Http\Controllers\User\UserSpecializationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatsController;
+use App\Http\Controllers\BankDetailsController;
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\Admin\ServicesController;
+use App\Http\Controllers\Admin\InterestsController;
+use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\User\UserInterestsController;
+use App\Http\Controllers\User\fetchCountriesController;
+use App\Http\Controllers\Admin\QualificationsController;
+use App\Http\Controllers\Admin\SpecializationController;
+use App\Http\Controllers\User\UserQualificationController;
+use App\Http\Controllers\User\UserSpecializationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +38,10 @@ Route::post('/user_reset_password', [UserAuthController::class, 'user_reset_pass
 Route::post('/create_user_password', [UserAuthController::class, 'create_user_password']);
 Route::get('/get_countries', [fetchCountriesController::class, 'getAllCountries']);
 Route::get('/get_states/{id}', [fetchCountriesController::class, 'getStatesWithCountry']);
+Route::get('/get_specialization',[SpecializationController::class,'findAll']);
+Route::get('/get_qualification',[QualificationsController::class,'findAll']);
+Route::get('/get_services',[ServicesController::class,'get_all_services']);
+Route::get('/get_interests',[InterestsController::class,'findAll']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);

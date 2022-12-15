@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Specialization;
 use Illuminate\Http\Request;
+use App\Models\Specialization;
+use App\Http\Controllers\Controller;
 
 class SpecializationController extends Controller
 {
@@ -29,10 +30,6 @@ class SpecializationController extends Controller
         }
     }
 
-    public function show($id)
-    {
-
-    }
 
     public function findAll()
     {

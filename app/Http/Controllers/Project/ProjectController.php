@@ -131,22 +131,7 @@ class ProjectController extends Controller
 
             $interests = auth()->user()->userinterests()->latest()->get();
 
-            $i = 0;
-            $len = count($interests);
-
-            $intnewarr = [];
-
-            for ($i; $i < $len; $i++) {
-
-                $proguides = User::with(['userinterests'])->where('user_type', 'proguide')->get();
-
-                if (count($proguides)) {
-                    foreach ($proguides as $proguide) {
-                        return $proguide['userinterests'];
-                    }
-                }
-
-            }
+            $proguides;
 
         } catch (\Throwable$th) {
            return response(["code" => 3, "error" => $th->getMessage()]);
