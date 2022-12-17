@@ -44,7 +44,7 @@ class UserAuthController extends Controller
             if ($request->hasFile('profile_image')) {
                 $validate = Validator::make($request->all(), ['profile_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
                 if ($validate->fails()) {
-                    return response()->json(['errors' => $validate->errors()->first()]);
+                    return response()->json(["code"=>3,'errors' => $validate->errors()->first()]);
                 }
                 $profile_image = $request->profile_image->store('user_profile_images', 'public');
             }
@@ -119,7 +119,7 @@ class UserAuthController extends Controller
             return response(['code' => 1, 'message' => 'User successfully created']);
 
         } catch (\Throwable$th) {
-            return response(["code" => 3, "error" => $th]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -183,7 +183,7 @@ class UserAuthController extends Controller
             }
 
         } catch (\Throwable$th) {
-            return response(["code" => 3, "error" => $th]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -220,7 +220,7 @@ class UserAuthController extends Controller
             }
 
         } catch (\Throwable$th) {
-            return response(["code" => 3, "error" => $th]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
 
     }
