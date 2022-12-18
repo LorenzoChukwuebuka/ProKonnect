@@ -44,7 +44,7 @@ class UserAuthController extends Controller
             if ($request->hasFile('profile_image')) {
                 $validate = Validator::make($request->all(), ['profile_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
                 if ($validate->fails()) {
-                    return response()->json(["code"=>3,'errors' => $validate->errors()->first()]);
+                    return response()->json(["code" => 3, 'errors' => $validate->errors()->first()]);
                 }
                 $profile_image = $request->profile_image->store('user_profile_images', 'public');
             }
@@ -135,7 +135,7 @@ class UserAuthController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 401);
+                return response()->json(["code" => 3, 'error' => $validator->errors()], 401);
             }
             $user = User::find($request->user_id);
 
@@ -160,7 +160,7 @@ class UserAuthController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 401);
+                return response()->json(["code" => 3, 'error' => $validator->errors()], 401);
             }
 
             $token = OTPToken::where('token', $request->verify_token)->first();
@@ -197,7 +197,7 @@ class UserAuthController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 401);
+                return response()->json(["code" => 3, 'error' => $validator->errors()], 401);
             }
 
             if (!auth()->attempt($request->only(['email', 'password']))) {
@@ -216,7 +216,7 @@ class UserAuthController extends Controller
                 ];
                 return response()->json($response, $status);
             } else {
-                return response()->json(['error' => "No user with that email"], 401);
+                return response()->json(["code" => 3, 'error' => "No user with that email"], 401);
             }
 
         } catch (\Throwable$th) {
@@ -236,7 +236,7 @@ class UserAuthController extends Controller
         # check if validation fails
         if ($validator->fails()) {
             # return validation error
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(["code"=>3,'error' => $validator->errors()], 401);
         }
         # check if the user is authenticated
         if (auth()->user()) {
@@ -285,7 +285,7 @@ class UserAuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['code'=>3,'error' => $validator->errors()], 401);
         }
         //insert into password reset db
         DB::table('password_resets')->insert([
@@ -309,7 +309,7 @@ class UserAuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['code'=>3,'error' => $validator->errors()], 401);
         }
 
         $updatePassword = DB::table('password_resets')
@@ -333,21 +333,27 @@ class UserAuthController extends Controller
     public function editUserCredentials(Request $request)
     {
 
-        $user = User::find(Auth::user()->id);
+        try {
+            $user = User::find(Auth::user()->id);
 
-        // if ($request->hasFile('profile_image')) {
-        //     $profile_image = $request->profile_image->store('user_profile_images', 'public');
-        // }
+            // if ($request->hasFile('profile_image')) {
+            //     $profile_image = $request->profile_image->store('user_profile_images', 'public');
+            // }
 
-        $user->full_name = $request->full_name ?? $user->full_name;
-        $user->email = $request->full_name ?? $user->full_name;
-        $user->bio = $request->bio ?? $user->bio;
-        $user->university_id = $request->university_id ?? $user->university_id;
-        $user->country_id = $request->country_id ?? $user->country_id;
+            $user->full_name = $request->full_name ?? $user->full_name;
+            $user->email = $request->full_name ?? $user->full_name;
+            $user->bio = $request->bio ?? $user->bio;
+            $user->university_id = $request->university_id ?? $user->university_id;
+            $user->country_id = $request->country_id ?? $user->country_id;
 
-        $user->save();
+            $user->save();
 
-        return response(["code" => 1, "message" => "Credentials updated"]);
+            return response(["code" => 1, "message" => "Credentials updated"]);
+        } catch (\Throwable $th) {
+            return response(["code"=>3,"error"=>$th->getMessage()]);
+        }
+
+
     }
 
     public function update_bio()
