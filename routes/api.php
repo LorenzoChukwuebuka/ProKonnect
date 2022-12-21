@@ -29,7 +29,9 @@ use App\Http\Controllers\User\UserSpecializationController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+Route::get('/linkstorage', function () {
+    Artisan::call('storage:link');
+});
 Route::post('/register_user', [UserAuthController::class, 'create_user']);
 Route::post('/verify_user', [UserAuthController::class, 'verify_user']);
 Route::post('/login_user', [UserAuthController::class, 'login_user']);
