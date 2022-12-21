@@ -172,6 +172,7 @@ class UserAuthController extends Controller
                     $token->delete();
                     return response()->json([
                         'code' => 1,
+                        'user_id' => $token->user_id,
                         'message' => "email verified",
                     ]);
                 }
@@ -236,7 +237,7 @@ class UserAuthController extends Controller
         # check if validation fails
         if ($validator->fails()) {
             # return validation error
-            return response()->json(["code"=>3,'error' => $validator->errors()], 401);
+            return response()->json(["code" => 3, 'error' => $validator->errors()], 401);
         }
         # check if the user is authenticated
         if (auth()->user()) {
@@ -285,7 +286,7 @@ class UserAuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['code'=>3,'error' => $validator->errors()], 401);
+            return response()->json(['code' => 3, 'error' => $validator->errors()], 401);
         }
         //insert into password reset db
         DB::table('password_resets')->insert([
@@ -309,7 +310,7 @@ class UserAuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['code'=>3,'error' => $validator->errors()], 401);
+            return response()->json(['code' => 3, 'error' => $validator->errors()], 401);
         }
 
         $updatePassword = DB::table('password_resets')
@@ -349,10 +350,9 @@ class UserAuthController extends Controller
             $user->save();
 
             return response(["code" => 1, "message" => "Credentials updated"]);
-        } catch (\Throwable $th) {
-            return response(["code"=>3,"error"=>$th->getMessage()]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
-
 
     }
 
