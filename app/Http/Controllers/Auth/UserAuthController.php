@@ -44,7 +44,7 @@ class UserAuthController extends Controller
             if ($request->hasFile('profile_image')) {
                 $validate = Validator::make($request->all(), ['profile_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
                 if ($validate->fails()) {
-                    return response()->json(["code" => 3, 'errors' => $validate->errors()->first()]);
+                    return response()->json(["code" => 3, 'error' => $validate->errors()->first()]);
                 }
                 $profile_image = $request->profile_image->store('user_profile_images', 'public');
             }
@@ -207,6 +207,8 @@ class UserAuthController extends Controller
 
             $user = User::where('email', $request['email'])->where('status', 'active')->first();
 
+            if($user)
+
             if ($user) {
                 $status = 200;
                 $response = [
@@ -217,7 +219,7 @@ class UserAuthController extends Controller
                 ];
                 return response()->json($response, $status);
             } else {
-                return response()->json(["code" => 3, 'error' => "No user with that email"], 401);
+                return response()->json(["code" => 3, 'message' => "No user with that email"], 401);
             }
 
         } catch (\Throwable$th) {
@@ -255,24 +257,19 @@ class UserAuthController extends Controller
                     ]);
                 } else {
                     return response()->json([
-                        'code' => 4,
+                        'code' => 3,
                         'message' => 'password mismatch',
                     ]);
                 }
-            } catch (\Exception$e) {
+            } catch (\Throwable $e) {
                 return response()->json([
-                    'code' => 4,
-                    'message' => 'an exceptional error occured',
-                ], 500);
-            } catch (\Error$e) {
-                return response()->json([
-                    'code' => 4,
-                    'message' => 'an error occured',
+                    'code' => 3,
+                    'error ' => $e->getMessage(),
                 ], 500);
             }
         } else {
             return response()->json([
-                'code' => 4,
+                'code' => 3,
                 'message' => 'unauthenticated user',
             ], 401);
         }

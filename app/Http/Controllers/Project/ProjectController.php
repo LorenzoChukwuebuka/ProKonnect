@@ -57,7 +57,7 @@ class ProjectController extends Controller
             }
             return response(["code" => 1, "data" => $project]);
         } catch (\Throwable$th) {
-            throw $th;
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -70,7 +70,7 @@ class ProjectController extends Controller
                 return response(["code" => 3, "message" => "No record found"]);
             }
         } catch (Throwable $th) {
-            throw $th;
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
