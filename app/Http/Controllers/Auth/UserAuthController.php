@@ -116,7 +116,7 @@ class UserAuthController extends Controller
 
             MailMessages::UserVerificationMail($otp_token, $request->email);
 
-            return response(['code' => 1, 'message' => 'Account  successfully created']);
+            return response(['code' => 1, "user_id" => $userCreate->id, 'message' => 'Account  successfully created']);
 
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
@@ -207,19 +207,19 @@ class UserAuthController extends Controller
 
             $user = User::where('email', $request['email'])->where('status', 'active')->first();
 
-            if($user)
-
             if ($user) {
-                $status = 200;
-                $response = [
-                    'type' => 'user',
-                    // 'user_auth_type' => ($user->password != null) ? 'main' : 'google',
-                    'user' => auth()->user(),
-                    'token' => auth()->user()->createToken('auth_token')->plainTextToken,
-                ];
-                return response()->json($response, $status);
-            } else {
-                return response()->json(["code" => 3, 'message' => "No user with that email"], 401);
+                if ($user) {
+                    $status = 200;
+                    $response = [
+                        'type' => 'user',
+                        // 'user_auth_type' => ($user->password != null) ? 'main' : 'google',
+                        'user' => auth()->user(),
+                        'token' => auth()->user()->createToken('auth_token')->plainTextToken,
+                    ];
+                    return response()->json($response, $status);
+                } else {
+                    return response()->json(["code" => 3, 'message' => "No user with that email"], 401);
+                }
             }
 
         } catch (\Throwable$th) {
@@ -261,7 +261,7 @@ class UserAuthController extends Controller
                         'message' => 'password mismatch',
                     ]);
                 }
-            } catch (\Throwable $e) {
+            } catch (\Throwable$e) {
                 return response()->json([
                     'code' => 3,
                     'error ' => $e->getMessage(),
