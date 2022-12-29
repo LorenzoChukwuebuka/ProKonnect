@@ -116,7 +116,7 @@ class UserAuthController extends Controller
 
             MailMessages::UserVerificationMail($otp_token, $request->email);
 
-            return response(['code' => 1, 'message' => 'User successfully created']);
+            return response(['code' => 1, 'message' => 'Account  successfully created']);
 
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
