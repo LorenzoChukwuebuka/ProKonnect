@@ -342,6 +342,7 @@ class UserAuthController extends Controller
             $user->bio = $request->bio ?? $user->bio;
             $user->university_id = $request->university_id ?? $user->university_id;
             $user->country_id = $request->country_id ?? $user->country_id;
+            $user->phone_number = $request->phone_number ?? $user->phone_number;
 
             $this->edit_user_qualification($request->data);
 
