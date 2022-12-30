@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Str;
 use Validator;
+use WisdomDiala\Countrypkg\Models\Country;
 
 class UserAuthController extends Controller
 {
@@ -210,11 +211,14 @@ class UserAuthController extends Controller
             if ($user) {
                 if ($user) {
                     $status = 200;
+
                     $response = [
                         'type' => 'user',
                         // 'user_auth_type' => ($user->password != null) ? 'main' : 'google',
                         'user' => auth()->user(),
+                        'country' => Country::where('id', auth()->user()->country_id)->first(),
                         'token' => auth()->user()->createToken('auth_token')->plainTextToken,
+
                     ];
                     return response()->json($response, $status);
                 } else {

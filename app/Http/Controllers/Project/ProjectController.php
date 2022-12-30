@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Project;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\User;
+use App\Models\UserInterests;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -128,27 +129,18 @@ class ProjectController extends Controller
     public function find_proguides_by_user_interests()
     {
         try {
-              
-            $userinterests = auth()->user()->userinterests()->latest()->get();
+            $user = auth()->user();
 
-            foreach ($userinterests as $key) {
+            $guides = User::where('user_type', 'proguide')
+                ->join('user_interests', 'users.id', '=', 'user_interests.user_id')
+                ->whereIn('user_interests.interest_id', $user->userinterests()->pluck('interest_id'))
+                ->select('users.id')
+                ->get();
 
-                $proguides = User::with('userinterests')->where('user_type', 'proguide')->get();
-
-                if (count($proguides)) {
-                    foreach ($proguides as $proguide) {
-                        foreach ($proguide['userinterests'] as $Pinterest) {
-                            if ($Pinterest === $key) {
-                                return $Pinterest;
-                            }
-                        }
-                    }
-                }
-
-            }
-
+            return $guides;
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
+
 }

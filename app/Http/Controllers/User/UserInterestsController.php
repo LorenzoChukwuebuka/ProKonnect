@@ -20,8 +20,8 @@ class UserInterestsController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
-            if(!$request->data){
-                return response(["code"=>3,"message"=>"No request was sent"]);
+            if (!$request->data) {
+                return response(["code" => 3, "message" => "No request was sent"]);
             }
 
             $len = count($request->data);
@@ -40,7 +40,7 @@ class UserInterestsController extends Controller
             return response(["code" => 1, "message" => "created successfully"]);
 
         } catch (\Throwable$th) {
-          return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -55,7 +55,7 @@ class UserInterestsController extends Controller
 
             return response(["code" => 1, "data" => $interests]);
         } catch (\Throwable$th) {
-          return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -66,7 +66,7 @@ class UserInterestsController extends Controller
 
             return response(["code" => 1, "message" => "interest deleted "]);
         } catch (\Throwable$th) {
-          return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
 
     }
@@ -98,11 +98,8 @@ class UserInterestsController extends Controller
             return response(["code" => 1, "message" => "updated successfully"]);
 
         } catch (\Throwable$th) {
-          return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
-
-
-    
 
 }
