@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\MessageResource;
+use App\Models\BadWords;
 use App\Models\Chats;
 use Illuminate\Http\Request;
 use Validator;
@@ -22,6 +23,8 @@ class ChatsController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
+            $filteredMessage = $this->filter($request->message, auth()->user()->id);
+
             if (auth()->user()->id > $request->receiver_id) {
                 $code = auth()->user()->id . "" . $request->receiver_id;
             } else {
@@ -32,13 +35,13 @@ class ChatsController extends Controller
             $message = Chats::create([
                 'sender_id' => auth()->user()->id,
                 'receiver_id' => $request->receiver_id,
-                'message' => $request->message,
+                'message' => $filteredMessage,
                 'chat_code' => $code,
             ]);
 
             return response()->json(['code' => 1, 'success' => 'Messages sent successfully'], 200);
         } catch (\Throwable$th) {
-             return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
 
     }
@@ -64,7 +67,7 @@ class ChatsController extends Controller
 
             return response()->json(['code' => 1, 'data' => $messages]);
         } catch (\Throwable$th) {
-             return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
             return response()->json(['code' => 3, 'error' => 'Something went wrong'], 500);
         }
 
@@ -124,5 +127,30 @@ class ChatsController extends Controller
         } catch (Throwable $th) {
             return response()->json(['code' => 3, 'error' => 'Something went wrong'], 500);
         }
+    }
+
+    private function filter($text, $senderId)
+    {
+
+        $badWords = BadWords::get();
+
+        $list = [];
+        #loop through the array extract
+        #get the words and map them to an array
+        foreach ($badWords as $key) {
+            $list[] = $key['word'];
+        }
+
+        #filter the words
+
+        $filteredText = $text;
+        foreach ($list as $badWord) {
+            $filteredText = str_replace($badWord, \str_repeat('*', strlen($badWord)), $filteredText);
+        }
+
+        #
+
+        return $filteredText;
+
     }
 }

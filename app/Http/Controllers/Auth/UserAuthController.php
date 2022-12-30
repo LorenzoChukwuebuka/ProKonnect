@@ -334,12 +334,7 @@ class UserAuthController extends Controller
         try {
             $user = User::find(Auth::user()->id);
 
-            // if ($request->hasFile('profile_image')) {
-            //     $profile_image = $request->profile_image->store('user_profile_images', 'public');
-            // }
-
             $user->full_name = $request->full_name ?? $user->full_name;
-            $user->email = $request->full_name ?? $user->full_name;
             $user->bio = $request->bio ?? $user->bio;
             $user->university_id = $request->university_id ?? $user->university_id;
             $user->country_id = $request->country_id ?? $user->country_id;
@@ -351,15 +346,6 @@ class UserAuthController extends Controller
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
 
-    }
-
-    public function update_bio()
-    {
-        try {
-            $user = auth()->user();
-        } catch (\Throwable$th) {
-            //throw $th;
-        }
     }
 
     public function update_profile_image(Request $request)

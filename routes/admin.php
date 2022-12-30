@@ -1,10 +1,12 @@
 <?php
-use App\Http\Controllers\Admin\InterestsController;
-use App\Http\Controllers\Admin\PlanController;
-use App\Http\Controllers\Admin\ServicesController;
-use App\Http\Controllers\Admin\SpecializationController;
-use App\Http\Controllers\Auth\AdminAuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BadWordsController;
+use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\Admin\ServicesController;
+use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Controllers\Admin\InterestsController;
+use App\Http\Controllers\Admin\SpecializationController;
 
 Route::prefix('admin_restricted')->group(function () {
     Route::post('login', [AdminAuthController::class, 'login']);
@@ -32,5 +34,12 @@ Route::prefix('admin_restricted')->group(function () {
         Route::get('/get_specialization', [SpecializationController::class, 'findAll']);
         Route::put('/edit_specialization/{id}', [SpecializationController::class, 'update']);
         Route::delete('/delete_specialization/{id}', [SpecializationController::class, 'delete']);
+
+        #bad words
+
+        Route::post('/create_bad_word', [BadWordsController::class, 'create_bad_words']);
+        Route::get('/get_all_words', [BadWordsController::class, 'get_all_bad_words']);
+
+        Route::get('/get_university',[UniversityController::class,'get_all_university']);
     });
 });

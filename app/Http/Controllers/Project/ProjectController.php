@@ -42,7 +42,7 @@ class ProjectController extends Controller
             return \response(["code" => 1, "message" => "created project successfully"]);
 
         } catch (\Throwable$th) {
-           return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -92,7 +92,7 @@ class ProjectController extends Controller
             return response(["code" => 1, "message" => "project updated successfully"]);
 
         } catch (\Throwable$th) {
-           return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -103,7 +103,7 @@ class ProjectController extends Controller
 
             return response(["code" => 1, "message" => "Project deleted successfully"]);
         } catch (\Throwable$th) {
-           return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -119,7 +119,7 @@ class ProjectController extends Controller
             return response(["code" => 1, "status updated"]);
 
         } catch (\Throwable$th) {
-           return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -128,13 +128,27 @@ class ProjectController extends Controller
     public function find_proguides_by_user_interests()
     {
         try {
+              
+            $userinterests = auth()->user()->userinterests()->latest()->get();
 
-            $interests = auth()->user()->userinterests()->latest()->get();
+            foreach ($userinterests as $key) {
 
-            $proguides;
+                $proguides = User::with('userinterests')->where('user_type', 'proguide')->get();
+
+                if (count($proguides)) {
+                    foreach ($proguides as $proguide) {
+                        foreach ($proguide['userinterests'] as $Pinterest) {
+                            if ($Pinterest === $key) {
+                                return $Pinterest;
+                            }
+                        }
+                    }
+                }
+
+            }
 
         } catch (\Throwable$th) {
-           return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 }

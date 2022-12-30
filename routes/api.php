@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatsController;
+use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\BankDetailsController;
 use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\Admin\ServicesController;
@@ -44,6 +45,7 @@ Route::get('/get_specialization',[SpecializationController::class,'findAll']);
 Route::get('/get_qualification',[QualificationsController::class,'findAll']);
 Route::get('/get_services',[ServicesController::class,'get_all_services']);
 Route::get('/get_interests',[InterestsController::class,'findAll']);
+Route::get('/get_university',[UniversityController::class,'get_all_university']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
