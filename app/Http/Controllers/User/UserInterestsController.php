@@ -102,4 +102,7 @@ class UserInterestsController extends Controller
         }
     }
 
+
+    
+
 }

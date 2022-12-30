@@ -339,6 +339,8 @@ class UserAuthController extends Controller
             $user->university_id = $request->university_id ?? $user->university_id;
             $user->country_id = $request->country_id ?? $user->country_id;
 
+            $this->edit_user_qualification($request->data);
+
             $user->save();
 
             return response(["code" => 1, "message" => "Credentials updated"]);
@@ -389,6 +391,37 @@ class UserAuthController extends Controller
     private function generateRandom(int $length)
     {
         return substr(str_shuffle(str_repeat($x = '0123456789', ceil($length / strlen($x)))), 1, $length);
+    }
+
+    private function edit_user_qualification($request)
+    {
+        try {
+            #delete all interests where the id matches the user id
+
+            $qualifications = auth()->user()->userqualification()->latest()->get();
+
+            foreach ($qualifications as $qualification) {
+                $qualification->delete();
+            }
+
+            $len = count($request->data);
+
+            $data = $request->data;
+
+            $i = 0;
+
+            for ($i; $i < $len; $i++) {
+                UserQualification::create([
+                    "user_id" => auth()->user()->id,
+                    "qualification_id" => $data[$i]["qualification"],
+                ]);
+            }
+
+            return response(["code" => 1, "message" => "updated successfully"]);
+
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
     }
 
 }

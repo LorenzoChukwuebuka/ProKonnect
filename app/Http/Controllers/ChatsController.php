@@ -23,7 +23,7 @@ class ChatsController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
-            $filteredMessage = $this->filter($request->message, auth()->user()->id);
+          return   $filteredMessage = $this->filter($request->message, auth()->user()->id);
 
             if (auth()->user()->id > $request->receiver_id) {
                 $code = auth()->user()->id . "" . $request->receiver_id;
@@ -148,7 +148,8 @@ class ChatsController extends Controller
             $filteredText = str_replace($badWord, \str_repeat('*', strlen($badWord)), $filteredText);
         }
 
-        #
+
+        
 
         return $filteredText;
 
