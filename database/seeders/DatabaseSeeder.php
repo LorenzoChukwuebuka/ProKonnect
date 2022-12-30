@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Interests;
+use App\Models\University;
 use App\Models\Qualifications;
+use App\Models\Specialization;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -25,6 +27,9 @@ class DatabaseSeeder extends Seeder
 
         Interests::factory(10)->create();
         Qualifications::factory(10)->create();
+        Specialization::factory(10)->create();
+        University::factory(10)->create();
+
 
     }
 }
