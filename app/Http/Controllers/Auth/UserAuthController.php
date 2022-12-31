@@ -37,8 +37,7 @@ class UserAuthController extends Controller
                 'referal_code' => [],
             ]);
 
-            return $request->all();
-
+        
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], 401);
             }
@@ -55,7 +54,7 @@ class UserAuthController extends Controller
             $userCreate = User::create([
                 'full_name' => $request->full_name,
                 'email' => $request->email,
-                'country_id' => $request->country_id,
+                'country_id' => (int) $request->country_id,
                 'user_type' => $request->user_type,
                 'university_id' => $request->university_id,
                 'password' => Hash::make($request->password) ?? null,
