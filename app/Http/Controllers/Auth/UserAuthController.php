@@ -41,7 +41,9 @@ class UserAuthController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
-            //handles the profile image
+
+
+            #handles the profile image
             if ($request->hasFile('profile_image')) {
                 $validate = Validator::make($request->all(), ['profile_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
                 if ($validate->fails()) {
@@ -53,7 +55,7 @@ class UserAuthController extends Controller
             $userCreate = User::create([
                 'full_name' => $request->full_name,
                 'email' => $request->email,
-                'country_id' => (int) $request->country_id,
+                'country_id' => $request->country,
                 'user_type' => $request->user_type,
                 'university_id' => $request->university_id,
                 'password' => Hash::make($request->password) ?? null,
