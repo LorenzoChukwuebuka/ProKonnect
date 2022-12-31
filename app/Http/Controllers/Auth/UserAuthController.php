@@ -37,6 +37,8 @@ class UserAuthController extends Controller
                 'referal_code' => [],
             ]);
 
+            return $request->all();
+
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], 401);
             }
