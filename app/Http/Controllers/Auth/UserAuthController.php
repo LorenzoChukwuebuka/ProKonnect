@@ -212,11 +212,13 @@ class UserAuthController extends Controller
                 if ($user) {
                     $status = 200;
 
+                    $country = Country::where('id', auth()->user()->country_id)->first();
                     $response = [
                         'type' => 'user',
                         // 'user_auth_type' => ($user->password != null) ? 'main' : 'google',
                         'user' => auth()->user(),
-                        'country' => Country::where('id', auth()->user()->country_id)->first(),
+                        'country' => $country
+                        ,
                         'token' => auth()->user()->createToken('auth_token')->plainTextToken,
 
                     ];
