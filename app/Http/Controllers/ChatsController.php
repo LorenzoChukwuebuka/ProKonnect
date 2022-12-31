@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\MessageResource;
-use App\Models\BadWords;
-use App\Models\Chats;
-use Illuminate\Http\Request;
 use Validator;
+use App\Models\User;
+use App\Models\Chats;
+use App\Models\BadWords;
+use Illuminate\Http\Request;
+use App\Http\Resources\MessageResource;
 
 class ChatsController extends Controller
 {
@@ -23,7 +24,7 @@ class ChatsController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
-            return $filteredMessage = $this->filter($request->message, auth()->user()->id);
+            $filteredMessage = $this->filter($request->message, auth()->user()->id);
 
             if (auth()->user()->id > $request->receiver_id) {
                 $code = auth()->user()->id . "" . $request->receiver_id;
@@ -146,6 +147,25 @@ class ChatsController extends Controller
         $filteredText = $text;
         foreach ($list as $badWord) {
             $filteredText = str_replace($badWord, \str_repeat('*', strlen($badWord)), $filteredText);
+
+            if (stripos($text, $badWord) !== false) {
+                #check if user has been flagged for more than 3 times
+
+                $user = User::find($senderId);
+
+                if ($user->bad_word_count != 3) {
+                    $user->bad_word_count++;
+
+                    $user->save();
+                }
+
+                if ($user->bad_word_count === 3) {
+                    $user->status = "blocked";
+
+                    $user->save();
+                }
+            }
+
         }
 
         return $filteredText;

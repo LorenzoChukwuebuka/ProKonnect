@@ -41,8 +41,6 @@ class UserAuthController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
-
-
             #handles the profile image
             if ($request->hasFile('profile_image')) {
                 $validate = Validator::make($request->all(), ['profile_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
@@ -208,6 +206,15 @@ class UserAuthController extends Controller
                 return response()->json(["code" => 3, "error" => "Invalid email or passsword"], 401);
             }
 
+            #for blocked users
+
+            $blockedUsers = User::where('email', $request['email'])->where('status', 'blocked')->first();
+
+            if ($blockedUsers) {
+                return response(["code" => 3, "message" => "Your account has been temporarily blocked by the admin. Contact support for help"]);
+            }
+
+            # for active users
             $user = User::where('email', $request['email'])->where('status', 'active')->first();
 
             if ($user) {
