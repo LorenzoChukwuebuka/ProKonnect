@@ -52,6 +52,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
     Route::post('/change_user_password', [UserAuthController::class, 'user_change_password']);
 
+    #get bio
+    Route::get('/get_bio',[UserAuthController::class,'get_bio']);
+
     #project api
 
     Route::post('/create_project', [ProjectController::class, 'create_project']);
@@ -93,6 +96,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/create_bank_details', [BankDetailsController::class, 'create_bank_details']);
     Route::get('/get_bank_details', [BankDetailsController::class, 'get_bank_details']);
     Route::get('/get_user_bank_details', [BankDetailsController::class, 'get_bank_details_for_a_particular_user']);
+
+
+
 
     #withdrawal request
 

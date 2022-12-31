@@ -37,7 +37,6 @@ class UserAuthController extends Controller
                 'referal_code' => [],
             ]);
 
-        
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], 401);
             }
@@ -394,6 +393,15 @@ class UserAuthController extends Controller
 
         return response(["code" => 1, "message" => "created referal code successfull"]);
 
+    }
+
+    public function get_bio()
+    {
+        try {
+            return response(["code" => 1, "data" => auth()->user()->bio ?? "No record found"]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
     }
 
     private function generateRandom(int $length)
