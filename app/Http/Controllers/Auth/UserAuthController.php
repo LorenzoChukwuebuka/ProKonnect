@@ -62,6 +62,20 @@ class UserAuthController extends Controller
 
             ]);
 
+            #create qualification
+
+            if ($request->qualification != null) {
+                $qualification = json_decode($request->qualification);
+
+                foreach ($qualification as $key => $value) {
+                    UserQualification::create([
+                        "user_id" => $userCreate->id,
+                        "qualification_id" => $value,
+                    ]);
+                }
+
+            }
+
             #create interest
             if ($request->interest != null) {
 
@@ -354,10 +368,11 @@ class UserAuthController extends Controller
             $user->university_id = $request->university_id ?? $user->university_id;
             $user->country_id = $request->country_id ?? $user->country_id;
             $user->phone_number = $request->phone_number ?? $user->phone_number;
-
-            $this->edit_user_qualification($request->data);
-
             $user->save();
+
+            if ($request->data) {
+                $this->edit_user_qualification($request->data);
+            }
 
             return response(["code" => 1, "message" => "Credentials updated"]);
         } catch (\Throwable$th) {

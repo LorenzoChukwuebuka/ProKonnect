@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Validator;
-use App\Models\User;
-use App\Models\Chats;
-use App\Models\BadWords;
-use Illuminate\Http\Request;
 use App\Http\Resources\MessageResource;
+use App\Models\BadWords;
+use App\Models\Chats;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Validator;
 
 class ChatsController extends Controller
 {
@@ -158,6 +158,9 @@ class ChatsController extends Controller
 
                     $user->save();
                 }
+
+                #if they have been flagged for more than 3x
+                #update their status to blocked
 
                 if ($user->bad_word_count === 3) {
                     $user->status = "blocked";

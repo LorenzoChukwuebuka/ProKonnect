@@ -56,10 +56,10 @@ class WithdrawalRequestController extends Controller
             $withdrawal->status = "cancelled" ?? $withdrawal->status;
             $withdrawal->save();
 
-            \response(["code"=>1,"message"=>"withdrawal cancelled"]);
+            \response(["code" => 1, "message" => "withdrawal cancelled"]);
 
         } catch (\Throwable$th) {
-            //throw $th;
+            return response(["code" => "3", "error" => $th->getMessage()]);
         }
     }
 }

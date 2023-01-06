@@ -34,6 +34,23 @@ class UniversityController extends Controller
             if (count($university) == 0) {
                 return response(["code" => 3, "message" => "no record found"]);
             }
+
+            return response(["code" => 1, "data" => $university]);
+        } catch (\Throwable$th) {
+            return response(["code" => "3", "error" => $th->getMessage()]);
+        }
+    }
+
+    public function edit_university(Request $request, $id)
+    {
+        try {
+            $university = University::find($id);
+
+            $university->university = $request->university ?? $university->university;
+
+            $university->save();
+
+            return response(["code" => 1, "message" => "university updated successfully"]);
         } catch (\Throwable$th) {
             return response(["code" => "3", "error" => $th->getMessage()]);
         }

@@ -1,20 +1,21 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ChatsController;
-use App\Http\Controllers\UniversityController;
-use App\Http\Controllers\BankDetailsController;
-use App\Http\Controllers\Auth\UserAuthController;
-use App\Http\Controllers\Admin\ServicesController;
 use App\Http\Controllers\Admin\InterestsController;
-use App\Http\Controllers\Project\ProjectController;
-use App\Http\Controllers\User\UserInterestsController;
-use App\Http\Controllers\User\fetchCountriesController;
 use App\Http\Controllers\Admin\QualificationsController;
+use App\Http\Controllers\Admin\ServicesController;
 use App\Http\Controllers\Admin\SpecializationController;
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\BankDetailsController;
+use App\Http\Controllers\ChatsController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\User\fetchCountriesController;
+use App\Http\Controllers\User\UserInterestsController;
 use App\Http\Controllers\User\UserQualificationController;
 use App\Http\Controllers\User\UserSpecializationController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,11 +42,11 @@ Route::post('/user_reset_password', [UserAuthController::class, 'user_reset_pass
 Route::post('/create_user_password', [UserAuthController::class, 'create_user_password']);
 Route::get('/get_countries', [fetchCountriesController::class, 'getAllCountries']);
 Route::get('/get_states/{id}', [fetchCountriesController::class, 'getStatesWithCountry']);
-Route::get('/get_specialization',[SpecializationController::class,'findAll']);
-Route::get('/get_qualification',[QualificationsController::class,'findAll']);
-Route::get('/get_services',[ServicesController::class,'get_all_services']);
-Route::get('/get_interests',[InterestsController::class,'findAll']);
-Route::get('/get_university',[UniversityController::class,'get_all_university']);
+Route::get('/get_specialization', [SpecializationController::class, 'findAll']);
+Route::get('/get_qualification', [QualificationsController::class, 'findAll']);
+Route::get('/get_services', [ServicesController::class, 'get_all_services']);
+Route::get('/get_interests', [InterestsController::class, 'findAll']);
+Route::get('/get_university', [UniversityController::class, 'get_all_university']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
@@ -53,7 +54,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/change_user_password', [UserAuthController::class, 'user_change_password']);
 
     #get bio
-    Route::get('/get_bio',[UserAuthController::class,'get_bio']);
+    Route::get('/get_bio', [UserAuthController::class, 'get_bio']);
 
     #project api
 
@@ -97,8 +98,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/get_bank_details', [BankDetailsController::class, 'get_bank_details']);
     Route::get('/get_user_bank_details', [BankDetailsController::class, 'get_bank_details_for_a_particular_user']);
 
-
-
+    #group
+    Route::post('/create_group', [GroupController::class, 'create_group']);
+    Route::get('/get_user_created_groups', [GroupController::class, 'get_all_groups_created_by_a_particular_user']);
+    Route::get('/get_single_group_created_by_user/{id}', [GroupController::class, 'get_a_particular_group_for_a_user']);
+    Route::get('/get_users_to_add_to_group',[GroupController::class,'users_with_similar_interests']);
+    Route::post('/add_users_to_group',[GroupController::class,'add_users']);
+    Route::delete('/delete_group/{id}',[GroupController::class,'delete_group']);
 
     #withdrawal request
 

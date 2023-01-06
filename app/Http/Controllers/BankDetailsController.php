@@ -16,7 +16,7 @@ class BankDetailsController extends Controller
                 "bank_name" => "required",
                 "account_name" => "required",
                 "mri_code" => [],
-                "account_number" => "required|min:10",
+                "account_number" => "required|min:7",
                 "account_type" => "required",
             ]);
 
@@ -42,10 +42,17 @@ class BankDetailsController extends Controller
         }
     }
 
+    /**
+     * this function is used to retrieve all
+     * bank details for admin
+     *
+     * @return BankDetails
+     * @throws Exception
+     */
     public function get_bank_details()
     {
         try {
-            $bank_details = BankDetails::with('user')->paginate(20);
+            $bank_details = BankDetails::with('user')->get();
             if ($bank_details->count() == 0) {
                 return response(["code" => 3, "message"]);
             }
