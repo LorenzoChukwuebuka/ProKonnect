@@ -23,4 +23,8 @@ class Group extends Model
         return $this->hasMany(UserGroup::class);
     }
 
+    public function group_messages(){
+        return $this->hasMany(GroupMessages::class);
+    }
+
 }

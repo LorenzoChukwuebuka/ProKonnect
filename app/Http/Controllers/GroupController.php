@@ -212,6 +212,8 @@ class GroupController extends Controller
 
     public function get_user_groups()
     {
+
+        
         try {
             $userGroups = UserGroup::with(['group' => function ($query) {
                 $query->with('user');

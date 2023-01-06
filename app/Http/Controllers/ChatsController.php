@@ -26,6 +26,16 @@ class ChatsController extends Controller
 
             $filteredMessage = $this->filter($request->message, auth()->user()->id);
 
+            if ($request->hasFile('chat_file')) {
+                $validate = Validator::make($request->all(), [
+                    'file' => 'mimes:jpeg,png,jpg,gif,svg,pdf,docx|max:10000',
+                ]);
+                if ($validate->fails()) {
+                    return response()->json(["code" => 3, 'error' => $validate->errors()->first()]);
+                }
+                $files = $request->chat_file->store('chat_files', 'public');
+            }
+
             if (auth()->user()->id > $request->receiver_id) {
                 $code = auth()->user()->id . "" . $request->receiver_id;
             } else {
@@ -37,6 +47,7 @@ class ChatsController extends Controller
                 'sender_id' => auth()->user()->id,
                 'receiver_id' => $request->receiver_id,
                 'message' => $filteredMessage,
+                'files' => $files ?? null,
                 'chat_code' => $code,
             ]);
 

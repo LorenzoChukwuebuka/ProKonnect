@@ -7,6 +7,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\BankDetailsController;
 use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\GroupMessagesController;
 use App\Http\Controllers\Admin\ServicesController;
 use App\Http\Controllers\Admin\InterestsController;
 use App\Http\Controllers\Project\ProjectController;
@@ -117,9 +118,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/view_withdrawal_request', [WithdrawalRequestController::class, 'view_withdrawal_requests']);
     Route::put('/cancel_withdrawal_request/{id}', [WithdrawalRequestController::class, 'cancel_withdrawal_request']);
 
-    //to be removed after testing
+    #group chat
 
-    Route::put('/approve_withdrawal/{id}',[WithdrawalRequestController::class,'approve_withdrawal']);
+    Route::post('/send_group_chat', [GroupMessagesController::class, 'create_group_messages']);
+    Route::get('/get_last_group_message',[GroupMessagesController::class,'get_last_messages_in_a_group']);
+    Route::get('/get_all_group_messages/{id}',[GroupMessagesController::class,'get_group_messages']);
 
 });
 
