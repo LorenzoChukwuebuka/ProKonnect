@@ -10,7 +10,7 @@ class Wallet extends Model
 {
     use HasFactory;
 
-    protected $gurarded = [];
+    protected $fillable = ['available_balance'];
 
     public function user()
     {

@@ -11,7 +11,7 @@ class WithdrawalRequest extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $gurarded = [];
+    protected $fillable = ['user_id','amount'];
 
     public function user()
     {

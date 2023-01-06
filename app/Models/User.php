@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\Wallet;
 use App\Models\Project;
 use App\Models\Referal;
+use App\Models\UserGroup;
 use App\Models\UserInterests;
 use App\Models\WithdrawalRequest;
 use Laravel\Sanctum\HasApiTokens;
@@ -96,6 +97,11 @@ class User extends Authenticatable
     public function group()
     {
         return $this->hasMany(Group::class);
+    }
+
+    public function user_group()
+    {
+        return $this->hasMany(UserGroup::class);
     }
 
 }

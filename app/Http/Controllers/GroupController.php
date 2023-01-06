@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Validator;
 use App\Models\Group;
+use App\Models\User;
 use App\Models\UserGroup;
 use Illuminate\Http\Request;
+use Validator;
 
 class GroupController extends Controller
 {
@@ -74,11 +75,20 @@ class GroupController extends Controller
                 return response()->json(["code" => 3, 'error' => $validator->errors()], 401);
             }
 
-
             $add_users = UserGroup::create([
-                "group_id"=>$request->group_id,
-                "user_id"=>$request->user_id
+                "group_id" => $request->group_id,
+                "user_id" => $request->user_id,
             ]);
+
+            #update the group member count
+
+            $group = Group::find($request->group_id);
+
+            $group->number_of_participants++;
+
+            $group->save();
+
+            return response(["code" => 1, "message" => "user add to group successfully"]);
 
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
@@ -135,13 +145,86 @@ class GroupController extends Controller
         }
     }
 
-    public function edit_group(Request $request)
+    public function edit_group(Request $request, $id)
     {
+        try {
+            $group = Group::find($id);
 
+            $group->group_name = $request->group_name ?? $group->group_name;
+            $group->group_description = $request->group_description ?? $group->group_description;
+
+            $group->save();
+
+            return response(["code" => 1, "message" => "update successfully"]);
+
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
     }
 
-    public function delete_users_from_group()
+    public function delete_users_from_group($user_id, $group_id)
     {
+        try {
+            $usergroup = UserGroup::where('user_id', $user_id)->where('group_id', $group_id)->delete();
 
+            $group = Group::find($group_id);
+
+            $group->number_of_participants--;
+
+            $group->save();
+            return response(["code" => 1, "message" => "user deleted from group successfully"]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function change_group_status($id)
+    {
+        try {
+            $group = Group::find($id);
+
+            ($group->status == 'active') ? $group->status = 'inactive' : $group->status = 'inactive';
+
+            $group->save();
+
+            return response(["code" => 1, "message" => "status changed successfully"]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function get_groups_with_users()
+    {
+        try {
+            $group = Group::with(['user_group' => function ($query) {
+                $query->with('user');
+            }])->where('user_id', auth()->user()->id)->get();
+
+            if ($group->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+
+            return response(["code" => 1, "data" => $group]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function get_user_groups()
+    {
+        try {
+            $userGroups = UserGroup::with(['group' => function ($query) {
+                $query->with('user');
+            }])->where('user_id', auth()->user()->id)->latest()->get();
+
+            if ($userGroups->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+
+            return response(["code" => 1, "data" => $userGroups]);
+
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
     }
 }

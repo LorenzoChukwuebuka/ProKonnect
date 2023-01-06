@@ -1,21 +1,22 @@
 <?php
 
-use App\Http\Controllers\Admin\InterestsController;
-use App\Http\Controllers\Admin\QualificationsController;
-use App\Http\Controllers\Admin\ServicesController;
-use App\Http\Controllers\Admin\SpecializationController;
-use App\Http\Controllers\Auth\UserAuthController;
-use App\Http\Controllers\BankDetailsController;
-use App\Http\Controllers\ChatsController;
-use App\Http\Controllers\GroupController;
-use App\Http\Controllers\Project\ProjectController;
-use App\Http\Controllers\UniversityController;
-use App\Http\Controllers\User\fetchCountriesController;
-use App\Http\Controllers\User\UserInterestsController;
-use App\Http\Controllers\User\UserQualificationController;
-use App\Http\Controllers\User\UserSpecializationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatsController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\BankDetailsController;
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\Admin\ServicesController;
+use App\Http\Controllers\Admin\InterestsController;
+use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\User\UserInterestsController;
+use App\Http\Controllers\User\fetchCountriesController;
+use App\Http\Controllers\Admin\QualificationsController;
+use App\Http\Controllers\Admin\SpecializationController;
+use App\Http\Controllers\User\UserQualificationController;
+use App\Http\Controllers\User\UserSpecializationController;
+use App\Http\Controllers\Transaction\WithdrawalRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -102,11 +103,23 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/create_group', [GroupController::class, 'create_group']);
     Route::get('/get_user_created_groups', [GroupController::class, 'get_all_groups_created_by_a_particular_user']);
     Route::get('/get_single_group_created_by_user/{id}', [GroupController::class, 'get_a_particular_group_for_a_user']);
-    Route::get('/get_users_to_add_to_group',[GroupController::class,'users_with_similar_interests']);
-    Route::post('/add_users_to_group',[GroupController::class,'add_users']);
-    Route::delete('/delete_group/{id}',[GroupController::class,'delete_group']);
+    Route::get('/get_users_to_add_to_group', [GroupController::class, 'users_with_similar_interests']);
+    Route::post('/add_user_to_group', [GroupController::class, 'add_users']);
+    Route::delete('/delete_group/{id}', [GroupController::class, 'delete_group']);
+    Route::delete('/delete_users_from_group/{user_id}/{group_id}', [GroupController::class, 'delete_users_from_group']);
+    Route::put('/change_group_status/{id}', [GroupController::class, 'change_group_status']);
+    Route::get('/get_groups_with_users', [GroupController::class, 'get_groups_with_users']);
+    Route::get('/get_user_group', [GroupController::class, 'get_user_groups']);
 
     #withdrawal request
+
+    Route::post('/create_withdrawal_request', [WithdrawalRequestController::class, 'create_withdrawal_request']);
+    Route::get('/view_withdrawal_request', [WithdrawalRequestController::class, 'view_withdrawal_requests']);
+    Route::put('/cancel_withdrawal_request/{id}', [WithdrawalRequestController::class, 'cancel_withdrawal_request']);
+
+    //to be removed after testing
+
+    Route::put('/approve_withdrawal/{id}',[WithdrawalRequestController::class,'approve_withdrawal']);
 
 });
 
