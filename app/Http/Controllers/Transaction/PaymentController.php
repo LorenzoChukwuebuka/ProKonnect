@@ -71,7 +71,15 @@ class PaymentController extends Controller
 
             $planDuration = Plan::find($plan_id)->duration;
 
+            $refPercent = config('paystack.referal_percentage');
+
+            $referalPercentage = $this->percentage($refPercent, $amount);
+
             #referal
+
+            $referalEarnings = $amount - $referalPercentage;
+
+            $referal = $this->referal_check($user_id, $referalEarnings, $payment_id);
 
             #create payment
 
@@ -79,7 +87,7 @@ class PaymentController extends Controller
                 "payer_id" => $user_id,
                 "proguide_id" => $proguide_id,
                 "plan_id" => $plan_id,
-                "amount_paid" => $amount,
+                "amount_paid" => ($referal == false) ? $amount : $referalEarnings,
                 "payer_email" => $payer_email,
                 "payer_fullname" => $payer_fullname,
                 "duration" => $planDuration,
@@ -102,7 +110,7 @@ class PaymentController extends Controller
 
     }
 
-    private function referal_check(int $user_id, int | float $amount_payable)
+    private function referal_check(int $user_id, int | float $amount_payable, int $payment_id)
     {
 
         $check_if_referred = Referal::where('referee_id', $user_id)->first();
@@ -116,22 +124,25 @@ class PaymentController extends Controller
         if ($ref_transactions_check == null) {
             return false;
         }
-
-        #get the referee from the referals
-         
-
-
-
         #create referal_transactions
 
-
-
         $ref_transactions = Referal_transaction::create([
-
+            "referred_by" => $user_id,
+            "user_referred" => $check_if_referred->referee_id,
+            "payment_id" => $payment_id,
+            "amount_earned" => $amount_payable,
         ]);
 
+        if (!$ref_transactions) {
+            return false;
+        }
 
-        return true;
+        return $ref_transactions;
 
+    }
+
+    private function percentage(int $firstNumb, int $secondNumb)
+    {
+        return ($firstNumb / 100) * $secondNumb;
     }
 }
