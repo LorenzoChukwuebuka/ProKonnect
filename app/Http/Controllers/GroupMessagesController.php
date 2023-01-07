@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\MessageResource;
+use App\Models\BadWords;
 use App\Models\GroupMessage;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -32,11 +34,12 @@ class GroupMessagesController extends Controller
                 }
                 $files = $request->file->store('group_messages_files', 'public');
             }
+            $filteredText = $this->filter($request->message, $request->user_id);
 
             $createMessage = GroupMessage::create([
                 "user_id" => auth()->user()->id,
                 "group_id" => $request->group_id,
-                "message" => $request->message,
+                "message" => $filteredText,
                 "files" => $file ?? null,
                 "chat_code" => auth()->user()->id . "" . $request->group_id,
             ]);
@@ -83,5 +86,50 @@ class GroupMessagesController extends Controller
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
+    }
+
+    private function filter($text, $senderId)
+    {
+
+        $badWords = BadWords::get();
+
+        $list = [];
+        #loop through the array extract
+        #get the words and map them to an array
+        foreach ($badWords as $key) {
+            $list[] = $key['word'];
+        }
+
+        #filter the words
+
+        $filteredText = $text;
+        foreach ($list as $badWord) {
+            $filteredText = str_replace($badWord, \str_repeat('*', strlen($badWord)), $filteredText);
+
+            if (stripos($text, $badWord) !== false) {
+                #check if user has been flagged for more than 3 times
+
+                $user = User::find($senderId);
+
+                if ($user->bad_word_count != 3) {
+                    $user->bad_word_count++;
+
+                    $user->save();
+                }
+
+                #if they have been flagged for more than 3x
+                #update their status to blocked
+
+                if ($user->bad_word_count === 3) {
+                    $user->status = "blocked";
+
+                    $user->save();
+                }
+            }
+
+        }
+
+        return $filteredText;
+
     }
 }

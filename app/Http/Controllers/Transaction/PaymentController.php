@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\Controller;
+use App\Models\Payment;
 use App\Models\Referal;
 use App\Models\Referal_transaction;
+use DB;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -39,7 +41,7 @@ class PaymentController extends Controller
             return response(["code" => 3, "error" => "cURL Error :" . $err]);
         }
 
-        $result = json_decode($response);
+        return $result = json_decode($response);
 
         if ($result->data->status !== 'success') {
             throw new \Exception("Transaction failed");
@@ -48,14 +50,53 @@ class PaymentController extends Controller
         #pull details from the result object
         $amount = $result->data->amount / 100;
         $plan_id = $result->data->metadata->plan_id;
-        $user_id = auth()->user()->id;
+        $user_id = $result->data->metadata->id;
         $proguide_id = $result->data->metadata->proguide_id;
-        $payer_email = $result->data->metadata->payer_email;
-        $payer_fullname = $result->data->metadata->payer_full_name;
+        $payer_email = $result->data->metadata->payer_email ?? null;
+        $payer_fullname = $result->data->metadata->payer_full_name ?? null;
+
+        #check if transaction reference already exists
+
+        $checkRefernce = Payment::where('reference', $reference)->first();
+
+        if ($checkRefernce != null) {
+            return response(["code" => 1, "message" => "possible duplicate transaction"]);
+        }
 
         #start database transaction
 
-        DB::transaction(function () {
+        DB::transaction(function () use ($reference, $amount, $plan_id, $user_id, $proguide_id, $payer_email, $payer_fullname) {
+
+            #pull the duration from the plan_id
+
+            $planDuration = Plan::find($plan_id)->duration;
+
+            #referal
+
+            #create payment
+
+            $payment = Payment::create([
+                "payer_id" => $user_id,
+                "proguide_id" => $proguide_id,
+                "plan_id" => $plan_id,
+                "amount_paid" => $amount,
+                "payer_email" => $payer_email,
+                "payer_fullname" => $payer_fullname,
+                "duration" => $planDuration,
+            ]);
+
+            if ($payment) {
+                #check the balance of the proguide
+
+                $previous_balance = DB::select('SELECT ifnull((select available_balance from wallets where user_id = ?  order by id desc limit 1), 0 ) AS prevbal', [$proguide_id]);
+
+                #fund proguide's wallet
+
+                $wallet = Wallet::updateOrCreate(['user_id' => $proguide_id],
+                    [
+                        "available_balance" => $amount + $previous_balance[0]->prevbal,
+                    ]);
+            }
 
         });
 
@@ -76,14 +117,21 @@ class PaymentController extends Controller
             return false;
         }
 
+        #get the referee from the referals
+         
+
+
+
         #create referal_transactions
 
-        #credit the proguides wallet
 
-        #send mail to proguide notifiying them
-        # of a credit transaction to their wallet
 
-        return "hello world";
+        $ref_transactions = Referal_transaction::create([
+
+        ]);
+
+
+        return true;
 
     }
 }
