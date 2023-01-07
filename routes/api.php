@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ServicesController;
 use App\Http\Controllers\Admin\InterestsController;
 use App\Http\Controllers\Project\ProjectController;
 use App\Http\Controllers\User\UserInterestsController;
+use App\Http\Controllers\Transaction\PaymentController;
 use App\Http\Controllers\User\fetchCountriesController;
 use App\Http\Controllers\Admin\QualificationsController;
 use App\Http\Controllers\Admin\SpecializationController;
@@ -121,8 +122,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     #group chat
 
     Route::post('/send_group_chat', [GroupMessagesController::class, 'create_group_messages']);
-    Route::get('/get_last_group_message',[GroupMessagesController::class,'get_last_messages_in_a_group']);
-    Route::get('/get_all_group_messages/{id}',[GroupMessagesController::class,'get_group_messages']);
+    Route::get('/get_last_group_message', [GroupMessagesController::class, 'get_last_messages_in_a_group']);
+    Route::get('/get_all_group_messages/{id}', [GroupMessagesController::class, 'get_group_messages']);
+
+    #confirm payment
+
+    Route::get('/confirm_payment/{reference}', [PaymentController::class, 'confirm_payment']);
 
 });
 
