@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Custom\MailMessages;
 use App\Http\Controllers\Controller;
 use App\Models\OTPToken;
+use App\Models\Payment;
 use App\Models\Referal;
+use App\Models\Socials;
 use App\Models\User;
 use App\Models\UserInterests;
 use App\Models\UserQualification;
@@ -232,18 +234,31 @@ class UserAuthController extends Controller
             # for active users
             $user = User::where('email', $request['email'])->where('status', 'active')->first();
 
+            //   return   $user->created_at->isPast();
+
             if ($user) {
                 if ($user) {
                     $status = 200;
 
+                    #check if payment has exceeded the time duration
+
+                    $payment = Payment::where('payer_id', auth()->user()->id)->latest()->first();
+
+                    if ($payment == null) {
+                        goto auth;
+                    }
+
+                    $checkExpiry = Carbon::now()->gt($payment->expiry_date);
+
+                    auth:
                     $country = Country::where('id', auth()->user()->country_id)->first();
                     $response = [
                         'type' => 'user',
                         // 'user_auth_type' => ($user->password != null) ? 'main' : 'google',
                         'user' => auth()->user(),
-                        'country' => $country
-                        ,
+                        'country' => $country,
                         'token' => auth()->user()->createToken('auth_token')->plainTextToken,
+                        'access' => ($checkExpiry) == true ? "Access denied " : "Access granted",
 
                     ];
                     return response()->json($response, $status);
@@ -469,6 +484,61 @@ class UserAuthController extends Controller
     {
         try {
             return response(["code" => 1, "data" => auth()->user()]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function add_socials(Request $reques)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+
+                "social" => "required",
+                "link" => "required",
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(["code" => 3, 'error' => $validator->errors()], 401);
+            }
+
+            $socials = Socials::create([
+                "user_id" => auth()->user()->id,
+                "social" => $request->social,
+                "link" => $request->link,
+            ]);
+
+            return response(["code" => 1, "message" => "socials created successfully"]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function get_socials()
+    {
+        try {
+            $socials = auth()->user()->socials()->latest()->get();
+
+            if ($socials->count() == 0) {
+                return response(["code" => 1, "message" => "No record found"]);
+            }
+
+            return response(["code" => 1, "data" => $socials]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function edit_socials(Request $request, $id)
+    {
+        try {
+            $socials = Socials::find($id);
+
+            $socials->link = $request->link ?? $socials->link;
+            $socials->social = $request->social ?? $social->social;
+
+            $socials->save();
+            return response(["code" => 1, "message" => "socials updated successfully"]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }

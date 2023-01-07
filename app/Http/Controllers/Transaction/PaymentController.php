@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Transaction;
 
-use DB;
-use Validator;
-use App\Models\Plan;
-use App\Models\Wallet;
-use App\Models\Payment;
-use App\Models\Referal;
-use Illuminate\Http\Request;
-use App\Models\Referal_transaction;
 use App\Http\Controllers\Controller;
+use App\Models\Payment;
+use App\Models\Plan;
+use App\Models\Referal;
+use App\Models\Referal_transaction;
+use App\Models\Wallet;
+use DB;
+use Illuminate\Http\Request;
+use Validator;
 
 class PaymentController extends Controller
 {
@@ -100,7 +100,7 @@ class PaymentController extends Controller
             return response(["code" => 3, "error" => "cURL Error :" . $err]);
         }
 
-         $result = json_decode($response);
+        $result = json_decode($response);
 
         if ($result->data->status !== 'success') {
             throw new \Exception("Transaction failed");
@@ -140,6 +140,11 @@ class PaymentController extends Controller
 
             $referal = $this->referal_check($user_id, $referalEarnings, 0);
 
+            #create expiry date
+            $today = date("F j, Y, g:i a");
+
+            $expiry_date = self::expire($today, $planDuration);
+
             #create payment
 
             $payment = Payment::create([
@@ -150,7 +155,8 @@ class PaymentController extends Controller
                 "payer_email" => $payer_email,
                 "payer_full_name" => $payer_fullname,
                 "duration" => $planDuration,
-                "reference"=> $reference
+                "reference" => $reference,
+                "expiry_date" => $expiry_date
             ]);
 
             if ($payment) {
@@ -168,7 +174,7 @@ class PaymentController extends Controller
 
         });
 
-        return response(["code"=>1,"message"=>"payment verified"]);
+        return response(["code" => 1, "message" => "payment verified"]);
 
     }
 
@@ -206,5 +212,12 @@ class PaymentController extends Controller
     private function percentage(int $firstNumb, int $secondNumb)
     {
         return ($firstNumb / 100) * $secondNumb;
+    }
+
+    private static function expire($today, $day_passed)
+    {
+        $date = date_create($today);
+        date_add($date, date_interval_create_from_date_string($day_passed));
+        return date_format($date, "Y-m-d");
     }
 }
