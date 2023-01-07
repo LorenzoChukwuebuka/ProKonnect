@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Transaction;
 
-use App\Http\Controllers\Controller;
+use DB;
+use Validator;
+use App\Models\Plan;
+use App\Models\Wallet;
 use App\Models\Payment;
 use App\Models\Referal;
-use App\Models\Referal_transaction;
-use DB;
 use Illuminate\Http\Request;
-use Validator;
+use App\Models\Referal_transaction;
+use App\Http\Controllers\Controller;
 
 class PaymentController extends Controller
 {
@@ -33,17 +35,17 @@ class PaymentController extends Controller
             $fields = [
                 'email' => auth()->user()->email,
                 'amount' => $request->amount * 100,
-                'metadata' => [
+                'metadata' => json_encode([
                     "plan_id" => $request->plan_id,
                     "user_id" => auth()->user()->id,
                     "proguide_id" => $request->proguide_id,
                     "payer_email" => auth()->user()->email ?? null,
                     "payer_fullname" => auth()->user()->full_name ?? null,
-                ],
+                ]),
 
             ];
 
-            $fields_string = json_encode($fields);
+            $fields_string = http_build_query($fields);
 
             #open connection
             $ch = curl_init();
@@ -98,7 +100,7 @@ class PaymentController extends Controller
             return response(["code" => 3, "error" => "cURL Error :" . $err]);
         }
 
-        return $result = json_decode($response);
+         $result = json_decode($response);
 
         if ($result->data->status !== 'success') {
             throw new \Exception("Transaction failed");
@@ -107,7 +109,7 @@ class PaymentController extends Controller
         #pull details from the result object
         $amount = $result->data->amount / 100;
         $plan_id = $result->data->metadata->plan_id;
-        $user_id = $result->data->metadata->id;
+        $user_id = $result->data->metadata->user_id;
         $proguide_id = $result->data->metadata->proguide_id;
         $payer_email = $result->data->metadata->payer_email ?? null;
         $payer_fullname = $result->data->metadata->payer_full_name ?? null;
@@ -136,7 +138,7 @@ class PaymentController extends Controller
 
             $referalEarnings = $amount - $referalPercentage;
 
-            $referal = $this->referal_check($user_id, $referalEarnings, $payment_id);
+            $referal = $this->referal_check($user_id, $referalEarnings, 0);
 
             #create payment
 
@@ -146,8 +148,9 @@ class PaymentController extends Controller
                 "plan_id" => $plan_id,
                 "amount_paid" => ($referal == false) ? $amount : $referalEarnings,
                 "payer_email" => $payer_email,
-                "payer_fullname" => $payer_fullname,
+                "payer_full_name" => $payer_fullname,
                 "duration" => $planDuration,
+                "reference"=> $reference
             ]);
 
             if ($payment) {
@@ -164,6 +167,8 @@ class PaymentController extends Controller
             }
 
         });
+
+        return response(["code"=>1,"message"=>"payment verified"]);
 
     }
 
