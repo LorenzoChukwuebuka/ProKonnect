@@ -199,7 +199,7 @@ class PaymentController extends Controller
             return false;
         }
 
-        return $ref_transactions;
+        return true;
 
     }
 
