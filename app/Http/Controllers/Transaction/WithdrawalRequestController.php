@@ -23,7 +23,7 @@ class WithdrawalRequestController extends Controller
 
             $wallet = Wallet::where("user_id", auth()->user()->id)->first();
 
-            if ($wallet->count() == 0) {
+            if ($wallet == null) {
                 return response(["code" => 3, "message" => "You can't make withdrawals at this point as you have zero balance in your wallet"]);
             }
 
@@ -63,6 +63,10 @@ class WithdrawalRequestController extends Controller
     {
         try {
             $withdrawal = WithdrawalRequest::find($id);
+
+            if ($withdrawal == null) {
+                return response(["code" => 3, "message" => "No withdrawal request has been made"]);
+            }
 
             if ($withdrawal->status == 'approved') {
                 return response(["code" => 3, "message" => "You can't cancel this withdrawal. As it has already been approved"]);
