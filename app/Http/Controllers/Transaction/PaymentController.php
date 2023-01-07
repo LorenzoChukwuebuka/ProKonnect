@@ -8,9 +8,66 @@ use App\Models\Referal;
 use App\Models\Referal_transaction;
 use DB;
 use Illuminate\Http\Request;
+use Validator;
 
 class PaymentController extends Controller
 {
+
+    public function initialize_payment(Request $request)
+    {
+
+        try {
+
+            $validator = Validator::make($request->all(), [
+                "amount" => "required",
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()->first()], 401);
+            }
+
+            $key = config('paystack.paystack_secret');
+
+            $url = "https://api.paystack.co/transaction/initialize";
+
+            $fields = [
+                'email' => auth()->user()->email,
+                'amount' => $request->amount * 100,
+                'metadata' => [
+                    "plan_id" => $request->plan_id,
+                    "user_id" => auth()->user()->id,
+                    "proguide_id" => $request->proguide_id,
+                    "payer_email" => auth()->user()->email ?? null,
+                    "payer_fullname" => auth()->user()->full_name ?? null,
+                ],
+
+            ];
+
+            $fields_string = json_encode($fields);
+
+            #open connection
+            $ch = curl_init();
+
+            #set the url, number of POST vars, POST data
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                "Authorization: Bearer {$key}",
+                "Cache-Control: no-cache",
+            ));
+
+            #So that curl_exec returns the contents of the cURL; rather than echoing it
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+            #execute post
+            $result = curl_exec($ch);
+            return $result;
+        } catch (Throwable $th) {
+            return $th;
+        }
+
+    }
 
     public function confirm_payment(Request $request, string $reference)
     {
@@ -28,7 +85,7 @@ class PaymentController extends Controller
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => array(
-                "Authorization: Bearer  {$key}",
+                "Authorization: Bearer {$key}",
                 "Cache-Control: no-cache",
             ),
         ));

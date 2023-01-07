@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers\Auth;
 
-use DB;
-use Str;
-use Validator;
-use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Referal;
-use App\Models\OTPToken;
 use App\Custom\MailMessages;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\OTPToken;
+use App\Models\Referal;
+use App\Models\User;
 use App\Models\UserInterests;
 use App\Models\UserQualification;
 use App\Models\UserSpecialization;
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Str;
+use Validator;
 use WisdomDiala\Countrypkg\Models\Country;
 
 class UserAuthController extends Controller
@@ -62,8 +62,6 @@ class UserAuthController extends Controller
                 'referal_code' => "prf" . Str::random(12),
 
             ]);
-
-           
 
             #create qualification
 
@@ -462,6 +460,15 @@ class UserAuthController extends Controller
 
             return response(["code" => 1, "message" => "updated successfully"]);
 
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function user_details()
+    {
+        try {
+            return response(["code" => 1, "data" => auth()->user()]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }

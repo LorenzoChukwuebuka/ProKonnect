@@ -55,6 +55,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
     Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
     Route::post('/change_user_password', [UserAuthController::class, 'user_change_password']);
+    Route::get('/get_user_details',[UserAuthController::class,'user_details']);
 
     #get bio
     Route::get('/get_bio', [UserAuthController::class, 'get_bio']);
@@ -125,8 +126,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/get_last_group_message', [GroupMessagesController::class, 'get_last_messages_in_a_group']);
     Route::get('/get_all_group_messages/{id}', [GroupMessagesController::class, 'get_group_messages']);
 
-    #confirm payment
-
+    # payment
+    Route::post('/initialize_payment',[PaymentController::class,'initialize_payment']);
     Route::get('/confirm_payment/{reference}', [PaymentController::class, 'confirm_payment']);
 
 });
