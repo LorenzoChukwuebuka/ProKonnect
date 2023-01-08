@@ -489,7 +489,7 @@ class UserAuthController extends Controller
         }
     }
 
-    public function add_socials(Request $reques)
+    public function add_socials(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -542,6 +542,18 @@ class UserAuthController extends Controller
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
+    }
+
+    public function delete_socials($id)
+    {
+        try {
+            $socials = Socials::find($id)->delete();
+
+            return response(["code" => 1, "message" => "Socials deleted successfully"]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+
     }
 
 }

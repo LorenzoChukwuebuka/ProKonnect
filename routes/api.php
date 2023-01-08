@@ -1,24 +1,24 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\InterestsController;
+use App\Http\Controllers\Admin\QualificationsController;
+use App\Http\Controllers\Admin\ServicesController;
+use App\Http\Controllers\Admin\SpecializationController;
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\BankDetailsController;
 use App\Http\Controllers\ChatsController;
 use App\Http\Controllers\GroupController;
-use App\Http\Controllers\UniversityController;
-use App\Http\Controllers\BankDetailsController;
-use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\GroupMessagesController;
-use App\Http\Controllers\Admin\ServicesController;
-use App\Http\Controllers\Admin\InterestsController;
 use App\Http\Controllers\Project\ProjectController;
-use App\Http\Controllers\User\UserInterestsController;
 use App\Http\Controllers\Transaction\PaymentController;
+use App\Http\Controllers\Transaction\WithdrawalRequestController;
+use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\User\fetchCountriesController;
-use App\Http\Controllers\Admin\QualificationsController;
-use App\Http\Controllers\Admin\SpecializationController;
+use App\Http\Controllers\User\UserInterestsController;
 use App\Http\Controllers\User\UserQualificationController;
 use App\Http\Controllers\User\UserSpecializationController;
-use App\Http\Controllers\Transaction\WithdrawalRequestController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,7 +55,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
     Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
     Route::post('/change_user_password', [UserAuthController::class, 'user_change_password']);
-    Route::get('/get_user_details',[UserAuthController::class,'user_details']);
+    Route::get('/get_user_details', [UserAuthController::class, 'user_details']);
 
     #get bio
     Route::get('/get_bio', [UserAuthController::class, 'get_bio']);
@@ -127,8 +127,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/get_all_group_messages/{id}', [GroupMessagesController::class, 'get_group_messages']);
 
     # payment
-    Route::post('/initialize_payment',[PaymentController::class,'initialize_payment']);
+    Route::post('/initialize_payment', [PaymentController::class, 'initialize_payment']);
     Route::get('/confirm_payment/{reference}', [PaymentController::class, 'confirm_payment']);
+
+    #socials
+
+    Route::post('/create_socials', [UserAuthController::class, 'add_socials']);
+    Route::get('/get_socials', [UserAuthController::class, 'get_socials']);
+    Route::put('/edit_socials/{id}', [UserAuthController::class, 'edit_socials']);
+    Route::delete('/delete_socials/{id}', [UserAuthController::class, 'delete_socials']);
 
 });
 
