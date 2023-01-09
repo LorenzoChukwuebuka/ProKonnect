@@ -243,14 +243,12 @@ class UserAuthController extends Controller
                     #check if payment has exceeded the time duration
 
                     $payment = Payment::where('payer_id', auth()->user()->id)->latest()->first();
+                    $checkExpiry = true;
 
-                    if ($payment == null) {
-                        goto auth;
+                    if ($payment) {
+                        $checkExpiry = Carbon::now()->gt($payment->expiry_date);
                     }
 
-                    $checkExpiry = Carbon::now()->gt($payment->expiry_date);
-
-                    auth:
                     $country = Country::where('id', auth()->user()->country_id)->first();
                     $response = [
                         'type' => 'user',
@@ -258,7 +256,7 @@ class UserAuthController extends Controller
                         'user' => auth()->user(),
                         'country' => $country,
                         'token' => auth()->user()->createToken('auth_token')->plainTextToken,
-                        'access' => ($checkExpiry) == true ? "Access denied " : "Access granted",
+                        'access' => ($checkExpiry) ? "Access denied " : "Access granted",
 
                     ];
                     return response()->json($response, $status);

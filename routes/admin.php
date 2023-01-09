@@ -6,20 +6,21 @@ use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\Admin\ServicesController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Admin\InterestsController;
+use App\Http\Controllers\Admin\QualificationsController;
 use App\Http\Controllers\Admin\SpecializationController;
 
 Route::prefix('admin_restricted')->group(function () {
     Route::post('login', [AdminAuthController::class, 'login']);
 
     Route::group(['middleware' => ['auth:admin,admin-api']], function () {
-
+         Route::post('/change_password',[AdminAuthController::class,'changePassword']);
         #interests
         Route::post('/create_interests', [InterestsController::class, 'create']);
         Route::get('/get_interests', [InterestsController::class, 'findAll']);
         Route::put('/edit_interests/{id}', [InterestsController::class, 'update']);
         Route::delete('/delete_interests/{id}', [InterestsController::class, 'delete']);
 
-        Route::post('/create_qualifications', [PlanController::class, 'create_plan']);
+        Route::post('/create_plan', [PlanController::class, 'create_plan']);
         Route::get('/get_all_plans', [PlanController::class, 'get_all_plans']);
         Route::get('/get_plan_by_id/{id}', [PlanController::class, 'get_plan_by_id']);
         Route::put('/edit_plan/{id}', [PlanController::class, 'edit_plan']);
@@ -35,11 +36,18 @@ Route::prefix('admin_restricted')->group(function () {
         Route::put('/edit_specialization/{id}', [SpecializationController::class, 'update']);
         Route::delete('/delete_specialization/{id}', [SpecializationController::class, 'delete']);
 
+        Route::post('/create_qualification',[QualificationsController::class,'create']);
+        Route::get('/get_qualifications',[QualificationsController::class,'findAll']);
+        Route::put('/edit_qualification/{id}',[QualificationsController::class,'update']);
+        Route::delete('/delete_qualification/{id}',[QualificationsController::class,'delete']);
+
         #bad words
 
         Route::post('/create_bad_word', [BadWordsController::class, 'create_bad_words']);
         Route::get('/get_all_words', [BadWordsController::class, 'get_all_bad_words']);
+        Route::delete('/delete_word/{id}',[BadWordsController::class,'delete_bad_word']);
 
         Route::get('/get_university',[UniversityController::class,'get_all_university']);
+
     });
 });

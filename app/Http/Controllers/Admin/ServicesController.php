@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Validator;
 
 class ServicesController extends Controller
 {
@@ -12,7 +13,7 @@ class ServicesController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                "services" => 'required|max:255|string',
+                "service" => 'required|max:255|string',
             ]);
 
             if ($validator->fails()) {
@@ -20,10 +21,10 @@ class ServicesController extends Controller
             }
 
             Service::create([
-                array_merge($validator->validated()),
+                "service"=>$request->service
             ]);
 
-            return response(["code" => 1, "message" => "Qualification created successfully"]);
+            return response(["code" => 1, "message" => "Service created successfully"]);
 
         } catch (\Throwable$th) {
              return response(["code" => 3, "error" => $th->getMessage()]);
@@ -51,7 +52,7 @@ class ServicesController extends Controller
         try {
             $services = Service::find($id);
 
-            $services->service = $request->service ?? $qualifications->service;
+            $services->service = $request->service ?? $services->service;
 
             $services->save();
 
@@ -61,13 +62,13 @@ class ServicesController extends Controller
         }
     }
 
-    public function delete()
+    public function delete($id)
     {
         try {
             $services = Service::find($id)->delete();
 
             if ($services) {
-                return response()->json(["message" => 'services has been deleted!']);
+                return response()->json(["code"=>1,"message" => 'services has been deleted!']);
             }
         } catch (\Throwable$th) {
              return response(["code" => 3, "error" => $th->getMessage()]);

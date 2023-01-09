@@ -17,6 +17,7 @@ class PlanController extends Controller
                 "plan" => 'required|max:255|string',
                 "amount" => 'required|numeric',
                 "details" => [],
+                "duration" => 'required',
 
             ]);
 
@@ -24,7 +25,12 @@ class PlanController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
-            $plan = Plan::create([array_merge($validator->validated())]);
+            $plan = Plan::create([
+                "plan" => $request->plan,
+                "amount" => $request->amount,
+                "details" => $request->details,
+                "duration" => $request->duration,
+            ]);
 
             return response(["code" => 1, "message" => "plan created successfully"]);
 
@@ -74,6 +80,7 @@ class PlanController extends Controller
             $plan->plan = $request->plan ?? $plan->plan;
             $plan->amount = $request->amount ?? $plan->amount;
             $plan->details = $request->details ?? $plan->details;
+            $plan->duration = $request->duration ?? $plan->duration;
 
             $plan->save();
 

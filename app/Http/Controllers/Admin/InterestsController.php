@@ -21,13 +21,13 @@ class InterestsController extends Controller
             }
 
             Interests::create([
-                array_merge($validator->validated()),
+                "interests" => $request->interests,
             ]);
 
             return response(["code" => 1, "message" => "Interest created successfully"]);
 
         } catch (\Throwable$th) {
-             return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -55,13 +55,13 @@ class InterestsController extends Controller
         try {
             $interests = Interests::find($id);
 
-            $interests->interests = $request->interest ?? $interests->interests;
+            $interests->interests = $request->interests ?? $interests->interests;
 
             $interests->save();
 
             return response(["code" => 1, "message" => "updated successfully"]);
         } catch (\Throwable$th) {
-             return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -71,10 +71,10 @@ class InterestsController extends Controller
             $interests = Interests::find($id)->delete();
 
             if ($interests) {
-                return response()->json(["message" => 'Interest has been deleted!']);
+                return response()->json(["code" => 1, "message" => 'Interest has been deleted!']);
             }
-        } catch (\Throwable $th) {
-             return response(["code" => 3, "error" => $th->getMessage()]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Specialization;
 use Illuminate\Http\Request;
+use Validator;
 
 class SpecializationController extends Controller
 {
@@ -20,10 +21,10 @@ class SpecializationController extends Controller
             }
 
             Specialization::create([
-                array_merge($validator->validated()),
+                "specialization" => $request->specialization,
             ]);
 
-            return response(["code" => 1, "message" => "Qualification created successfully"]);
+            return response(["code" => 1, "message" => "Specialization created successfully"]);
 
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
@@ -49,7 +50,7 @@ class SpecializationController extends Controller
         try {
             $specialization = Specialization::find($id);
 
-            $specialization->specialization = $request->specialization ?? $qualifications->specialization;
+            $specialization->specialization = $request->specialization ?? $specialization->specialization;
 
             $specialization->save();
 
@@ -59,13 +60,13 @@ class SpecializationController extends Controller
         }
     }
 
-    public function delete()
+    public function delete($id)
     {
         try {
             $qualifications = Specialization::find($id)->delete();
 
             if ($qualifications) {
-                return response()->json(["message" => 'specilization has been deleted!']);
+                return response()->json(["code" => 1, "message" => 'specilization has been deleted!']);
             }
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);

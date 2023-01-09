@@ -43,4 +43,11 @@ class BadWordsController extends Controller
         }
     }
 
+    public function delete_bad_word($id)
+    {
+        $badWord = Badwords::find($id)->delete();
+        return response(["code" => 1, "message" => "bad word deleted successfully"]);
+
+    }
+
 }
