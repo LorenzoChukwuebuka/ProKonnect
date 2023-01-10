@@ -50,7 +50,9 @@ class ProjectController extends Controller
     {
         try {
 
-            $project = auth()->user()->project()->with('user', 'country','proguide')->latest()->get();
+            $project = auth()->user()->project()->with(['user', 'country', 'proguide' => function ($query) {
+                $query->with('specialization');
+            }])->latest()->get();
 
             if ($project->count() == 0) {
                 return response(["code" => 3, "message" => "No records found"]);
@@ -64,7 +66,9 @@ class ProjectController extends Controller
     public function get_projects_by_id($id)
     {
         try {
-            return $project = auth()->user()->project()->with('user', 'country','proguide')->where('id', $id)->first();
+            $project = auth()->user()->project()->with(['user', 'country', 'proguide' => function ($query) {
+                $query->with('specialization');
+            }])->where('id', $id)->first();
 
             if ($project == null) {
                 return response(["code" => 3, "message" => "No record found"]);
@@ -131,7 +135,7 @@ class ProjectController extends Controller
 
             $user = auth()->user();
 
-            $guides = User::with(['userspecialization'=>function($query){
+            $guides = User::with(['userspecialization' => function ($query) {
                 $query->with('specialization');
             }])->where('user_type', 'proguide')
                 ->join('user_interests', 'users.id', '=', 'user_interests.user_id')
