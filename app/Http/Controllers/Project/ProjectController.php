@@ -51,7 +51,9 @@ class ProjectController extends Controller
         try {
 
             $project = auth()->user()->project()->with(['user', 'country', 'proguide' => function ($query) {
-                $query->with('specialization');
+                $query->with(['userspecialization' => function ($query1) {
+                    $query1->with('specialization');
+                }]);
             }])->latest()->get();
 
             if ($project->count() == 0) {
@@ -67,7 +69,9 @@ class ProjectController extends Controller
     {
         try {
             $project = auth()->user()->project()->with(['user', 'country', 'proguide' => function ($query) {
-                $query->with('specialization');
+                $query->with(['userspecialization' => function ($query1) {
+                    $query1->with('specialization');
+                }]);
             }])->where('id', $id)->first();
 
             if ($project == null) {
