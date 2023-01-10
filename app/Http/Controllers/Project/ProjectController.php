@@ -131,7 +131,9 @@ class ProjectController extends Controller
 
             $user = auth()->user();
 
-            $guides = User::where('user_type', 'proguide')
+            $guides = User::with(['userspecialization'=>function($query){
+                $query->with('specialization');
+            }])->where('user_type', 'proguide')
                 ->join('user_interests', 'users.id', '=', 'user_interests.user_id')
                 ->whereIn('user_interests.interest_id', $user->userinterests()->pluck('interest_id'))
                 ->select('users.id', 'users.full_name', 'users.profile_image', 'users.status', 'users.country_id')
