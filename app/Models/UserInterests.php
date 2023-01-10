@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Interests;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,11 @@ class UserInterests extends Model
     public function user()
     {
         return $this->belongsTo(User::class)->select('id', 'full_name', 'email');
+    }
+
+    public function interests()
+    {
+        return $this->belongsTo(Interests::class);
     }
 
 }

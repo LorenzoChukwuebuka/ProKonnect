@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
-use App\Models\UserSpecialization;
-use Illuminate\Http\Request;
 use Validator;
+use App\Models\User;
+use Illuminate\Http\Request;
+use App\Models\UserSpecialization;
+use App\Http\Controllers\Controller;
 
 class UserSpecializationController extends Controller
 {
@@ -49,7 +50,7 @@ class UserSpecializationController extends Controller
     public function get_all_user_specialization()
     {
         try {
-            $specialization = auth()->user()->userspecialization()->latest()->get();
+            $specialization = User::with('userspecialization')->where('id',auth()->user()->id)->latest()->get();
 
             if ($specialization->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);

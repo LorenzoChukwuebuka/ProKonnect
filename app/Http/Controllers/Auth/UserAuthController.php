@@ -481,7 +481,8 @@ class UserAuthController extends Controller
     public function user_details()
     {
         try {
-            return response(["code" => 1, "data" => auth()->user()]);
+            $user = DB::table('countries')->join('users', 'country_id', '=', 'users.country_id')->select('countries.name','countries.short_name','users.*')->get();
+            return response(["code" => 1, "data" => $user]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }

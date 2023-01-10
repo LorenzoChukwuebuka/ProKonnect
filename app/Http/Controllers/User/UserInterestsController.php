@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\UserInterests;
 use Illuminate\Http\Request;
 use Validator;
@@ -47,7 +48,7 @@ class UserInterestsController extends Controller
     public function get_all_user_interests()
     {
         try {
-            $interests = auth()->user()->userinterests()->latest()->get();
+            $interests = User::with('userinterests')->where('id', auth()->user()->id)->get();
 
             if ($interests->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);

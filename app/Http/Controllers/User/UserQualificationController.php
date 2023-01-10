@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\UserQualification;
 use Illuminate\Http\Request;
 use Validator;
@@ -20,8 +21,8 @@ class UserQualificationController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
-            if(!$request->data){
-                return response(["code"=>3,"message"=>"No request was sent"]);
+            if (!$request->data) {
+                return response(["code" => 3, "message" => "No request was sent"]);
             }
 
             $len = count($request->data);
@@ -40,7 +41,7 @@ class UserQualificationController extends Controller
             return response(["code" => 1, "message" => "created successfully"]);
 
         } catch (\Throwable$th) {
-              return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
 
     }
@@ -48,7 +49,7 @@ class UserQualificationController extends Controller
     public function get_all_user_qualifications()
     {
         try {
-            $qualifications = auth()->user()->userqualification()->latest()->get();
+            $qualifications = User::with('userqualification')->where('id', auth()->user()->id)->latest()->get();
 
             if ($qualifications->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
@@ -56,7 +57,7 @@ class UserQualificationController extends Controller
 
             return response(["code" => 1, "data" => $qualifications]);
         } catch (\Throwable$th) {
-              return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -67,7 +68,7 @@ class UserQualificationController extends Controller
 
             return response(["code" => 1, "message" => "interest deleted "]);
         } catch (\Throwable$th) {
-              return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
 
     }
@@ -99,7 +100,7 @@ class UserQualificationController extends Controller
             return response(["code" => 1, "message" => "updated successfully"]);
 
         } catch (\Throwable$th) {
-              return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
