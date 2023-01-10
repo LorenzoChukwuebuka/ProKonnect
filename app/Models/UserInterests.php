@@ -21,7 +21,7 @@ class UserInterests extends Model
 
     public function interests()
     {
-        return $this->belongsTo(Interests::class);
+        return $this->belongsTo(Interests::class,'interest_id');
     }
 
 }

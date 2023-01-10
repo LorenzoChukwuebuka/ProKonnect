@@ -50,7 +50,7 @@ class UserSpecializationController extends Controller
     public function get_all_user_specialization()
     {
         try {
-            $specialization = User::with('userspecialization')->where('id',auth()->user()->id)->latest()->get();
+            $specialization = UserSpecialization::with('specialization')->where('id',auth()->user()->id)->latest()->get();
 
             if ($specialization->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
