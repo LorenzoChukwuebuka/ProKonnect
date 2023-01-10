@@ -21,7 +21,7 @@ class Project extends Model
 
     public function proguide()
     {
-        return $this->belongsTo(User::class, 'proguide_id');
+        return $this->belongsTo(User::class,'proguide_id');
     }
 
     public function country()

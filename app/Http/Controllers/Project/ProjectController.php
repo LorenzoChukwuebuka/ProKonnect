@@ -50,7 +50,7 @@ class ProjectController extends Controller
     {
         try {
 
-            $project = auth()->user()->project()->with('user', 'country')->latest()->get();
+            $project = auth()->user()->project()->with('user', 'country','proguide')->latest()->get();
 
             if ($project->count() == 0) {
                 return response(["code" => 3, "message" => "No records found"]);
@@ -64,7 +64,7 @@ class ProjectController extends Controller
     public function get_projects_by_id($id)
     {
         try {
-            return $project = auth()->user()->project()->with('user', 'country')->where('id', $id)->first();
+            return $project = auth()->user()->project()->with('user', 'country','proguide')->where('id', $id)->first();
 
             if ($project == null) {
                 return response(["code" => 3, "message" => "No record found"]);
