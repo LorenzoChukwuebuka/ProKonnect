@@ -21,6 +21,7 @@ class ProjectController extends Controller
                 "overview" => [],
                 "project_type" => "required",
                 'proguide_id' => "required",
+                "specialization_id" => [],
 
             ]);
 
@@ -37,6 +38,7 @@ class ProjectController extends Controller
                 "overview" => $request->overview,
                 "project_type" => $request->project_type,
                 "proguide_id" => $request->proguide_id,
+                "specialization_id" => $request->specialization_id,
             ]);
 
             return \response(["code" => 1, "message" => "created project successfully"]);
@@ -94,6 +96,7 @@ class ProjectController extends Controller
             $project->overview = $request->overview ?? $project->overview;
             $project->project_type = $request->project_type ?? $project->project_type;
             $project->proguide_id = $request->proguide_id ?? $project->proguide_id;
+            $project->specialization_id = $request->specialization_id ?? $project->specialization_id;
 
             $project->save();
 
