@@ -50,6 +50,7 @@ Route::get('/get_qualification', [QualificationsController::class, 'findAll']);
 Route::get('/get_services', [ServicesController::class, 'get_all_services']);
 Route::get('/get_interests', [InterestsController::class, 'findAll']);
 Route::get('/get_university', [UniversityController::class, 'get_all_university']);
+Route::get('/get_all_plans', [PlanController::class, 'get_all_plans']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
