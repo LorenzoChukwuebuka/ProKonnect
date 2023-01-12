@@ -48,7 +48,7 @@ class UserInterestsController extends Controller
     public function get_all_user_interests()
     {
         try {
-            $interests = UserInterests::with('interests')->where('id', auth()->user()->id)->get();
+            $interests = UserInterests::with('interests')->where('user_id', auth()->user()->id)->get();
 
             if ($interests->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);

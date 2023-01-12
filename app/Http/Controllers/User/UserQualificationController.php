@@ -49,7 +49,7 @@ class UserQualificationController extends Controller
     public function get_all_user_qualifications()
     {
         try {
-            $qualifications = UserQualification::with('qualifications')->where('id', auth()->user()->id)->latest()->get();
+            $qualifications = UserQualification::with('qualifications')->where('user_id', auth()->user()->id)->latest()->get();
 
             if ($qualifications->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
