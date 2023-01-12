@@ -20,7 +20,7 @@ class ProjectController extends Controller
                 "end_date" => [],
                 "overview" => [],
                 "project_type" => "required",
-                'proguide_id' => "required",
+                'proguide_id' => [],
                 "specialization_id" => [],
 
             ]);
