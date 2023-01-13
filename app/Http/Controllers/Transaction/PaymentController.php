@@ -41,6 +41,7 @@ class PaymentController extends Controller
                     "proguide_id" => $request->proguide_id,
                     "payer_email" => auth()->user()->email ?? null,
                     "payer_fullname" => auth()->user()->full_name ?? null,
+                    "service"=>$request->service_id
                 ]),
 
             ];
@@ -113,6 +114,7 @@ class PaymentController extends Controller
         $proguide_id = $result->data->metadata->proguide_id;
         $payer_email = $result->data->metadata->payer_email ?? null;
         $payer_fullname = $result->data->metadata->payer_full_name ?? null;
+        $service_id = $result->data->metadata->service_id;
 
         #check if transaction reference already exists
 
@@ -124,7 +126,7 @@ class PaymentController extends Controller
 
         #start database transaction
 
-        DB::transaction(function () use ($reference, $amount, $plan_id, $user_id, $proguide_id, $payer_email, $payer_fullname) {
+        DB::transaction(function () use ($reference, $amount, $plan_id, $user_id, $proguide_id, $payer_email, $payer_fullname,$service_id) {
 
             #pull the duration from the plan_id
 
@@ -156,7 +158,8 @@ class PaymentController extends Controller
                 "payer_full_name" => $payer_fullname,
                 "duration" => $planDuration,
                 "reference" => $reference,
-                "expiry_date" => $expiry_date
+                "expiry_date" => $expiry_date,
+                "service_id"=>$service_id
             ]);
 
             if ($payment) {

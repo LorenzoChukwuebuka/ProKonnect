@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use App\Models\ServiceCategory;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -21,13 +22,13 @@ class ServicesController extends Controller
             }
 
             Service::create([
-                "service"=>$request->service
+                "service" => $request->service,
             ]);
 
             return response(["code" => 1, "message" => "Service created successfully"]);
 
         } catch (\Throwable$th) {
-             return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -58,7 +59,7 @@ class ServicesController extends Controller
 
             return response(["code" => 1, "message" => "updated successfully"]);
         } catch (\Throwable$th) {
-             return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
 
@@ -68,10 +69,13 @@ class ServicesController extends Controller
             $services = Service::find($id)->delete();
 
             if ($services) {
-                return response()->json(["code"=>1,"message" => 'services has been deleted!']);
+                return response()->json(["code" => 1, "message" => 'services has been deleted!']);
             }
         } catch (\Throwable$th) {
-             return response(["code" => 3, "error" => $th->getMessage()]);
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
+
+ 
+
 }

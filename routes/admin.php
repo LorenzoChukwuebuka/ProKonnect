@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Admin\InterestsController;
 use App\Http\Controllers\Admin\QualificationsController;
 use App\Http\Controllers\Admin\SpecializationController;
+use App\Http\Controllers\Admin\ServiceCategoryController;
 
 Route::prefix('admin_restricted')->group(function () {
     Route::post('login', [AdminAuthController::class, 'login']);
@@ -48,6 +49,12 @@ Route::prefix('admin_restricted')->group(function () {
         Route::delete('/delete_word/{id}',[BadWordsController::class,'delete_bad_word']);
 
         Route::get('/get_university',[UniversityController::class,'get_all_university']);
+
+        #service category
+       Route::post('/create_service_category',[ServiceCategoryController::class,'create_service_category']);
+       Route::get('/get_service_categories',[ServiceCategoryController::class,'get_service_category']);
+       Route::put('/edit_service_category/{id}',[ServiceCategoryController::class,'update_service_category']);
+       Route::delete('/delete_service_category/{id}',[ServiceCategoryController::class,'delete_service_category']);
 
     });
 });

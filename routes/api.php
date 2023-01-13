@@ -1,24 +1,26 @@
 <?php
 
-use App\Http\Controllers\Admin\InterestsController;
-use App\Http\Controllers\Admin\QualificationsController;
-use App\Http\Controllers\Admin\ServicesController;
-use App\Http\Controllers\Admin\SpecializationController;
-use App\Http\Controllers\Auth\UserAuthController;
-use App\Http\Controllers\BankDetailsController;
-use App\Http\Controllers\ChatsController;
-use App\Http\Controllers\GroupController;
-use App\Http\Controllers\GroupMessagesController;
-use App\Http\Controllers\Project\ProjectController;
-use App\Http\Controllers\Transaction\PaymentController;
-use App\Http\Controllers\Transaction\WithdrawalRequestController;
-use App\Http\Controllers\UniversityController;
-use App\Http\Controllers\User\fetchCountriesController;
-use App\Http\Controllers\User\UserInterestsController;
-use App\Http\Controllers\User\UserQualificationController;
-use App\Http\Controllers\User\UserSpecializationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatsController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\BankDetailsController;
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\GroupMessagesController;
+use App\Http\Controllers\Admin\ServicesController;
+use App\Http\Controllers\Admin\InterestsController;
+use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\User\UserInterestsController;
+use App\Http\Controllers\Transaction\PaymentController;
+use App\Http\Controllers\User\fetchCountriesController;
+use App\Http\Controllers\Admin\QualificationsController;
+use App\Http\Controllers\Admin\SpecializationController;
+use App\Http\Controllers\Admin\ServiceCategoryController;
+use App\Http\Controllers\User\UserQualificationController;
+use App\Http\Controllers\User\UserSpecializationController;
+use App\Http\Controllers\Transaction\WithdrawalRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +53,7 @@ Route::get('/get_services', [ServicesController::class, 'get_all_services']);
 Route::get('/get_interests', [InterestsController::class, 'findAll']);
 Route::get('/get_university', [UniversityController::class, 'get_all_university']);
 Route::get('/get_all_plans', [PlanController::class, 'get_all_plans']);
+Route::get('/get_service_categories',[ServiceCategoryController::class,'get_service_category']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
@@ -148,3 +151,6 @@ Route::fallback(function () {
         'message' => 'Route Not Found',
     ], 404);
 });
+
+
+
