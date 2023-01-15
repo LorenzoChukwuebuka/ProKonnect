@@ -38,7 +38,7 @@ class GroupController extends Controller
         }
     }
 
-    public function users_with_similar_interests()
+    public function users_with_similar_interests(Request $request)
     {
         try {
 
@@ -47,11 +47,14 @@ class GroupController extends Controller
             $guides = User::where('user_type', 'student')
                 ->join('user_interests', 'users.id', '=', 'user_interests.user_id')
                 ->whereIn('user_interests.interest_id', $user->userinterests()->pluck('interest_id'))
-                ->select('users.id', 'users.full_name', 'users.profile_image', 'users.status', 'users.country_id')
+                ->select('users.id', 'users.full_name','users.username', 'users.profile_image', 'users.status', 'users.country_id','users.bio')
+                ->when($request->search_user, function ($query) use ($request) {
+                    $query->where("users.username", "like", "%" . $request->search_user . "%");
+                })
                 ->get();
 
             if (count($guides) == 0) {
-                return response(["code" => 3, "message" => "No proguide with similar interest found"]);
+                return response(["code" => 3, "message" => "No student  with similar interest or username found"]);
             }
 
             return response(["code" => 1, "data" => $guides]);
@@ -213,7 +216,6 @@ class GroupController extends Controller
     public function get_user_groups()
     {
 
-        
         try {
             $userGroups = UserGroup::with(['group' => function ($query) {
                 $query->with('user');
@@ -225,6 +227,21 @@ class GroupController extends Controller
 
             return response(["code" => 1, "data" => $userGroups]);
 
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function exit_group_by_participant($group_id){
+        try {
+            $usergroup = UserGroup::where('user_id', auth()->user()->id)->where('group_id', $group_id)->delete();
+
+            $group = Group::find($group_id);
+
+            $group->number_of_participants--;
+
+            $group->save();
+            return response(["code" => 1, "message" => "user deleted from group successfully"]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }

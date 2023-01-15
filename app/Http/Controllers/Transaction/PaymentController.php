@@ -41,7 +41,7 @@ class PaymentController extends Controller
                     "proguide_id" => $request->proguide_id,
                     "payer_email" => auth()->user()->email ?? null,
                     "payer_fullname" => auth()->user()->full_name ?? null,
-                    "service"=>$request->service_id
+                    "service" => $request->service_id,
                 ]),
 
             ];
@@ -65,7 +65,10 @@ class PaymentController extends Controller
 
             #execute post
             $result = curl_exec($ch);
-            return $result;
+            $res = json_decode($result);
+
+            return response(["code" => 1, "data" => $res]);
+
         } catch (Throwable $th) {
             return $th;
         }
@@ -126,7 +129,7 @@ class PaymentController extends Controller
 
         #start database transaction
 
-        DB::transaction(function () use ($reference, $amount, $plan_id, $user_id, $proguide_id, $payer_email, $payer_fullname,$service_id) {
+        DB::transaction(function () use ($reference, $amount, $plan_id, $user_id, $proguide_id, $payer_email, $payer_fullname, $service_id) {
 
             #pull the duration from the plan_id
 
@@ -159,7 +162,7 @@ class PaymentController extends Controller
                 "duration" => $planDuration,
                 "reference" => $reference,
                 "expiry_date" => $expiry_date,
-                "service_id"=>$service_id
+                "service_id" => $service_id,
             ]);
 
             if ($payment) {

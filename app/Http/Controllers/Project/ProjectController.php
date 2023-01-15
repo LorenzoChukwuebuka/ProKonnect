@@ -136,8 +136,9 @@ class ProjectController extends Controller
 
     #find proguides by user interests
 
-    public function find_proguides_by_user_interests()
+    public function find_proguides_by_user_interests(Request $request)
     {
+
         try {
 
             $user = auth()->user();
@@ -147,7 +148,10 @@ class ProjectController extends Controller
             }])->where('user_type', 'proguide')
                 ->join('user_interests', 'users.id', '=', 'user_interests.user_id')
                 ->whereIn('user_interests.interest_id', $user->userinterests()->pluck('interest_id'))
-                ->select('users.id', 'users.full_name', 'users.profile_image', 'users.status', 'users.country_id')
+                ->select('users.id', 'users.full_name', 'users.username', 'users.profile_image', 'users.status', 'users.country_id', 'users.bio')
+                ->when($request->search_user, function ($query) use ($request) {
+                    $query->where("users.username", "like", "%" . $request->search_user . "%");
+                })
                 ->get();
 
             if (count($guides) == 0) {
