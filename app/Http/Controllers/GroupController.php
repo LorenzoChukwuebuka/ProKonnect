@@ -47,7 +47,7 @@ class GroupController extends Controller
             $guides = User::where('user_type', 'student')
                 ->join('user_interests', 'users.id', '=', 'user_interests.user_id')
                 ->whereIn('user_interests.interest_id', $user->userinterests()->pluck('interest_id'))
-                ->select('users.id', 'users.full_name', 'users.username', 'users.profile_image', 'users.status', 'users.country_id', 'users.bio')
+                ->select('users.id', 'users.full_name', 'users.username', 'users.email', 'users.bio', 'users.profile_image', 'users.status', 'users.country_id', 'users.phone_number')
                 ->when($request->search_user, function ($query) use ($request) {
                     $query->where("users.username", "like", "%" . $request->search_user . "%");
                 })
