@@ -577,6 +577,7 @@ class UserAuthController extends Controller
             if ($proguides->count() == 0) {
                 return response(["code" => 3, "message" => "No proguides found"]);
             }
+            return response(["code" => 1, "data" => $proguides]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }

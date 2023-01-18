@@ -4,18 +4,18 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Group;
-use App\Models\Wallet;
 use App\Models\Project;
 use App\Models\Referal;
 use App\Models\Socials;
 use App\Models\UserGroup;
 use App\Models\UserInterests;
+use App\Models\Wallet;
 use App\Models\WithdrawalRequest;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
-use WisdomDiala\Countrypkg\Models\Country;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use WisdomDiala\Countrypkg\Models\Country;
 
 class User extends Authenticatable
 {
@@ -110,14 +110,14 @@ class User extends Authenticatable
         return $this->hasMany(GroupMessage::class);
     }
 
-    public function socials(){
+    public function socials()
+    {
         return $this->hasMany(Socials::class);
     }
 
-    public function review(){
+    public function review()
+    {
         return $this->hasMany(Rating::class);
     }
-
-
 
 }
