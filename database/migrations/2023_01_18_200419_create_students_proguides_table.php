@@ -8,18 +8,16 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
+     *i
      * @return void
      */
     public function up()
     {
-        Schema::create('plan_options', function (Blueprint $table) {
+        Schema::create('students_proguides', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('plan_id')->foreignId()->index();
-            $table->string('option_name')->nullable();
-            $table->string('amount')->nullable();
-            $table->string('previous_amount')->nullable();
-            $table->text('description')->nullable();
+            $table->unsignedInteger('user_id')->foreignId()->index();
+            $table->unsignedInteger('proguide_id')->foreignId()->index();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('plan_options');
+        Schema::dropIfExists('students_proguides');
     }
 };

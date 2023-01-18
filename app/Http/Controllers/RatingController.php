@@ -16,6 +16,11 @@ class RatingController extends Controller
                 'star' => [],
             ]);
 
+
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 401);
+            }
+
             $rating = Rating::create([
                 'user_id' => auth()->user()->id,
                 'rating' => $request->star ?? 0,

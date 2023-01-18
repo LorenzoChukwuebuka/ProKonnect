@@ -118,6 +118,10 @@ class PlanController extends Controller
                 "description" => [],
             ]);
 
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 401);
+            }
+
             $plan_options = PlanOption::create([
                 "plan_id" => $request->plan_id,
                 "option_name" => $request->option_name,
@@ -136,6 +140,7 @@ class PlanController extends Controller
     {
         try {
             $plan_options = PlanOption::with('plan')->latest()->get();
+
             if ($plan_options->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
             }
@@ -164,5 +169,16 @@ class PlanController extends Controller
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
 
+    }
+
+    public function delete_plan_options($id)
+    {
+        try {
+            $plan_options = PlanOption::find($id)->delete();
+
+            return response(["code" => 1, "message" => "options deleted successfully"]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
     }
 }

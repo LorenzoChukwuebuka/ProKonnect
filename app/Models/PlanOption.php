@@ -13,8 +13,7 @@ class PlanOption extends Model
 
     protected $guarded = [];
 
-    public function plan()
-    {
-        return $this->belongsTo(Plan::class, 'plan_id');
-    }
+     public function plan(){
+        return $this->belongsTo(Plan::class);
+     }
 }
