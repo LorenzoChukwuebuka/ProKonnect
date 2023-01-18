@@ -28,7 +28,7 @@ class ChatsController extends Controller
 
             if ($request->hasFile('chat_file')) {
                 $validate = Validator::make($request->all(), [
-                    'file' => 'mimes:jpeg,png,jpg,gif,svg,pdf,docx|max:10000',
+                    'file' => 'mimes:jpeg,png,jpg,gif,svg,pdf,docx,webp|max:10000',
                 ]);
                 if ($validate->fails()) {
                     return response()->json(["code" => 3, 'error' => $validate->errors()->first()]);
