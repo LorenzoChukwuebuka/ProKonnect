@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
+use App\Models\PlanOption;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -43,7 +44,7 @@ class PlanController extends Controller
     public function get_all_plans()
     {
         try {
-            $plan = Plan::all();
+            $plan = Plan::with('plan_options')->latest()->get();
 
             if ($plan->count() == 0) {
                 return response(["code" => 3, "message" => "no record found"]);
@@ -100,6 +101,65 @@ class PlanController extends Controller
 
             return response(["code" => 1, "message" => "plan deleted successfully"]);
 
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+
+    }
+
+    public function create_plan_options(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                "plan_id" => "required",
+                "option_name" => "required",
+                "amount" => ["required"],
+                "previous_amount" => [],
+                "description" => [],
+            ]);
+
+            $plan_options = PlanOption::create([
+                "plan_id" => $request->plan_id,
+                "option_name" => $request->option_name,
+                "amount" => $request->amount,
+                "previous_amount" => $request->previous_amount,
+                "description" => $request->description,
+            ]);
+
+            return response(["code" => 1, "message" => "plan options created successfully"]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function get_all_plan_options()
+    {
+        try {
+            $plan_options = PlanOption::with('plan')->latest()->get();
+            if ($plan_options->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+
+            return response(["code" => 1, "data" => $plan_options]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function edit_plan_options(Request $request, $id)
+    {
+        try {
+            $plan_options = PlanOption::find($id);
+
+            $plan_options->plan_id = $request->plan_id ?? $plan_options->plan_id;
+            $plan_options->option_name = $request->option_name ?? $plan_options->option_name;
+            $plan_options->amount = $request->amount ?? $plan_options->amount;
+            $plan_options->previous_amount = $request->previous_amount ?? $plan_options->previous_amount;
+            $plan_options->description = $request->description ?? $plan_options->description;
+
+            $plan_options->save();
+
+            return \response(["code" => 1, "message" => "plan option edited successfully"]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }

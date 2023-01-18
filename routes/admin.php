@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\BadWordsController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\UniversityController;
@@ -55,6 +56,10 @@ Route::prefix('admin_restricted')->group(function () {
        Route::get('/get_service_categories',[ServiceCategoryController::class,'get_service_category']);
        Route::put('/edit_service_category/{id}',[ServiceCategoryController::class,'update_service_category']);
        Route::delete('/delete_service_category/{id}',[ServiceCategoryController::class,'delete_service_category']);
+
+       #review
+
+       Route::get('/get_all_reviews',[RatingController::class,'get_all_reviews']);
 
     });
 });

@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Plan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Plan extends Model
+class PlanOption extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
 
-    public function plan_options()
+    public function plan()
     {
-        return $this->hasMany(PlanOption::class);
+        return $this->belongsTo(Plan::class, 'plan_id');
     }
 }

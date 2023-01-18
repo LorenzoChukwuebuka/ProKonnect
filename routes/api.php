@@ -1,27 +1,28 @@
 <?php
 
-use App\Http\Controllers\Admin\InterestsController;
-use App\Http\Controllers\Admin\PlanController;
-use App\Http\Controllers\Admin\QualificationsController;
-use App\Http\Controllers\Admin\ServiceCategoryController;
-use App\Http\Controllers\Admin\ServicesController;
-use App\Http\Controllers\Admin\SpecializationController;
-use App\Http\Controllers\Auth\UserAuthController;
-use App\Http\Controllers\BankDetailsController;
-use App\Http\Controllers\ChatsController;
-use App\Http\Controllers\GroupController;
-use App\Http\Controllers\GroupMessagesController;
-use App\Http\Controllers\Project\ProjectController;
-use App\Http\Controllers\Transaction\PaymentController;
-use App\Http\Controllers\Transaction\WithdrawalRequestController;
-use App\Http\Controllers\UniversityController;
-use App\Http\Controllers\User\fetchCountriesController;
-use App\Http\Controllers\User\ReferalController;
-use App\Http\Controllers\User\UserInterestsController;
-use App\Http\Controllers\User\UserQualificationController;
-use App\Http\Controllers\User\UserSpecializationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatsController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\RatingController;
+use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\BankDetailsController;
+use App\Http\Controllers\User\ReferalController;
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\GroupMessagesController;
+use App\Http\Controllers\Admin\ServicesController;
+use App\Http\Controllers\Admin\InterestsController;
+use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\User\UserInterestsController;
+use App\Http\Controllers\Transaction\PaymentController;
+use App\Http\Controllers\User\fetchCountriesController;
+use App\Http\Controllers\Admin\QualificationsController;
+use App\Http\Controllers\Admin\SpecializationController;
+use App\Http\Controllers\Admin\ServiceCategoryController;
+use App\Http\Controllers\User\UserQualificationController;
+use App\Http\Controllers\User\UserSpecializationController;
+use App\Http\Controllers\Transaction\WithdrawalRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -145,6 +146,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     #route
 
     Route::get('/get_referals', [ReferalController::class, 'get_referals_for_a_user']);
+
+    #rating
+
+    Route::post('/create_rating',[RatingController::class,'create_rating']);
 
 });
 
