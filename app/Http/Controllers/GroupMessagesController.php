@@ -104,7 +104,7 @@ class GroupMessagesController extends Controller
 
         $filteredText = $text;
         foreach ($list as $badWord) {
-            $filteredText = str_replace($badWord, \str_repeat('*', strlen($badWord)), $filteredText);
+            $filteredText = str_ireplace($badWord, \str_repeat('*', strlen($badWord)), $filteredText);
 
             if (stripos($text, $badWord) !== false) {
                 #check if user has been flagged for more than 3 times
