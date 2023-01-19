@@ -14,6 +14,6 @@ class Plan extends Model
 
     public function plan_options()
     {
-        return $this->hasOne(PlanOption::class);
+        return $this->hasMany(PlanOption::class);
     }
 }

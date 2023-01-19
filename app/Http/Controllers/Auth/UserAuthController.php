@@ -379,7 +379,7 @@ class UserAuthController extends Controller
 
             $user->full_name = $request->full_name ?? $user->full_name;
             $user->bio = $request->bio ?? $user->bio;
-            $user->university_id = $request->university_id ?? $user->university_id;
+            $user->university = $request->university_id ?? $user->university;
             $user->country_id = $request->country_id ?? $user->country_id;
             $user->phone_number = $request->phone_number ?? $user->phone_number;
             $user->save();
