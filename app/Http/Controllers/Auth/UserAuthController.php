@@ -58,10 +58,10 @@ class UserAuthController extends Controller
                 'email' => $request->email,
                 'country_id' => $request->country,
                 'user_type' => $request->user_type,
-                'university_id' => $request->university_id,
                 'password' => Hash::make($request->password) ?? null,
                 'profile_image' => $profile_image ?? null,
                 'referal_code' => "prf" . Str::random(12),
+                'university' => $request->university,
 
             ]);
 
@@ -559,7 +559,7 @@ class UserAuthController extends Controller
     public function get_all_students()
     {
         try {
-            $students = User::where('user_type', 'student')->latest()->get();
+            $students = User::where('user_type', 'student')->where('id', '!=', auth()->user()->id)->latest()->get();
             if ($students->count() == 0) {
                 return response(["code" => 3, "message" => "No students found"]);
             }
