@@ -151,6 +151,21 @@ class PlanController extends Controller
         }
     }
 
+    public function get_all_plan_options_with_plan_id($id)
+    {
+        try {
+            $plan_options = PlanOption::where('plan_id', $id)->latest()->paginate(10);
+            if ($plan_options->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+
+            return response(["code" => 1, "data" => $plan_options]);
+
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
     public function edit_plan_options(Request $request, $id)
     {
         try {

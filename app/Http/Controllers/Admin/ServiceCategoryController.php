@@ -83,7 +83,7 @@ class ServiceCategoryController extends Controller
     {
         try {
             $service_category = ServiceCategory::where('service_id', $id)->latest()->paginate(10);
-            if ($service_category->count()) {
+            if ($service_category->count() == 0) {
                 return response(["code" => 3, "message" => "no record found"]);
             }
             return response(["code" => 1, "data" => $service_category]);
