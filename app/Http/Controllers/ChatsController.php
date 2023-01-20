@@ -80,7 +80,7 @@ class ChatsController extends Controller
             return response()->json(['code' => 1, 'data' => $messages]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
-            return response()->json(['code' => 3, 'error' => 'Something went wrong'], 500);
+
         }
 
     }
@@ -136,7 +136,7 @@ class ChatsController extends Controller
 
             return response(['code' => 1, 'data' => $toArray]);
 
-        } catch (Throwable $th) {
+        } catch (\Throwable$th) {
             return response()->json(['code' => 3, 'error' => 'Something went wrong'], 500);
         }
     }
@@ -177,6 +177,8 @@ class ChatsController extends Controller
                     $user->status = "blocked";
 
                     $user->save();
+
+                    auth()->user()->currentAccessToken()->delete();
                 }
             }
 

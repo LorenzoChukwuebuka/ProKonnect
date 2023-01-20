@@ -124,6 +124,9 @@ class GroupMessagesController extends Controller
                     $user->status = "blocked";
 
                     $user->save();
+
+                    auth()->user()->currentAccessToken()->delete();
+
                 }
             }
 
