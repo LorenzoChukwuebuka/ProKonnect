@@ -59,7 +59,7 @@ Route::get('/get_all_plans', [PlanController::class, 'get_all_plans']);
 Route::get('/get_service_categories', [ServiceCategoryController::class, 'get_service_category']);
 Route::get('/get_service_categories_with_service_id/{id}', [ServiceCategoryController::class, 'get_service_category_with_service_id']);
 Route::get('/get_plan_option_with_plan_id/{id}',[PlanController::class,'get_all_plan_options_with_plan_id']);
-
+Route::get('/get_reviews',[RatingController::class,'get_all_reviews']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
     Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
