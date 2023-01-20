@@ -79,6 +79,19 @@ class ServiceCategoryController extends Controller
 
     }
 
+    public function get_service_category_with_service_id($id)
+    {
+        try {
+            $service_category = ServiceCategory::where('service_id', $id)->latest()->paginate(10);
+            if ($service_category->count()) {
+                return response(["code" => 3, "message" => "no record found"]);
+            }
+            return response(["code" => 1, "data" => $service_category]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
     public function delete_service_category($id)
     {
         try {

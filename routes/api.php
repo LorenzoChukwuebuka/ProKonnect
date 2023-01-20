@@ -1,29 +1,29 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\InterestsController;
+use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\Admin\QualificationsController;
+use App\Http\Controllers\Admin\ServiceCategoryController;
+use App\Http\Controllers\Admin\ServicesController;
+use App\Http\Controllers\Admin\SpecializationController;
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\BankDetailsController;
 use App\Http\Controllers\ChatsController;
 use App\Http\Controllers\GroupController;
-use App\Http\Controllers\RatingController;
-use App\Http\Controllers\Admin\PlanController;
-use App\Http\Controllers\UniversityController;
-use App\Http\Controllers\BankDetailsController;
-use App\Http\Controllers\User\ReferalController;
-use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\GroupMessagesController;
-use App\Http\Controllers\Admin\ServicesController;
-use App\Http\Controllers\Admin\InterestsController;
 use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\StudentsProguideController;
-use App\Http\Controllers\User\UserInterestsController;
 use App\Http\Controllers\Transaction\PaymentController;
+use App\Http\Controllers\Transaction\WithdrawalRequestController;
+use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\User\fetchCountriesController;
-use App\Http\Controllers\Admin\QualificationsController;
-use App\Http\Controllers\Admin\SpecializationController;
-use App\Http\Controllers\Admin\ServiceCategoryController;
+use App\Http\Controllers\User\ReferalController;
+use App\Http\Controllers\User\UserInterestsController;
 use App\Http\Controllers\User\UserQualificationController;
 use App\Http\Controllers\User\UserSpecializationController;
-use App\Http\Controllers\Transaction\WithdrawalRequestController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +57,7 @@ Route::get('/get_interests', [InterestsController::class, 'findAll']);
 Route::get('/get_university', [UniversityController::class, 'get_all_university']);
 Route::get('/get_all_plans', [PlanController::class, 'get_all_plans']);
 Route::get('/get_service_categories', [ServiceCategoryController::class, 'get_service_category']);
+Route::get('/get_service_categories_with_service_id/{id}', [ServiceCategoryController::class, 'get_service_category_with_service_id']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
@@ -159,7 +160,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/create_student_proguide', [StudentsProguideController::class, 'create_students_proguide']);
     Route::get('/get_student_proguide', [StudentsProguideController::class, 'get_all_students_proguides']);
-    Route::get('/get_proguide_student',[StudentsProguideController::class,'get_all_proguides_students']);
+    Route::get('/get_proguide_student', [StudentsProguideController::class, 'get_all_proguides_students']);
     Route::delete('/delete_student_proguide/{id}', [StudentsProguideController::class, 'delete_student_proguide']);
 
 });
