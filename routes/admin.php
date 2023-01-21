@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\InterestsController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\QualificationsController;
@@ -65,8 +66,16 @@ Route::prefix('admin_restricted')->group(function () {
 
         Route::post('/create_plan_option', [PlanController::class, 'create_plan_options']);
         Route::get('/get_plan_options', [PlanController::class, 'get_all_plan_options']);
-        Route::put('/edit_plan_options/{id}',[PlanController::class,'edit_plan_options']);
-        Route::delete('/delete_plan_options/{id}',[PlanController::class,'delete_plan_options']);
+        Route::put('/edit_plan_options/{id}', [PlanController::class, 'edit_plan_options']);
+        Route::delete('/delete_plan_options/{id}', [PlanController::class, 'delete_plan_options']);
+
+        #users
+
+        Route::get('/get_all_students_and_filter_by_status', [AdminUserController::class, 'view_all_students_and_filter']);
+        Route::get('/get_all_proguides_and_filter_by_status', [AdminUserController::class, 'view_all_proguids_and_filter']);
+        Route::put('/unblock_blocked_users/{id}', [AdminUserController::class, 'unblock_blocked_users']);
+        Route::get('/search_students', [AdminUserController::class, 'search_students']);
+        Route::get('/search_proguides', [AdminUserController::class, 'search_proguides']);
 
     });
 });

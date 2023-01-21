@@ -50,4 +50,6 @@ class BadWordsController extends Controller
 
     }
 
+ 
+
 }
