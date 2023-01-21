@@ -65,6 +65,11 @@ Route::get('/get_reviews', [RatingController::class, 'get_all_reviews']);
 Route::get('/search_students', [AdminUserController::class, 'search_students']);
 Route::get('/search_proguides', [AdminUserController::class, 'search_proguides']);
 
+
+Route::get('/get_userinterests_by_interest_id/{id}',[UserAuthController::class,'filter_userinterests_by_interests_id']);
+Route::get('/get_userspecialization_by_specialization_id/{id}',[UserAuthController::class,'filter_userspecialization_by_specialization_id']);
+Route::get('/get_userqualification_by_qualification_id/{id}',[UserAuthController::class,'filter_userqualification_by_qualification_id']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
     Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);

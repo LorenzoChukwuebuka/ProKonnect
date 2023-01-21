@@ -583,4 +583,49 @@ class UserAuthController extends Controller
         }
     }
 
+    public function filter_userspecialization_by_specialization_id($id)
+    {
+        try {
+            $userspecialization = UserSpecialization::with(['user' => function ($query) {
+                $query->where('user_type', 'proguide');
+            }])->where('specialization_id', $id)->latest()->get();
+            if ($userspecialization->count() == 0) {
+                return response(["code" => 3, "message" => "No proguides found"]);
+            }
+            return response(["code" => 1, "data" => $userspecialization]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function filter_userinterests_by_interests_id($id)
+    {
+        try {
+            $userinterest = UserInterests::with(['user' => function ($query) {
+                $query->where('user_type', 'proguide');
+            }])->where('interest_id', $id)->latest()->get();
+            if ($userinterest->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+            return response(["code" => 1, "data" => $userinterest]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function filter_userqualification_by_qualification_id($id)
+    {
+        try {
+            $userqualification = UserQualification::with(['user' => function ($query) {
+                $query->where('user_type', 'proguide');
+            }])->where('qualification_id', $id)->latest()->get();
+            if ($userqualification->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+            return response(["code" => 1, "data" => $userqualification]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
 }

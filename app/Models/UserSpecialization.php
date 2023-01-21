@@ -15,7 +15,7 @@ class UserSpecialization extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class)->select('id', 'full_name', 'email');
+        return $this->belongsTo(User::class);
     }
 
     public function specialization(){
