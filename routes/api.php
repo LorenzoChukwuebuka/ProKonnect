@@ -162,7 +162,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     #route
 
     Route::get('/get_referals', [ReferalController::class, 'get_referals_for_a_user']);
-    Route::get('/get_referal_transactions', [ReferalController::class, 'get_referal_commission']);
+    Route::get('/get_referal_commissions', [ReferalController::class, 'get_referal_commission']);
     #rating
 
     Route::post('/create_rating', [RatingController::class, 'create_rating']);
