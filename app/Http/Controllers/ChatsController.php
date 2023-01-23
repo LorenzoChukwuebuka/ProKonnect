@@ -49,6 +49,7 @@ class ChatsController extends Controller
                 'message' => $filteredMessage,
                 'files' => $files ?? null,
                 'chat_code' => $code,
+                'file_type'=>$request->hasFile('chat_file')->extension()
             ]);
 
             return response()->json(['code' => 1, 'success' => 'Messages sent successfully'], 200);
