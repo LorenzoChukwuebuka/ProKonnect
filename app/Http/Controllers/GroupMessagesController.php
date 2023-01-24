@@ -33,6 +33,7 @@ class GroupMessagesController extends Controller
                     return response()->json(["code" => 3, 'error' => $validate->errors()->first()]);
                 }
                 $files = $request->file->store('group_messages_files', 'public');
+                $ext = $request->file('file')->extension();
             }
             $filteredText = $this->filter($request->message, $request->user_id);
 
@@ -42,6 +43,7 @@ class GroupMessagesController extends Controller
                 "message" => $filteredText,
                 "files" => $file ?? null,
                 "chat_code" => auth()->user()->id . "" . $request->group_id,
+                "file_type" => $ext ?? null,
             ]);
 
             return response(["code" => 1, "message" => "message sent"]);
