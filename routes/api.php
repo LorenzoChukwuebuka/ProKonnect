@@ -166,6 +166,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     #rating
 
     Route::post('/create_rating', [RatingController::class, 'create_rating']);
+    Route::get('/get_review_for_a_user',[RatingController::class,'get_review_for_a_user']);
 
     #student proguide
 

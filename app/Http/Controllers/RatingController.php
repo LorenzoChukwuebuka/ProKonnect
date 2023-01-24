@@ -46,4 +46,18 @@ class RatingController extends Controller
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }
+
+    public function get_review_for_a_user()
+    {
+        try {
+            $rating = Rating::with('user_review')->where('user_id', auth()->user()->id)->latest()->get();
+            if ($rating->count() == 0) {
+                return response(["code" => 3, "message" => "no record found"]);
+            }
+
+            return response(["code" => 1, "data" => $rating]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
 }

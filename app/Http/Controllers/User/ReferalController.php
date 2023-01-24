@@ -26,7 +26,7 @@ class ReferalController extends Controller
     public function get_referal_commission()
     {
         try {
-            $referal_transactions = Referal_transaction::with()->where('reffered_by', auth()->user()->id)->latest()->get();
+            $referal_transactions = Referal_transaction::with('user_referred')->where('referred_by', auth()->user()->id)->latest()->get();
             if ($referal_transactions->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
             }

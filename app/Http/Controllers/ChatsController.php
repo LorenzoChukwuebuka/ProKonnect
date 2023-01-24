@@ -34,6 +34,8 @@ class ChatsController extends Controller
                     return response()->json(["code" => 3, 'error' => $validate->errors()->first()]);
                 }
                 $files = $request->chat_file->store('chat_files', 'public');
+                $ext = $request->file('chat_file')->extension();
+
             }
 
             if (auth()->user()->id > $request->receiver_id) {
@@ -49,11 +51,12 @@ class ChatsController extends Controller
                 'message' => $filteredMessage,
                 'files' => $files ?? null,
                 'chat_code' => $code,
-                'file_type'=>$request->hasFile('chat_file')->extension()
+                'file_type' => $ext ?? null,
             ]);
 
             return response()->json(['code' => 1, 'success' => 'Messages sent successfully'], 200);
         } catch (\Throwable$th) {
+
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
 
