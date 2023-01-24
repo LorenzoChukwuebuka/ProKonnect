@@ -628,4 +628,41 @@ class UserAuthController extends Controller
         }
     }
 
+    public function filter_students_by_country($id)
+    {
+        try {
+            $students = User::where('country_id', $id)->where('user_type', 'student')->latest()->get();
+
+            if ($students->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+            return response(["code" => 1, "data" => $students]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function filter_student_userqualification_by_qualification_id($id)
+    {
+        try {
+            $userqualification = UserQualification::with(['user' => function ($query) {
+                $query->where('user_type', 'student');
+            }])->where('qualification_id', $id)->latest()->get();
+            if ($userqualification->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+            return response(["code" => 1, "data" => $userqualification]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function filter_proguide_by_rating(){
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
 }
