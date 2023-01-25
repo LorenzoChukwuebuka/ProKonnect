@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Referal;
 use App\Models\Service;
 use App\Models\Interests;
 use App\Models\University;
@@ -31,6 +32,7 @@ class DatabaseSeeder extends Seeder
         Specialization::factory(10)->create();
         University::factory(10)->create();
         Service::factory(10)->create();
+        Referal::factory(20)->create();
 
 
     }

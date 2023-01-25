@@ -10,7 +10,7 @@ class ReferalController extends Controller
     public function get_referals_for_a_user()
     {
         try {
-            $referals = Referal::where('referal_id', auth()->user()->id)->lates()->get();
+            $referals = Referal::where('referal_id', auth()->user()->id)->latest()->get();
 
             if ($referals->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
