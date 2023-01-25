@@ -10,6 +10,7 @@ use App\Models\University;
 use App\Models\Qualifications;
 use App\Models\Specialization;
 use Illuminate\Database\Seeder;
+use App\Models\Referal_transaction;
 
 class DatabaseSeeder extends Seeder
 {
@@ -33,6 +34,7 @@ class DatabaseSeeder extends Seeder
         University::factory(10)->create();
         Service::factory(10)->create();
         Referal::factory(20)->create();
+        Referal_transaction::factory(20)->create();
 
 
     }

@@ -20,8 +20,8 @@ class ReferalFactory extends Factory
     public function definition()
     {
         return [
-            "referal_id" => Arr::shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 0])[0],
-            "referee_id" => Arr::shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 0])[0],
+            "referal_id" => Arr::shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9])[0],
+            "referee_id" => Arr::shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9])[0],
         ];
     }
 }
