@@ -116,6 +116,7 @@ class PlanController extends Controller
                 "amount" => ["required"],
                 "previous_amount" => [],
                 "description" => [],
+                "number_of_proguides" => "required",
             ]);
 
             if ($validator->fails()) {
@@ -128,6 +129,7 @@ class PlanController extends Controller
                 "amount" => $request->amount,
                 "previous_amount" => $request->previous_amount,
                 "description" => $request->description,
+                "number_of_proguides" => $request->number_of_proguides,
             ]);
 
             return response(["code" => 1, "message" => "plan options created successfully"]);
