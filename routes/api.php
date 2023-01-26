@@ -1,31 +1,32 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ChatsController;
-use App\Http\Controllers\GroupController;
-use App\Http\Controllers\RatingController;
-use App\Http\Controllers\Admin\PlanController;
-use App\Http\Controllers\UniversityController;
-use App\Http\Controllers\BankDetailsController;
-use App\Http\Controllers\User\ReferalController;
-use App\Http\Controllers\Auth\UserAuthController;
-use App\Http\Controllers\GroupMessagesController;
-use App\Http\Controllers\Admin\ServicesController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\InterestsController;
-use App\Http\Controllers\Project\ProjectController;
-use App\Http\Controllers\StudentsProguideController;
-use App\Http\Controllers\User\UserInterestsController;
-use App\Http\Controllers\Transaction\PaymentController;
-use App\Http\Controllers\User\fetchCountriesController;
-use App\Http\Controllers\VideoTutorialUploadController;
+use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\QualificationsController;
-use App\Http\Controllers\Admin\SpecializationController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
+use App\Http\Controllers\Admin\ServicesController;
+use App\Http\Controllers\Admin\SpecializationController;
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\BankDetailsController;
+use App\Http\Controllers\ChatsController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\GroupMessagesController;
+use App\Http\Controllers\ProguideChatController;
+use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\RatingController;
+use App\Http\Controllers\StudentsProguideController;
+use App\Http\Controllers\Transaction\PaymentController;
+use App\Http\Controllers\Transaction\WithdrawalRequestController;
+use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\User\fetchCountriesController;
+use App\Http\Controllers\User\ReferalController;
+use App\Http\Controllers\User\UserInterestsController;
 use App\Http\Controllers\User\UserQualificationController;
 use App\Http\Controllers\User\UserSpecializationController;
-use App\Http\Controllers\Transaction\WithdrawalRequestController;
+use App\Http\Controllers\VideoTutorialUploadController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,11 +67,10 @@ Route::get('/get_reviews', [RatingController::class, 'get_all_reviews']);
 Route::get('/search_students', [AdminUserController::class, 'search_students']);
 Route::get('/search_proguides', [AdminUserController::class, 'search_proguides']);
 
-
-Route::get('/get_userinterests_by_interest_id/{id}',[UserAuthController::class,'filter_userinterests_by_interests_id']);
-Route::get('/get_userspecialization_by_specialization_id/{id}',[UserAuthController::class,'filter_userspecialization_by_specialization_id']);
-Route::get('/get_userqualification_by_qualification_id/{id}',[UserAuthController::class,'filter_userqualification_by_qualification_id']);
-Route::get('/get_student_qualifications_by_qualification_id/{id}',[UserAuthController::class,'filter_student_userqualification_by_qualification_id']);
+Route::get('/get_userinterests_by_interest_id/{id}', [UserAuthController::class, 'filter_userinterests_by_interests_id']);
+Route::get('/get_userspecialization_by_specialization_id/{id}', [UserAuthController::class, 'filter_userspecialization_by_specialization_id']);
+Route::get('/get_userqualification_by_qualification_id/{id}', [UserAuthController::class, 'filter_userqualification_by_qualification_id']);
+Route::get('/get_student_qualifications_by_qualification_id/{id}', [UserAuthController::class, 'filter_student_userqualification_by_qualification_id']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
     Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
@@ -167,7 +167,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     #rating
 
     Route::post('/create_rating', [RatingController::class, 'create_rating']);
-    Route::get('/get_review_for_a_user',[RatingController::class,'get_review_for_a_user']);
+    Route::get('/get_review_for_a_user', [RatingController::class, 'get_review_for_a_user']);
 
     #student proguide
 
@@ -176,16 +176,21 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/get_proguide_student', [StudentsProguideController::class, 'get_all_proguides_students']);
     Route::delete('/delete_student_proguide/{id}', [StudentsProguideController::class, 'delete_student_proguide']);
 
+    Route::post('/create_tutorial', [VideoTutorialUploadController::class, 'create_tutorial']);
+    Route::get('/get_all_tutorials', [VideoTutorialUploadController::class, 'get_all_tutorials']);
+    Route::get('/get_all_tutorial_for_a_particular_proguide/{id}', [VideoTutorialUploadController::class, 'get_all_tutorials_for_a_particular_proguide']);
+    Route::get('/get_single_tutorial/{id}', [VideoTutorialUploadController::class, 'get_single_tutorial']);
+    Route::put('/edit_tutorial/{id}', [VideoTutorialUploadController::class, 'edit_tutorial']);
+    Route::delete('/delete_tutorial/{id}', [VideoTutorialUploadController::class, 'delete_tutorial']);
+    Route::get('/get_proguide_tutorial', [VideoTutorialUploadController::class, 'get_proguide_tutorial']);
 
+    #proguide chat
 
-    Route::post('/create_tutorial',[VideoTutorialUploadController::class,'create_tutorial']);
-    Route::get('/get_all_tutorials',[VideoTutorialUploadController::class,'get_all_tutorials']);
-    Route::get('/get_all_tutorial_for_a_particular_proguide/{id}',[VideoTutorialUploadController::class,'get_all_tutorials_for_a_particular_proguide']);
-    Route::get('/get_single_tutorial/{id}',[VideoTutorialUploadController::class,'get_single_tutorial']);
-    Route::put('/edit_tutorial/{id}',[VideoTutorialUploadController::class,'edit_tutorial']);
-    Route::delete('/delete_tutorial/{id}',[VideoTutorialUploadController::class,'delete_tutorial']);
-    Route::get('/get_proguide_tutorial',[VideoTutorialUploadController::class,'get_proguide_tutorial']);
-
+    # messages
+    Route::post('/create_pro_message', [ProguideChatController::class, 'store']);
+   // Route::get('/get_pro_messages', [ProguideChatController::class, 'index']);
+    Route::get('/get_last_messages_in_pro_chatlist', [ProguideChatController::class, 'getMessages']);
+    Route::get('/get_pro_messages_between_two_users/{id}', [ProguideChatController::class, 'show']);
 
 });
 
