@@ -188,7 +188,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     # messages
     Route::post('/create_pro_message', [ProguideChatController::class, 'store']);
-   // Route::get('/get_pro_messages', [ProguideChatController::class, 'index']);
+    // Route::get('/get_pro_messages', [ProguideChatController::class, 'index']);
     Route::get('/get_last_messages_in_pro_chatlist', [ProguideChatController::class, 'getMessages']);
     Route::get('/get_pro_messages_between_two_users/{id}', [ProguideChatController::class, 'show']);
 

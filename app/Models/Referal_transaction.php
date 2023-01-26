@@ -12,7 +12,7 @@ class Referal_transaction extends Model
 
     protected $guarded = [];
 
-    public function user_referred(){
+    public function user_referal(){
         return $this->belongsTo(User::class,'user_referred');
     }
 }
