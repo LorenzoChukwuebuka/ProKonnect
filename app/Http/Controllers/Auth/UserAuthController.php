@@ -559,7 +559,11 @@ class UserAuthController extends Controller
     public function get_all_students()
     {
         try {
-            $students = User::where('user_type', 'student')->where('id', '!=', auth()->user()->id)->latest()->get();
+            $students = $user = DB::table('countries')->join('users', 'country_id', '=', 'users.country_id')
+                ->select('countries.name', 'countries.short_name', 'users.*')
+                ->where('users.user_type', 'student')
+                ->where('users.id', '!=', auth()->user()->id)
+                ->latest()->get();
             if ($students->count() == 0) {
                 return response(["code" => 3, "message" => "No students found"]);
             }
@@ -573,7 +577,11 @@ class UserAuthController extends Controller
     public function get_all_proguides()
     {
         try {
-            $proguides = User::where('user_type', 'proguide')->latest()->get();
+            $proguides = $user = DB::table('countries')->join('users', 'country_id', '=', 'users.country_id')
+                ->select('countries.name', 'countries.short_name', 'users.*')
+                ->where('users.user_type', 'proguide')
+                ->get();
+
             if ($proguides->count() == 0) {
                 return response(["code" => 3, "message" => "No proguides found"]);
             }
@@ -657,10 +665,11 @@ class UserAuthController extends Controller
         }
     }
 
-    public function filter_proguide_by_rating(){
+    public function filter_proguide_by_rating()
+    {
         try {
             //code...
-        } catch (\Throwable $th) {
+        } catch (\Throwable$th) {
             //throw $th;
         }
     }
