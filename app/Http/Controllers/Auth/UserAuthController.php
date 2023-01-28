@@ -559,12 +559,17 @@ class UserAuthController extends Controller
     public function get_all_students()
     {
         try {
-            $students = $user = DB::table('countries')->join('users', 'country_id', '=', 'users.country_id')
-                ->select('countries.name', 'countries.short_name', 'users.*')
-                ->where('users.user_type', 'student')
-                ->where('users.id', '!=', auth()->user()->id)
-                ->latest()->get();
-            if ($students->count() == 0) {
+            $id = auth()->user()->id;
+            $students = $user = DB::table('users')
+                ->select('users.*', 'countries.name as country_name', 'countries.short_name as country_short_name')
+                ->join('countries', 'users.country_id', '=', 'countries.id')
+                ->where([
+                    ['user_type', '=', 'student'],
+                    ['users.id', '=', $id],
+                ])
+                ->get();
+
+            if (count($students) == 0) {
                 return response(["code" => 3, "message" => "No students found"]);
             }
 
@@ -577,11 +582,14 @@ class UserAuthController extends Controller
     public function get_all_proguides()
     {
         try {
-            $proguides = $user = DB::table('countries')->join('users', 'country_id', '=', 'users.country_id')
-                ->select('countries.name', 'countries.short_name', 'users.*')
-                ->where('users.user_type', 'proguide')
-                ->get();
+            $proguides = DB::table('users')
+                ->select('users.*', 'countries.name as country_name', 'countries.short_name as country_short_name')
+                ->join('countries', 'users.country_id', '=', 'countries.id')
+                ->where([
+                    ['user_type', '=', 'proguide'],
 
+                ])
+                ->get();
             if ($proguides->count() == 0) {
                 return response(["code" => 3, "message" => "No proguides found"]);
             }
