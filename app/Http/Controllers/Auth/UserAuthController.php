@@ -382,6 +382,22 @@ class UserAuthController extends Controller
             $user->university = $request->university_id ?? $user->university;
             $user->country_id = $request->country_id ?? $user->country_id;
             $user->phone_number = $request->phone_number ?? $user->phone_number;
+
+            if ($request->hasFile('profile_image')) {
+                $validator = Validator::make($request->all(), [
+
+                    'profile_image' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg|max:5048',
+
+                ]);
+
+                if ($validator->fails()) {
+                    return response()->json(['code' => 3, 'error' => $validator->errors()->first()], 401);
+                }
+                $profile_image = $request->profile_image->store('profile_images', 'public');
+
+                $user->profile_image = $profile_image;
+            }
+
             $user->save();
 
             if ($request->data) {
