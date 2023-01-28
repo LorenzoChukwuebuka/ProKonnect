@@ -395,7 +395,7 @@ class UserAuthController extends Controller
                 }
                 $profile_image = $request->profile_image->store('profile_images', 'public');
 
-                $user->profile_image = $profile_image;
+                $user->profile_image = $profile_image ?? $user->profile_image;
             }
 
             $user->save();
