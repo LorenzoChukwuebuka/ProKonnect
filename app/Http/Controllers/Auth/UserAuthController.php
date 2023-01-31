@@ -624,7 +624,10 @@ class UserAuthController extends Controller
             if ($userspecialization->count() == 0) {
                 return response(["code" => 3, "message" => "No proguides found"]);
             }
-            return response(["code" => 1, "data" => $userspecialization]);
+            return response(["code" => 1, "data" => $userspecialization->filter(function ($uq) {
+                return !is_null($uq->user);
+            })->values(),
+            ]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
@@ -639,7 +642,10 @@ class UserAuthController extends Controller
             if ($userinterest->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
             }
-            return response(["code" => 1, "data" => $userinterest]);
+            return response(["code" => 1, "data" => $userinterest->filter(function ($uq) {
+                return !is_null($uq->user);
+            })->values(),
+            ]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
@@ -654,7 +660,10 @@ class UserAuthController extends Controller
             if ($userqualification->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
             }
-            return response(["code" => 1, "data" => $userqualification]);
+            return response(["code" => 1, "data" => $userqualification->filter(function ($uq) {
+                return !is_null($uq->user);
+            })->values(),
+            ]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
@@ -683,7 +692,10 @@ class UserAuthController extends Controller
             if ($userqualification->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
             }
-            return response(["code" => 1, "data" => $userqualification]);
+            return response(["code" => 1, "data" => $userqualification->filter(function ($uq) {
+                return !is_null($uq->user);
+            })->values(),
+            ]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }

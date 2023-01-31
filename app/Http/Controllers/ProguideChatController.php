@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
+use App\Models\User;
 use App\Models\BadWords;
 use App\Models\ProguideChat;
 use Illuminate\Http\Request;
 use App\Http\Resources\MessageResource;
-use Validator;
 
 class ProguideChatController extends Controller
 {
