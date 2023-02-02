@@ -9,6 +9,7 @@ use App\Models\Referal;
 use App\Models\Socials;
 use App\Models\UserGroup;
 use App\Models\UserInterests;
+use App\Models\UserQualification;
 use App\Models\Wallet;
 use App\Models\WithdrawalRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

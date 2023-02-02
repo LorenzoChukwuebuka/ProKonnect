@@ -28,11 +28,11 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        Interests::factory(10)->create();
-        Qualifications::factory(10)->create();
-        Specialization::factory(10)->create();
-        University::factory(10)->create();
-        Service::factory(10)->create();
+        // Interests::factory(10)->create();
+        // Qualifications::factory(10)->create();
+        // Specialization::factory(10)->create();
+        // University::factory(10)->create();
+        // Service::factory(10)->create();
         Referal::factory(20)->create();
         Referal_transaction::factory(20)->create();
 

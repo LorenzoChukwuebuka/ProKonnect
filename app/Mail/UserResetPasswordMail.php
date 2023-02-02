@@ -20,11 +20,11 @@ class UserResetPasswordMail extends Mailable
     public $subject;
     public $otp;
 
-    public function __construct($subject, $message, $otp)
+    public function __construct($subject, $message)
     {
         $this->message = $message;
         $this->subject = $subject;
-        $this->otp = $otp;
+        
     }
 
     /**

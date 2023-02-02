@@ -701,13 +701,51 @@ class UserAuthController extends Controller
         }
     }
 
-    public function filter_proguide_by_rating()
+    public function filter_proguide(Request $request)
     {
         try {
-            //code...
+            $interest = $request->interest;
+            $specialization = $request->specialization;
+            $qualification = $request->qualification;
+            $review = $request->rating;
+
+            $proguide = User::where('user_type', 'proguide')
+                ->when($interest, function ($query) use ($interest) {
+                    $query->whereHas('userinterests', function ($subQuery) use ($interest) {
+                        $subQuery->whereHas('interests', function ($subSubQuery) use ($interest) {
+                            $subSubQuery->where('interests', $interest);
+                        });
+                    });
+                })
+                ->when($specialization, function ($query) use ($specialization) {
+                    $query->whereHas('userspecialization', function ($subQuery) use ($specialization) {
+                        $subQuery->whereHas('specialization', function ($subSubQuery) use ($specialization) {
+                            $subSubQuery->where('specialization', $specialization);
+                        });
+                    });
+                })
+                ->when($qualification, function ($query) use ($qualification) {
+                    $query->whereHas('userqualifications', function ($subQuery) use ($qualification) {
+                        $subQuery->whereHas('qualifications', function ($subSubQuery) use ($qualification) {
+                            $subSubQuery->where('qualification', $qualification);
+                        });
+                    });
+                })
+                ->when($review,function($query) use($review){
+                    $query->whereHas('review',function($subQuery) use ($review){
+                        $subQuery->where('');
+                    });
+                })
+
+
+                ->with(['userqualification.qualifications', 'userspecialization.specialization', 'userinterests.interests', 'review'])
+                ->get();
+
+            return response(["code" => 1, "data" => $proguide]);
         } catch (\Throwable$th) {
-            //throw $th;
+            return response(["code" => 3, "error" => $th->getMessage()]);
         }
+
     }
 
 }

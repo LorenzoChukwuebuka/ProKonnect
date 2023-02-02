@@ -43,6 +43,7 @@ class PaymentController extends Controller
                     "payer_fullname" => auth()->user()->full_name ?? null,
                     "service" => $request->service_id,
                     "number_of_proguides" => $request->number_of_proguides,
+                    "referal_commission" => $request->referal_commision ?? null,
                 ]),
 
             ];
@@ -120,6 +121,7 @@ class PaymentController extends Controller
         $payer_fullname = $result->data->metadata->payer_full_name ?? null;
         $service_id = $result->data->metadata->service_id;
         $number_of_prgouides = $result->data->metadata->number_of_proguides;
+        $referal_commision = $result->data->metadata->referal_commision;
 
         #check if transaction reference already exists
 

@@ -71,6 +71,8 @@ Route::get('/get_userinterests_by_interest_id/{id}', [UserAuthController::class,
 Route::get('/get_userspecialization_by_specialization_id/{id}', [UserAuthController::class, 'filter_userspecialization_by_specialization_id']);
 Route::get('/get_userqualification_by_qualification_id/{id}', [UserAuthController::class, 'filter_userqualification_by_qualification_id']);
 Route::get('/get_student_qualifications_by_qualification_id/{id}', [UserAuthController::class, 'filter_student_userqualification_by_qualification_id']);
+
+Route::get('/filter_proguides', [UserAuthController::class, 'filter_proguide']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
     Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
