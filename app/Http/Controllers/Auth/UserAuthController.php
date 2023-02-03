@@ -708,6 +708,8 @@ class UserAuthController extends Controller
             $specialization = $request->specialization;
             $qualification = $request->qualification;
             $review = $request->rating;
+            $university = $request->universtiy;
+            $country = $request->country;
 
             $proguide = User::where('user_type', 'proguide')
                 ->when($interest, function ($query) use ($interest) {
@@ -736,6 +738,9 @@ class UserAuthController extends Controller
                         $subQuery->where('rating', $review);
                     });
                 })
+                ->when($country, function ($query) use ($country) {
+                    $query->where('country_id', $country);
+                })
 
                 ->with(['userqualification.qualifications', 'userspecialization.specialization', 'userinterests.interests', 'review'])
                 ->get();
@@ -757,6 +762,9 @@ class UserAuthController extends Controller
             $student = User::where('user_type', 'student')
                 ->when($request->university, function ($query) use ($request) {
                     $query->where('university', $request->university);
+                })
+                ->when($request->country, function ($query) use ($request) {
+                    $query->where('country_id', $request->country_id);
                 })
                 ->get();
 
