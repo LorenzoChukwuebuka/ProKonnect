@@ -55,7 +55,7 @@ class GroupMessagesController extends Controller
     public function get_group_messages($id)
     {
         try {
-            $groupMessages = GroupMessage::with('user')
+            $groupMessages = GroupMessage::with('user', 'group')
                 ->where('group_id', $id)
                 ->where('user_id', auth()->user()->id)
                 ->orderBy('id', 'asc')
@@ -73,7 +73,7 @@ class GroupMessagesController extends Controller
     public function get_last_messages_in_a_group()
     {
         try {
-            $message = GroupMessage::with('user')
+            $message = GroupMessage::with('user', 'group')
                 ->where('user_id', auth()->user()->id)
                 ->orderBy('created_at', 'desc')
                 ->get()->unique('chat_code');

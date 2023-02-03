@@ -24,10 +24,22 @@ class GroupController extends Controller
                 return response()->json(["code" => 3, 'error' => $validator->errors()], 401);
             }
 
+            if ($request->hasFile('file')) {
+                $validate = Validator::make($request->all(), [
+                    'file' => 'mimes:jpeg,png,jpg,gif,svg,pdf,docx|max:10000',
+                ]);
+                if ($validate->fails()) {
+                    return response()->json(["code" => 3, 'error' => $validate->errors()->first()]);
+                }
+                $files = $request->file->store('group_files', 'public');
+
+            }
+
             $group = Group::create([
                 'group_name' => $request->group_name,
                 'group_description' => $request->group_description,
                 'user_id' => auth()->user()->id,
+                'group_image' => $files ?? null,
 
             ]);
 
@@ -155,6 +167,18 @@ class GroupController extends Controller
 
             $group->group_name = $request->group_name ?? $group->group_name;
             $group->group_description = $request->group_description ?? $group->group_description;
+
+            if ($request->hasFile('file')) {
+                $validate = Validator::make($request->all(), [
+                    'file' => 'mimes:jpeg,png,jpg,gif,svg,pdf,docx|max:10000',
+                ]);
+                if ($validate->fails()) {
+                    return response()->json(["code" => 3, 'error' => $validate->errors()->first()]);
+                }
+                $files = $request->file->store('group_messages_files', 'public');
+
+                $group->group_image = $files ?? $group->group_image;
+            }
 
             $group->save();
 

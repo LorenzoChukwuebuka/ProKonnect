@@ -731,21 +731,42 @@ class UserAuthController extends Controller
                         });
                     });
                 })
-                ->when($review,function($query) use($review){
-                    $query->whereHas('review',function($subQuery) use ($review){
-                        $subQuery->where('');
+                ->when($review, function ($query) use ($review) {
+                    $query->whereHas('review', function ($subQuery) use ($review) {
+                        $subQuery->where('rating', $review);
                     });
                 })
 
-
                 ->with(['userqualification.qualifications', 'userspecialization.specialization', 'userinterests.interests', 'review'])
                 ->get();
+
+            if ($proguide->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
 
             return response(["code" => 1, "data" => $proguide]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
 
+    }
+
+    public function filter_students(Request $request)
+    {
+        try {
+            $student = User::where('user_type', 'student')
+                ->when($request->university, function ($query) use ($request) {
+                    $query->where('university', $request->university);
+                })
+                ->get();
+
+            if ($student->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+            return response(["code" => 1, "data" => $student]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
     }
 
 }
