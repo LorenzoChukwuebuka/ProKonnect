@@ -85,7 +85,7 @@ class GroupMessagesController extends Controller
 
             $toArray = new GroupChatResource($message);
 
-            return response(["code" => 1, "data" => $message]);
+            return response(["code" => 1, "data" => $toArray]);
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
