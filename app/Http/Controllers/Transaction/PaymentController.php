@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\Plan;
 use App\Models\Referal;
 use App\Models\Referal_transaction;
+use App\Models\RefWallet;
 use App\Models\Wallet;
 use DB;
 use Illuminate\Http\Request;
@@ -44,6 +45,7 @@ class PaymentController extends Controller
                     "service" => $request->service_id,
                     "number_of_proguides" => $request->number_of_proguides,
                     "referal_commission" => $request->referal_commision ?? null,
+                    "plan_options" => $request->plan_options,
                 ]),
 
             ];
@@ -122,6 +124,7 @@ class PaymentController extends Controller
         $service_id = $result->data->metadata->service_id;
         $number_of_prgouides = $result->data->metadata->number_of_proguides;
         $referal_commision = $result->data->metadata->referal_commision;
+        $plan_option = $result->data->metadata->plan_option_id ?? null;
 
         #check if transaction reference already exists
 
@@ -133,7 +136,7 @@ class PaymentController extends Controller
 
         #start database transaction
 
-        DB::transaction(function () use ($reference, $amount, $plan_id, $user_id, $proguide_id, $payer_email, $payer_fullname, $service_id, $number_of_prgouides) {
+        DB::transaction(function () use ($reference, $amount, $plan_id, $user_id, $proguide_id, $payer_email, $payer_fullname, $service_id, $number_of_prgouides, $referal_commision) {
 
             #pull the duration from the plan_id
 
@@ -148,6 +151,12 @@ class PaymentController extends Controller
             $referalEarnings = $amount - $referalPercentage;
 
             $referal = $this->referal_check($user_id, $referalEarnings, 0);
+
+            #check if payment also paid with referal commision
+
+            if ($referal_commision !== null) {
+                $this->debit_referal_wallet($referal_commision, $user_id);
+            }
 
             #create expiry date
             $today = date("F j, Y, g:i a");
@@ -199,22 +208,37 @@ class PaymentController extends Controller
             return false;
         }
 
-        $ref_transactions_check = Referal_transaction::where('referred_by', $check_if_referred->referal_id)->where('user_referred', $request->user_id)->first();
+        $ref_transactions_check = Referal_transaction::where('referred_by', $check_if_referred->referal_id)->where('user_referred', $user_id)->first();
 
-        if ($ref_transactions_check == null) {
+        if ($ref_transactions_check != null) {
             return false;
         }
         #create referal_transactions
 
         $ref_transactions = Referal_transaction::create([
-            "referred_by" => $user_id,
-            "user_referred" => $check_if_referred->referee_id,
+            "referred_by" => $check_if_referred->referal_id,
+            "user_referred" => $user_id,
             "payment_id" => $payment_id,
             "amount_earned" => $amount_payable,
         ]);
 
         if (!$ref_transactions) {
             return false;
+        }
+
+        #credit ref wallet
+
+        if ($ref_transactions) {
+            #check the balance of the proguide
+
+            $previous_balance = DB::select('SELECT ifnull((select available_balance from ref_wallets where user_id = ?  order by id desc limit 1), 0 ) AS prevbal', [$check_if_referred->referal_id]);
+
+            #fund proguide's wallet
+
+            $wallet = RefWallet::updateOrCreate(['user_id' => $proguide_id],
+                [
+                    "available_balance" => $amount + $previous_balance[0]->prevbal,
+                ]);
         }
 
         return true;
@@ -232,4 +256,20 @@ class PaymentController extends Controller
         date_add($date, date_interval_create_from_date_string($day_passed));
         return date_format($date, "Y-m-d");
     }
+
+    private function debit_referal_wallet(int | float $referal_commision_amount, mixed $user_id)
+    {
+        $previous_balance = DB::select('SELECT ifnull((select available_balance from ref_wallets where user_id = ?  order by id desc limit 1), 0 ) AS prevbal', [$user_id]);
+
+        #debit referal commission's wallet
+
+        if ($previous_balance > 0) {
+            $wallet = RefWallet::updateOrCreate(['user_id' => $proguide_id],
+                [
+                    "available_balance" => $previous_balance[0]->prevbal - $referal_commission_amount,
+                ]);
+        }
+
+    }
+
 }

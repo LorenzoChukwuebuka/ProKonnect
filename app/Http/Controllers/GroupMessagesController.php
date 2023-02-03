@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\MessageResource;
+use App\Http\Resources\GroupChatResource;
 use App\Models\BadWords;
 use App\Models\GroupMessage;
 use App\Models\User;
@@ -83,7 +83,7 @@ class GroupMessagesController extends Controller
                 return response(['code' => 3, 'message' => "No record found"]);
             }
 
-            $toArray = new MessageResource($message);
+            $toArray = new GroupChatResource($message);
 
             return response(["code" => 1, "data" => $message]);
         } catch (\Throwable$th) {
