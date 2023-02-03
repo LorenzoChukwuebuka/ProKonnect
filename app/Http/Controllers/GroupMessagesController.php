@@ -42,7 +42,7 @@ class GroupMessagesController extends Controller
                 "user_id" => auth()->user()->id,
                 "group_id" => $request->group_id,
                 "message" => $filteredText,
-                "files" => $file ?? null,
+                "files" => $files ?? null,
                 "chat_code" => auth()->user()->id . "" . $request->group_id,
                 "file_type" => $ext ?? null,
             ]);
