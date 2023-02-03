@@ -25,15 +25,16 @@ class GroupMessagesController extends Controller
                 return response()->json(["code" => 3, 'error' => $validator->errors()], 401);
             }
 
-            if ($request->hasFile('file')) {
+            if ($request->hasFile('group_file')) {
+
                 $validate = Validator::make($request->all(), [
                     'file' => 'mimes:jpeg,png,jpg,gif,svg,pdf,docx|max:10000',
                 ]);
                 if ($validate->fails()) {
                     return response()->json(["code" => 3, 'error' => $validate->errors()->first()]);
                 }
-                $files = $request->file->store('group_messages_files', 'public');
-                $ext = $request->file('file')->extension();
+                $files = $request->group_file->store('group_messages_files', 'public');
+                $ext = $request->file('group_file')->extension();
             }
             $filteredText = $this->filter($request->message, $request->user_id);
 
