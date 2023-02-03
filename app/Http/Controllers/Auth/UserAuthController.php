@@ -581,7 +581,7 @@ class UserAuthController extends Controller
                 ->join('countries', 'users.country_id', '=', 'countries.id')
                 ->where([
                     ['user_type', '=', 'student'],
-                    ['users.id', '=', $id],
+                    ['users.id', '!=', $id],
                 ])
                 ->get();
 
@@ -598,11 +598,13 @@ class UserAuthController extends Controller
     public function get_all_proguides()
     {
         try {
+            $id = auth()->user()->id;
             $proguides = DB::table('users')
                 ->select('users.*', 'countries.name as country_name', 'countries.short_name as country_short_name')
                 ->join('countries', 'users.country_id', '=', 'countries.id')
                 ->where([
                     ['user_type', '=', 'proguide'],
+                    ['users.id', '!=', $id],
 
                 ])
                 ->get();
