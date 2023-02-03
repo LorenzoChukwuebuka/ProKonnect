@@ -766,7 +766,7 @@ class UserAuthController extends Controller
                     $query->where('university', $request->university);
                 })
                 ->when($request->country, function ($query) use ($request) {
-                    $query->where('country_id', $request->country_id);
+                    $query->where('country_id', $request->country);
                 })
                 ->get();
 
