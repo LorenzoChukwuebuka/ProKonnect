@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Custom\MailMessages;
 use App\Models\StudentsProguide;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -38,6 +39,8 @@ class StudentsProguideController extends Controller
             $student->max_proguides++;
 
             $student->save();
+
+            $this->send_notification_mail($request->proguide_id, auth()->user()->full_name);
 
             return response(["code" => 1, "message" => "created successfully"]);
         } catch (\Throwable$th) {
@@ -83,5 +86,13 @@ class StudentsProguideController extends Controller
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
+    }
+
+    private function send_notification_mail($proguide_id, $student)
+    {
+        $proguide_email = User::where('id', $proguide_id)->first();
+
+        MailMessages::SendNotificationMailToProguide($student, $proguide_email->email);
+
     }
 }

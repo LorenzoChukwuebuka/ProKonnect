@@ -2,6 +2,7 @@
 
 namespace App\Custom;
 
+use App\Mail\ProguideStudentConnectMail;
 use App\Mail\UserResetPasswordMail;
 use App\Mail\UserVerificationMail;
 use Illuminate\Support\Facades\Mail;
@@ -25,6 +26,14 @@ class MailMessages
         $url = env('APP_URL') . '/reset-password/' . $email . '/' . $otp;
 
         Mail::to($email)->send(new UserResetPasswordMail($subject, $message));
+    }
+
+    public static function SendNotificationMailToProguide($student, $proguide_email)
+    {
+        $subject = " New Student Connection ";
+        $message = " A new student: {$student} just connected with you";
+
+        Mail::to($proguide_email)->send(new ProguideStudentConnectMail($subject, $message));
     }
 
 }

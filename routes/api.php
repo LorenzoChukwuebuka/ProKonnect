@@ -73,7 +73,7 @@ Route::get('/get_userqualification_by_qualification_id/{id}', [UserAuthControlle
 Route::get('/get_student_qualifications_by_qualification_id/{id}', [UserAuthController::class, 'filter_student_userqualification_by_qualification_id']);
 
 Route::get('/filter_proguides', [UserAuthController::class, 'filter_proguide']);
-Route::get('/filter_students',[UserAuthController::class,'filter_students']);
+Route::get('/filter_students', [UserAuthController::class, 'filter_students']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
     Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
@@ -194,6 +194,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Route::get('/get_pro_messages', [ProguideChatController::class, 'index']);
     Route::get('/get_last_messages_in_pro_chatlist', [ProguideChatController::class, 'getMessages']);
     Route::get('/get_pro_messages_between_two_users/{id}', [ProguideChatController::class, 'show']);
+
+    #wallets
+
+    Route::get('/get_wallet_balance', [PaymentController::class, 'wallet_balance']);
+    Route::get('/get_referal_wallet_balance', [ReferalController::class, 'get_referal_transactions_wallet_ballance']);
 
 });
 

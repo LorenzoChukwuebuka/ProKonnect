@@ -189,7 +189,7 @@ class PaymentController extends Controller
 
                 $wallet = Wallet::updateOrCreate(['user_id' => $proguide_id],
                     [
-                        "available_balance" => $amount + $previous_balance[0]->prevbal,
+                        "available_balance" => (int) $amount + (int) $previous_balance[0]->prevbal,
                     ]);
             }
 
@@ -237,7 +237,7 @@ class PaymentController extends Controller
 
             $wallet = RefWallet::updateOrCreate(['user_id' => $proguide_id],
                 [
-                    "available_balance" => $amount + $previous_balance[0]->prevbal,
+                    "available_balance" => (int) $amount + (int) $previous_balance[0]->prevbal,
                 ]);
         }
 
@@ -266,9 +266,30 @@ class PaymentController extends Controller
         if ($previous_balance > 0) {
             $wallet = RefWallet::updateOrCreate(['user_id' => $proguide_id],
                 [
-                    "available_balance" => $previous_balance[0]->prevbal - $referal_commission_amount,
+                    "available_balance" => (int) $previous_balance[0]->prevbal - (int) $referal_commission_amount,
                 ]);
         }
+
+    }
+
+    public function wallet_balance()
+    {
+
+        try {
+            $wallet_balance = Wallet::where('user_id', auth()->user()->id)->first();
+
+            if ($wallet_balance == null) {
+                return response(["code" => 1, "data" => 0]);
+            }
+
+            return response(["code" => 1, "data" => (int) $wallet_balance->available_balance]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    private function send_payment_notification()
+    {
 
     }
 
