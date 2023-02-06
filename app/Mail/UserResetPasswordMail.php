@@ -18,12 +18,13 @@ class UserResetPasswordMail extends Mailable
 
     public $message;
     public $subject;
-    public $otp;
+    public $url;
 
-    public function __construct($subject, $message)
+    public function __construct($subject, $message,$url)
     {
         $this->message = $message;
         $this->subject = $subject;
+        $this->url = $url;
         
     }
 
@@ -37,7 +38,7 @@ class UserResetPasswordMail extends Mailable
 
         $subject = $this->subject;
         $message = $this->message;
-        $otp = $this->otp;
-        return $this->markdown('mail.user-reset-password-mail', compact('subject', 'message', 'otp'));
+        $url = $this->url;
+        return $this->markdown('mail.user-reset-password-mail', compact('subject', 'message', 'url'));
     }
 }

@@ -20,12 +20,12 @@ class MailMessages
 
     public static function UserResetPasswordMail($otp, $email)
     {
-        $subject = "user Reset Mail";
+        $subject = "User Reset Mail";
         $message = "Below is the link for your password reset. \n";
         $message .= "Please note that if you didn't request for a password reset, you should disregard this mail";
         $url = env('APP_URL') . '/reset-password/' . $email . '/' . $otp;
 
-        Mail::to($email)->send(new UserResetPasswordMail($subject, $message));
+        Mail::to($email)->send(new UserResetPasswordMail($subject, $message,$url));
     }
 
     public static function SendNotificationMailToProguide($student, $proguide_email)
@@ -34,6 +34,10 @@ class MailMessages
         $message = " A new student: {$student} just connected with you";
 
         Mail::to($proguide_email)->send(new ProguideStudentConnectMail($subject, $message));
+    }
+
+    public function PaymentNotificationMail(){
+
     }
 
 }

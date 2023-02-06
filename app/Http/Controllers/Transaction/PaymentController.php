@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Transaction;
 
+use App\Custom\MailMessages;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Models\Plan;
 use App\Models\Referal;
 use App\Models\Referal_transaction;
 use App\Models\RefWallet;
+use App\Models\User;
 use App\Models\Wallet;
 use DB;
 use Illuminate\Http\Request;
@@ -81,121 +83,126 @@ class PaymentController extends Controller
 
     public function confirm_payment(Request $request, string $reference)
     {
+        try {
+            $key = config('paystack.paystack_secret');
 
-        $key = config('paystack.paystack_secret');
+            $curl = curl_init();
 
-        $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://api.paystack.co/transaction/verify/" . rawurlencode($reference),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Bearer {$key}",
+                    "Cache-Control: no-cache",
+                ),
+            ));
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://api.paystack.co/transaction/verify/" . rawurlencode($reference),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-                "Authorization: Bearer {$key}",
-                "Cache-Control: no-cache",
-            ),
-        ));
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            curl_close($curl);
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        curl_close($curl);
-
-        if ($err) {
-            return response(["code" => 3, "error" => "cURL Error :" . $err]);
-        }
-
-        $result = json_decode($response);
-
-        if ($result->data->status !== 'success') {
-            throw new \Exception("Transaction failed");
-        }
-
-        #pull details from the result object
-        $amount = $result->data->amount / 100;
-        $plan_id = $result->data->metadata->plan_id;
-        $user_id = $result->data->metadata->user_id;
-        $proguide_id = $result->data->metadata->proguide_id;
-        $payer_email = $result->data->metadata->payer_email ?? null;
-        $payer_fullname = $result->data->metadata->payer_full_name ?? null;
-        $service_id = $result->data->metadata->service_id;
-        $number_of_prgouides = $result->data->metadata->number_of_proguides;
-        $referal_commision = $result->data->metadata->referal_commision;
-        $plan_option = $result->data->metadata->plan_option_id ?? null;
-
-        #check if transaction reference already exists
-
-        $checkRefernce = Payment::where('reference', $reference)->first();
-
-        if ($checkRefernce != null) {
-            return response(["code" => 1, "message" => "possible duplicate transaction"]);
-        }
-
-        #start database transaction
-
-        DB::transaction(function () use ($reference, $amount, $plan_id, $user_id, $proguide_id, $payer_email, $payer_fullname, $service_id, $number_of_prgouides, $referal_commision) {
-
-            #pull the duration from the plan_id
-
-            $planDuration = Plan::find($plan_id)->duration;
-
-            $refPercent = config('paystack.referal_percentage');
-
-            $referalPercentage = $this->percentage($refPercent, $amount);
-
-            #referal
-
-            $referalEarnings = $amount - $referalPercentage;
-
-            $referal = $this->referal_check($user_id, $referalEarnings, 0);
-
-            #check if payment also paid with referal commision
-
-            if ($referal_commision !== null) {
-                $this->debit_referal_wallet($referal_commision, $user_id);
+            if ($err) {
+                return response(["code" => 3, "error" => "cURL Error :" . $err]);
             }
 
-            #create expiry date
-            $today = date("F j, Y, g:i a");
+            $result = json_decode($response);
 
-            $expiry_date = self::expire($today, $planDuration);
-
-            #create payment
-
-            $payment = Payment::create([
-                "payer_id" => $user_id,
-                "proguide_id" => $proguide_id,
-                "plan_id" => $plan_id,
-                "amount_paid" => ($referal == false) ? $amount : $referalEarnings,
-                "payer_email" => $payer_email,
-                "payer_full_name" => $payer_fullname,
-                "duration" => $planDuration,
-                "reference" => $reference,
-                "expiry_date" => $expiry_date,
-                "service_id" => $service_id,
-                "number_of_proguides" => $number_of_prgouides,
-
-            ]);
-
-            if ($payment) {
-                #check the balance of the proguide
-
-                $previous_balance = DB::select('SELECT ifnull((select available_balance from wallets where user_id = ?  order by id desc limit 1), 0 ) AS prevbal', [$proguide_id]);
-
-                #fund proguide's wallet
-
-                $wallet = Wallet::updateOrCreate(['user_id' => $proguide_id],
-                    [
-                        "available_balance" => (int) $amount + (int) $previous_balance[0]->prevbal,
-                    ]);
+            if ($result->data->status !== 'success') {
+                throw new \Exception("Transaction failed");
             }
 
-        });
+            #pull details from the result object
+            $amount = $result->data->amount / 100;
+            $plan_id = $result->data->metadata->plan_id;
+            $user_id = $result->data->metadata->user_id;
+            $proguide_id = $result->data->metadata->proguide_id;
+            $payer_email = $result->data->metadata->payer_email ?? null;
+            $payer_fullname = $result->data->metadata->payer_full_name ?? null;
+            $service_id = $result->data->metadata->service_id;
+            $number_of_prgouides = $result->data->metadata->number_of_proguides;
+            $referal_commision = $result->data->metadata->referal_commision;
+            $plan_option = $result->data->metadata->plan_option_id ?? null;
 
-        return response(["code" => 1, "message" => "payment verified"]);
+            #check if transaction reference already exists
+
+            $checkRefernce = Payment::where('reference', $reference)->first();
+
+            if ($checkRefernce != null) {
+                return response(["code" => 1, "message" => "possible duplicate transaction"]);
+            }
+
+            #start database transaction
+
+            DB::transaction(function () use ($reference, $amount, $plan_id, $user_id, $proguide_id, $payer_email, $payer_fullname, $service_id, $number_of_prgouides, $referal_commision) {
+
+                #pull the duration from the plan_id
+
+                $planDuration = Plan::find($plan_id)->duration;
+
+                $refPercent = config('paystack.referal_percentage');
+
+                $referalPercentage = $this->percentage($refPercent, $amount);
+
+                #referal
+
+                $referalEarnings = $amount - $referalPercentage;
+
+                $referal = $this->referal_check($user_id, $referalEarnings, 0);
+
+                #check if payment was also paid with referal commision
+
+                if ($referal_commision !== null) {
+                    $this->debit_referal_wallet($referal_commision, $user_id);
+                }
+
+                #create expiry date
+                $today = date("F j, Y, g:i a");
+
+                $expiry_date = self::expire($today, $planDuration);
+
+                #create payment
+
+                $payment = Payment::create([
+                    "payer_id" => $user_id,
+                    "proguide_id" => $proguide_id,
+                    "plan_id" => $plan_id,
+                    "amount_paid" => ($referal == false) ? $amount : $referalEarnings,
+                    "payer_email" => $payer_email,
+                    "payer_full_name" => $payer_fullname,
+                    "duration" => $planDuration,
+                    "reference" => $reference,
+                    "expiry_date" => $expiry_date,
+                    "service_id" => $service_id,
+                    "number_of_proguides" => $number_of_prgouides,
+
+                ]);
+
+                if ($payment) {
+                    #check the balance of the proguide
+
+                    $previous_balance = DB::select('SELECT ifnull((select available_balance from wallets where user_id = ?  order by id desc limit 1), 0 ) AS prevbal', [$proguide_id]);
+
+                    #fund proguide's wallet
+
+                    $wallet = Wallet::updateOrCreate(['user_id' => $proguide_id],
+                        [
+                            "available_balance" => (int) $amount + (int) $previous_balance[0]->prevbal,
+                        ]);
+                }
+
+            });
+
+          //  $this->send_payment_notification($user_id);
+
+            return response(["code" => 1, "message" => "payment verified"]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
 
     }
 
@@ -288,9 +295,13 @@ class PaymentController extends Controller
         }
     }
 
-    private function send_payment_notification()
+    private function send_payment_notification($user_id, $plan_id, $plan_option, $amount)
     {
+        #get user email...
 
+        $user_email = User::where('id', $user_id)->first();
+
+        MailMessages::PaymentNotificationMail($user_email);
     }
 
 }
