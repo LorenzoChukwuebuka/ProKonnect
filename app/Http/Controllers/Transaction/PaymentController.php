@@ -301,7 +301,9 @@ class PaymentController extends Controller
 
         $user_email = User::where('id', $user_id)->first();
 
-        MailMessages::PaymentNotificationMail($user_email);
+        $plan = Plan::find($plan_id);
+
+        MailMessages::PaymentNotificationMail($user_email->email,$plan->duration,$plan->plan);
     }
 
 }

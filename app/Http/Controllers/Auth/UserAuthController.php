@@ -779,4 +779,30 @@ class UserAuthController extends Controller
         }
     }
 
+    public function get_students_by_university($university)
+    {
+        try {
+            $student = User::where('university', $university)->where('user_type', 'student')->latest()->get();
+            if ($student->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+            return response(["code" => 1, "data" => $student]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function get_students_by_country($country_id)
+    {
+        try {
+            $student = User::where('country_id', $country_id)->where('user_type', 'student')->latest()->get();
+            if ($student->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+            return response(["code" => 1, "data" => $student]);
+        } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
 }
