@@ -176,7 +176,7 @@ class PaymentController extends Controller
                     "payer_full_name" => $payer_fullname,
                     "duration" => $planDuration,
                     "reference" => $reference,
-                    "expiry_date" => $expiry_date,
+                    "expiry_date" => ($planDuration->duration == 'on demand') ? null : $expiry_date,
                     "service_id" => $service_id,
                     "number_of_proguides" => $number_of_prgouides,
 
@@ -197,7 +197,7 @@ class PaymentController extends Controller
 
             });
 
-          //  $this->send_payment_notification($user_id);
+            //  $this->send_payment_notification($user_id);
 
             return response(["code" => 1, "message" => "payment verified"]);
         } catch (\Throwable$th) {
@@ -295,7 +295,7 @@ class PaymentController extends Controller
         }
     }
 
-    private function send_payment_notification($user_id, $plan_id, $plan_option, $amount)
+    private function send_payment_notification($user_id, $plan_id, $plan_option, $amount, $reference)
     {
         #get user email...
 
@@ -303,7 +303,7 @@ class PaymentController extends Controller
 
         $plan = Plan::find($plan_id);
 
-        MailMessages::PaymentNotificationMail($user_email->email,$plan->duration,$plan->plan);
+        MailMessages::PaymentNotificationMail($user_email->email, $user->full_name, $plan->duration, $plan->plan, $plan->amount, $reference);
     }
 
 }

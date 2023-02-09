@@ -25,7 +25,7 @@ class MailMessages
         $message .= "Please note that if you didn't request for a password reset, you should disregard this mail";
         $url = env('APP_URL') . '/reset-password/' . $email . '/' . $otp;
 
-        Mail::to($email)->send(new UserResetPasswordMail($subject, $message,$url));
+        Mail::to($email)->send(new UserResetPasswordMail($subject, $message, $url));
     }
 
     public static function SendNotificationMailToProguide($student, $proguide_email)
@@ -36,8 +36,13 @@ class MailMessages
         Mail::to($proguide_email)->send(new ProguideStudentConnectMail($subject, $message));
     }
 
-    public function PaymentNotificationMail(){
-
+    public function PaymentNotificationMail($user_email, $user_full_name, $planDuration, $plan, $plan_amount, $reference)
+    {
+        $subject = "Payment Received Notification - Invoice {$reference}";
+        $message = "Dear {$user_full_name}, \n";
+        $message .= "I hope this email finds you well. I am writing to confirm that we have received your payment for reference number {$reference}.
+         The details of your payment are as follows:";
+        $message .= "";
     }
 
 }

@@ -17,6 +17,7 @@ class GroupController extends Controller
             $validator = Validator::make($request->all(), [
                 "group_name" => "required",
                 "group_description" => [],
+                "group_members" => "required",
 
             ]);
 
@@ -42,6 +43,26 @@ class GroupController extends Controller
                 'group_image' => $files ?? null,
 
             ]);
+
+            #add some members to group
+
+            if ($request->group_members != null) {
+                $members = json_decode($request->group_members);
+                foreach ($members as $key => $value) {
+                    UserGroup::create([
+                        "user_id" => $value,
+                        "group_id" => $group->id,
+                    ]);
+
+                    #update the group member count
+
+                    $group = Group::find($group->id);
+
+                    $group->number_of_participants++;
+
+                    $group->save();
+                }
+            }
 
             return response(["code" => 1, "message" => "group created successfully"]);
 
