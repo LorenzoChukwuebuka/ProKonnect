@@ -6,6 +6,7 @@ use App\Custom\MailMessages;
 use App\Http\Controllers\Controller;
 use App\Models\OTPToken;
 use App\Models\Payment;
+use App\Models\Rating;
 use App\Models\Referal;
 use App\Models\Socials;
 use App\Models\User;
@@ -16,7 +17,9 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Image;
 use Str;
 use Validator;
 use WisdomDiala\Countrypkg\Models\Country;
@@ -46,11 +49,18 @@ class UserAuthController extends Controller
 
             #handles the profile image
             if ($request->hasFile('profile_image')) {
-                $validate = Validator::make($request->all(), ['profile_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+                $validate = Validator::make($request->all(), ['profile_image' => 'image|mimes:jpeg,png,jpg,gif,svg']);
                 if ($validate->fails()) {
                     return response()->json(["code" => 3, 'error' => $validate->errors()->first()]);
                 }
-                $profile_image = $request->profile_image->store('user_profile_images', 'public');
+
+                #compress profile image
+                $imagePath = $request->profile_image->getRealPath();
+
+                $resizeImage = $this->compressImage($imagePath, 'storage/profile_images');
+
+                $resizeImagePath = 'profile_images' . '/' . $resizeImage;
+
             }
 
             $userCreate = User::create([
@@ -386,16 +396,21 @@ class UserAuthController extends Controller
             if ($request->hasFile('profile_image')) {
                 $validator = Validator::make($request->all(), [
 
-                    'profile_image' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg|max:5048',
+                    'profile_image' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg',
 
                 ]);
 
                 if ($validator->fails()) {
                     return response()->json(['code' => 3, 'error' => $validator->errors()->first()], 401);
                 }
-                $profile_image = $request->profile_image->store('profile_images', 'public');
+                #compress image
+                $imagePath = $request->profile_image->getRealPath();
 
-                $user->profile_image = $profile_image ?? $user->profile_image;
+                $resizeImage = $this->compressImage($imagePath, 'storage/profile_images');
+
+                $resizeImagePath = 'profile_images' . '/' . $resizeImage;
+
+                $user->profile_image = $resizeImagePath ?? $user->profile_image;
             }
 
             $user->save();
@@ -418,16 +433,22 @@ class UserAuthController extends Controller
         if ($request->hasFile('profile_image')) {
             $validator = Validator::make($request->all(), [
 
-                'profile_image' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg|max:5048',
+                'profile_image' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg',
 
             ]);
 
             if ($validator->fails()) {
                 return response()->json(['code' => 3, 'error' => $validator->errors()->first()], 401);
             }
-            $profile_image = $request->profile_image->store('profile_images', 'public');
 
-            $user->profile_image = $profile_image;
+            #compress the image
+            $imagePath = $request->profile_image->getRealPath();
+
+            $resizeImage = $this->compressImage($imagePath, 'storage/profile_images');
+
+            $resizeImagePath = 'profile_images' . '/' . $resizeImage;
+
+            $user->profile_image = $resizeImagePath;
             $user->save();
 
             return response(["message" => "Profile image has been updated", "code" => 1]);
@@ -803,6 +824,42 @@ class UserAuthController extends Controller
         } catch (\Throwable$th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
+    }
+
+    public function filter_by_rating(Request $request)
+    {
+        try {
+            $rating = Rating::with(['user_review'])
+                ->when($request->rating, function ($query) use ($request) {
+                    $query->where('rating', $request->rating);
+                })
+                ->get();
+
+            if ($rating->isEmpty()) {
+                return response()->json(["code" => 3, "message" => "No record found"]);
+            }
+
+            return response()->json(["code" => 1, "data" => $rating]);
+        } catch (\Throwable$th) {
+            return response()->json(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    private function compressImage($image, $path)
+    {
+
+        $imageName = Str::uuid() . ".webp";
+        $imageToSave = $path . '/' . $imageName;
+
+        #check if directory exists
+        if (!File::isDirectory($path)) {
+            # create directory if it doesn't exists
+            File::makeDirectory($path, 0777, true, true);
+        }
+
+        #compress image
+        Image::make($image)->fit(600, 420)->save($imageToSave);
+        return $imageName;
     }
 
 }

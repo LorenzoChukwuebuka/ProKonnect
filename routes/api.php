@@ -78,6 +78,8 @@ Route::get('/filter_students', [UserAuthController::class, 'filter_students']);
 Route::get('/get_student_university/{university}', [UserAuthController::class, 'get_students_by_university']);
 Route::get('/get_student_country/{country_id}', [UserAuthController::class, 'get_students_by_country']);
 
+Route::get('/filter_proguides_by_rating', [UserAuthController::class, 'filter_by_rating']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/edit_user_credentials', [UserAuthController::class, 'editUserCredentials']);
     Route::post('/update_profile_picture', [UserAuthController::class, 'update_profile_image']);
