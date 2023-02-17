@@ -42,7 +42,11 @@ class MailMessages
         $message = "Dear {$user_full_name}, \n";
         $message .= "I hope this email finds you well. I am writing to confirm that we have received your payment for reference number {$reference}.
          The details of your payment are as follows:";
-        $message .= "";
+        $message .= "Plan: {$plan}";
+        $message .= "Amount: {$plan_amount}";
+        $message .= "Duration: {$planDuration}";
+
+        $message .= "Thank you ";
     }
 
 }
