@@ -845,6 +845,22 @@ class UserAuthController extends Controller
         }
     }
 
+    public function get_proguides_alphabetically()
+    {
+        try {
+            $users = User::where('user_type', 'proguide')->orderBy('full_name')->get();
+
+            if ($users->isEmpty()) {
+                return response()->json(["code" => 3, "message" => "No record found"]);
+            }
+
+            return response()->json(["code" => 1, "data" => $users]);
+
+        } catch (\Throwable$th) {
+            return response()->json(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
     private function compressImage($image, $path)
     {
 

@@ -63,6 +63,7 @@ Route::get('/get_service_categories', [ServiceCategoryController::class, 'get_se
 Route::get('/get_service_categories_with_service_id/{id}', [ServiceCategoryController::class, 'get_service_category_with_service_id']);
 Route::get('/get_plan_option_with_plan_id/{id}', [PlanController::class, 'get_all_plan_options_with_plan_id']);
 Route::get('/get_reviews', [RatingController::class, 'get_all_reviews']);
+Route::get('/get_proguides_alphabetically',[UserAuthController::class,'get_proguides_alphabetically']);
 
 Route::get('/search_students', [AdminUserController::class, 'search_students']);
 Route::get('/search_proguides', [AdminUserController::class, 'search_proguides']);
@@ -98,7 +99,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/get_all_projects', [ProjectController::class, 'get_all_projects']);
     Route::get('/get_one_project/{id}', [ProjectController::class, 'get_projects_by_id']);
     Route::put('/edit_project/{id}', [ProjectController::class, 'edit_project']);
-    Route::delete('/delete_project/{id}', [ProjectController::class, '']);
+    Route::delete('/delete_project/{id}', [ProjectController::class, 'delete_project']);
     #get user proguides
     Route::get('/get_user_proguides', [ProjectController::class, 'find_proguides_by_user_interests']);
 
@@ -169,8 +170,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/edit_socials/{id}', [UserAuthController::class, 'edit_socials']);
     Route::delete('/delete_socials/{id}', [UserAuthController::class, 'delete_socials']);
 
-    #route
-
+    #referal
     Route::get('/get_referals', [ReferalController::class, 'get_referals_for_a_user']);
     Route::get('/get_referal_commissions', [ReferalController::class, 'get_referal_commission']);
     #rating
