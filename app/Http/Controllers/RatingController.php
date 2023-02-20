@@ -14,7 +14,7 @@ class RatingController extends Controller
             $validator = Validator::make($request->all(), [
                 'note' => "string|max:500",
                 'star' => [],
-                'user_rated' => "required",
+                'user_rated' => [],
             ]);
 
             if ($validator->fails()) {
