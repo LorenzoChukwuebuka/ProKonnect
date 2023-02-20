@@ -14,6 +14,12 @@ class Rating extends Model
 
     public function user_review()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function user_rated()
+    {
+        return $this->belongsTo(User::class, 'user_rated');
+    }
+
 }

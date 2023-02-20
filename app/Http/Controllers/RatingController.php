@@ -14,6 +14,7 @@ class RatingController extends Controller
             $validator = Validator::make($request->all(), [
                 'note' => "string|max:500",
                 'star' => [],
+                'user_rated' => "required",
             ]);
 
             if ($validator->fails()) {
@@ -25,6 +26,7 @@ class RatingController extends Controller
                 [
                     'rating' => $request->star ?? 0,
                     'note' => $request->note,
+                    'user_rated' => $request->user_rated,
                 ]);
 
             return response(["code" => 1, "message" => "Rating added successfully"]);
@@ -36,7 +38,7 @@ class RatingController extends Controller
     public function get_all_reviews()
     {
         try {
-            $rating = Rating::with('user_review')->latest()->get();
+            $rating = Rating::with('user_review', 'user_rated')->latest()->get();
             if ($rating->count() == 0) {
                 return response(["code" => 3, "message" => "no record found"]);
             }
@@ -50,7 +52,8 @@ class RatingController extends Controller
     public function get_review_for_a_user()
     {
         try {
-            $rating = Rating::with('user_review')->where('user_id', auth()->user()->id)->latest()->get();
+            $rating = Rating::with('user_review', 'user_rated')->where('user_id', auth()->user()->id)
+                ->orWhere('user_rated', auth()->user()->id)->latest()->get();
             if ($rating->count() == 0) {
                 return response(["code" => 3, "message" => "no record found"]);
             }
