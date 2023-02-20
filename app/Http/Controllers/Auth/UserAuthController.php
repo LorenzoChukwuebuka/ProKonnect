@@ -758,7 +758,7 @@ class UserAuthController extends Controller
                 })
                 ->when($review, function ($query) use ($review) {
                     $query->whereHas('review', function ($subQuery) use ($review) {
-                        $subQuery->where('rating', $review);
+                        $subQuery->with('user_rated')->where('rating', $review);
                     });
                 })
                 ->when($country, function ($query) use ($country) {
