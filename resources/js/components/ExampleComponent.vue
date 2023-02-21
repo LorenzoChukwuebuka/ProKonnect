@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar bg-light">
-        <div class="container-fluid">
+        <div class="container-fluid ">
             <a class="navbar-brand" href="#">
                 <!-- <img src="/docs/5.2/assets/brand/bootstrap-logo.svg" alt="Logo" width="30" height="24"
                     class="d-inline-block align-text-top"> -->
@@ -93,6 +93,8 @@ export default {
 
                 if (response.data.code === 1) {
                     this.success = true
+                    this.form.password = ""
+                    this.form.confirmPassword = ""
                     return
                 }
 
@@ -106,3 +108,18 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.navbar>.container-fluid{
+	justify-content: center;
+}
+form{
+	padding-bottom: 20px;
+}
+.navbar{
+	padding-top: 20px;
+}
+</style>
+
+
+

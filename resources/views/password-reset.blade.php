@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
-    <title>Laravel</title>
+    <title>Password Reset</title>
 
     <!-- Fonts -->
     <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
