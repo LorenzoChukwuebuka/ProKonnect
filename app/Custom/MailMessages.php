@@ -23,7 +23,7 @@ class MailMessages
         $subject = "User Reset Mail";
         $message = "Below is the link for your password reset. \n";
         $message .= "Please note that if you didn't request for a password reset, you should disregard this mail";
-        $url = env('APP_URL') . '/reset-password/' . $email . '/' . $otp;
+        $url = env('APP_URL') . '/reset-password?email=' . $email . '&token=' . $otp;
 
         Mail::to($email)->send(new UserResetPasswordMail($subject, $message, $url));
     }

@@ -383,7 +383,6 @@ class UserAuthController extends Controller
 
     public function editUserCredentials(Request $request)
     {
-
         try {
             $user = User::find(Auth::user()->id);
 
