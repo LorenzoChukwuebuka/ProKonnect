@@ -1,32 +1,33 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Admin\InterestsController;
-use App\Http\Controllers\Admin\PlanController;
-use App\Http\Controllers\Admin\QualificationsController;
-use App\Http\Controllers\Admin\ServiceCategoryController;
-use App\Http\Controllers\Admin\ServicesController;
-use App\Http\Controllers\Admin\SpecializationController;
-use App\Http\Controllers\Auth\UserAuthController;
-use App\Http\Controllers\BankDetailsController;
-use App\Http\Controllers\ChatsController;
-use App\Http\Controllers\GroupController;
-use App\Http\Controllers\GroupMessagesController;
-use App\Http\Controllers\ProguideChatController;
-use App\Http\Controllers\Project\ProjectController;
-use App\Http\Controllers\RatingController;
-use App\Http\Controllers\StudentsProguideController;
-use App\Http\Controllers\Transaction\PaymentController;
-use App\Http\Controllers\Transaction\WithdrawalRequestController;
-use App\Http\Controllers\UniversityController;
-use App\Http\Controllers\User\fetchCountriesController;
-use App\Http\Controllers\User\ReferalController;
-use App\Http\Controllers\User\UserInterestsController;
-use App\Http\Controllers\User\UserQualificationController;
-use App\Http\Controllers\User\UserSpecializationController;
-use App\Http\Controllers\VideoTutorialUploadController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatsController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\RatingController;
+use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\BankDetailsController;
+use App\Http\Controllers\ProguideChatController;
+use App\Http\Controllers\User\ReferalController;
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\GroupMessagesController;
+use App\Http\Controllers\Admin\ServicesController;
+use App\Http\Controllers\ProguideRatingController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\InterestsController;
+use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\StudentsProguideController;
+use App\Http\Controllers\User\UserInterestsController;
+use App\Http\Controllers\Transaction\PaymentController;
+use App\Http\Controllers\User\fetchCountriesController;
+use App\Http\Controllers\VideoTutorialUploadController;
+use App\Http\Controllers\Admin\QualificationsController;
+use App\Http\Controllers\Admin\SpecializationController;
+use App\Http\Controllers\Admin\ServiceCategoryController;
+use App\Http\Controllers\User\UserQualificationController;
+use App\Http\Controllers\User\UserSpecializationController;
+use App\Http\Controllers\Transaction\WithdrawalRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -200,6 +201,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Route::get('/get_pro_messages', [ProguideChatController::class, 'index']);
     Route::get('/get_last_messages_in_pro_chatlist', [ProguideChatController::class, 'getMessages']);
     Route::get('/get_pro_messages_between_two_users/{id}', [ProguideChatController::class, 'show']);
+
+    #proguide rating
+
+    Route::post('/create_proguide_rating',[ProguideRatingController::class,'create_rating']);
+    Route::get('/get_all_proguide_rating',[ProguideRatingController::class,'get_all_reviews']);
+    Route::get('/get_proguide_rating',[ProguideRatingController::class,'get_review_for_a_user']);
 
     #wallets
 

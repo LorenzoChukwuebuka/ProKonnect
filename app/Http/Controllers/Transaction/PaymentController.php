@@ -195,6 +195,14 @@ class PaymentController extends Controller
                         ]);
                 }
 
+                #add the number of proguides to the user
+
+                $user = User::find($user_id);
+
+                $user = User::find($user_id);
+                $user->max_proguides = ($user->max_proguides == 0) ? $number_of_prgouides : ($user->max_proguides + $number_of_prgouides);
+                $user->save();
+
             });
 
             //  $this->send_payment_notification($user_id);

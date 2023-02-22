@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Validator;
-use App\Models\User;
-use App\Models\Payment;
 use App\Custom\MailMessages;
-use Illuminate\Http\Request;
 use App\Models\StudentsProguide;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Validator;
 
 class StudentsProguideController extends Controller
 {
@@ -24,10 +23,10 @@ class StudentsProguideController extends Controller
 
             #check if student has exceeded the max number of proguides
 
-            $student_max = Payment::where('payer_id', auth()->user()->id)->first();
+            $student_max = User::where('id', auth()->user()->id)->first();
 
-            if ($student_max->number_of_proguides === 0) {
-                return response(["code" => 3, "message" => "Max number of prguides exceeded "]);
+            if ($student_max->max_proguides === 0) {
+                return response(["code" => 3, "message" => "Max number of proguides exceeded. Kindly upgrade plan "]);
             }
 
             $studentProguide = StudentsProguide::create([
@@ -35,9 +34,9 @@ class StudentsProguideController extends Controller
                 "proguide_id" => $request->proguide_id,
             ]);
 
-            $student = Payment::where('payer_id', auth()->user()->id)->first();
+            $student = User::where('id', auth()->user()->id)->first();
 
-            $student_max->number_of_proguides--;
+            $student->max_proguides--;
 
             $student->save();
 
