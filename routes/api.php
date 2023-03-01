@@ -1,33 +1,33 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ChatsController;
-use App\Http\Controllers\GroupController;
-use App\Http\Controllers\RatingController;
-use App\Http\Controllers\Admin\PlanController;
-use App\Http\Controllers\UniversityController;
-use App\Http\Controllers\BankDetailsController;
-use App\Http\Controllers\ProguideChatController;
-use App\Http\Controllers\User\ReferalController;
-use App\Http\Controllers\Auth\UserAuthController;
-use App\Http\Controllers\GroupMessagesController;
-use App\Http\Controllers\Admin\ServicesController;
-use App\Http\Controllers\ProguideRatingController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\InterestsController;
-use App\Http\Controllers\Project\ProjectController;
-use App\Http\Controllers\StudentsProguideController;
-use App\Http\Controllers\User\UserInterestsController;
-use App\Http\Controllers\Transaction\PaymentController;
-use App\Http\Controllers\User\fetchCountriesController;
-use App\Http\Controllers\VideoTutorialUploadController;
+use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\QualificationsController;
-use App\Http\Controllers\Admin\SpecializationController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
+use App\Http\Controllers\Admin\ServicesController;
+use App\Http\Controllers\Admin\SpecializationController;
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\BankDetailsController;
+use App\Http\Controllers\ChatsController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\GroupMessagesController;
+use App\Http\Controllers\ProguideChatController;
+use App\Http\Controllers\ProguideRatingController;
+use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\RatingController;
+use App\Http\Controllers\StudentsProguideController;
+use App\Http\Controllers\Transaction\PaymentController;
+use App\Http\Controllers\Transaction\WithdrawalRequestController;
+use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\User\fetchCountriesController;
+use App\Http\Controllers\User\ReferalController;
+use App\Http\Controllers\User\UserInterestsController;
 use App\Http\Controllers\User\UserQualificationController;
 use App\Http\Controllers\User\UserSpecializationController;
-use App\Http\Controllers\Transaction\WithdrawalRequestController;
+use App\Http\Controllers\VideoTutorialUploadController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,7 +64,7 @@ Route::get('/get_service_categories', [ServiceCategoryController::class, 'get_se
 Route::get('/get_service_categories_with_service_id/{id}', [ServiceCategoryController::class, 'get_service_category_with_service_id']);
 Route::get('/get_plan_option_with_plan_id/{id}', [PlanController::class, 'get_all_plan_options_with_plan_id']);
 Route::get('/get_reviews', [RatingController::class, 'get_all_reviews']);
-Route::get('/get_proguides_alphabetically',[UserAuthController::class,'get_proguides_alphabetically']);
+Route::get('/get_proguides_alphabetically', [UserAuthController::class, 'get_proguides_alphabetically']);
 
 Route::get('/search_students', [AdminUserController::class, 'search_students']);
 Route::get('/search_proguides', [AdminUserController::class, 'search_proguides']);
@@ -204,9 +204,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     #proguide rating
 
-    Route::post('/create_proguide_rating',[ProguideRatingController::class,'create_rating']);
-    Route::get('/get_all_proguide_rating',[ProguideRatingController::class,'get_all_reviews']);
-    Route::get('/get_proguide_rating',[ProguideRatingController::class,'get_review_for_a_user']);
+    Route::post('/create_proguide_rating', [ProguideRatingController::class, 'create_rating']);
+    Route::get('/get_all_proguide_rating', [ProguideRatingController::class, 'get_all_reviews']);
+    Route::get('/get_proguide_rating', [ProguideRatingController::class, 'get_review_for_a_user']);
 
     #wallets
 

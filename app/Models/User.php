@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Group;
+use App\Models\ProguideRating;
 use App\Models\Project;
 use App\Models\Referal;
 use App\Models\Socials;
@@ -112,7 +113,7 @@ class User extends Authenticatable
 
     public function review()
     {
-        return $this->hasMany(Rating::class);
+        return $this->hasMany(ProguideRating::class);
     }
 
 }
