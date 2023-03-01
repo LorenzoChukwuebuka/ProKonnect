@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ProguideRating;
 use Illuminate\Http\Request;
 use Validator;
+use DB;
 
 class ProguideRatingController extends Controller
 {
@@ -38,7 +39,8 @@ class ProguideRatingController extends Controller
     public function get_all_reviews()
     {
         try {
-            $rating = ProguideRating::with('rated_by', 'user_rated')->latest()->get();
+            $rating = ProguideRating::with('rated_by', 'user_rated')
+                ->select('proguide_id', DB::raw('AVG(rating) as average_rating'))->get();
             if ($rating->count() == 0) {
                 return response(["code" => 3, "message" => "no record found"]);
             }

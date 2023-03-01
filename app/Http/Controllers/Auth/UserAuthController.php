@@ -6,6 +6,7 @@ use App\Custom\MailMessages;
 use App\Http\Controllers\Controller;
 use App\Models\OTPToken;
 use App\Models\Payment;
+use App\Models\ProguideRating;
 use App\Models\Rating;
 use App\Models\Referal;
 use App\Models\Socials;
@@ -828,10 +829,10 @@ class UserAuthController extends Controller
     public function filter_by_rating(Request $request)
     {
         try {
-            $rating = Rating::with(['user_rated'])
-                ->select('user_rated', DB::raw('AVG(rating) as average_rating'))
+            $rating = ProguideRating::with(['user_rated'])
+                ->select('proguide_id', DB::raw('AVG(rating) as average_rating'))
                 ->when($request->rating, function ($query) use ($request) {
-                    $query->where('rating', $request->rating)->select('user_rated', DB::raw('AVG(rating) as average_rating'));
+                    $query->where('rating', $request->rating)->select('proguide_id', DB::raw('AVG(rating) as average_rating'));
                 })
                 ->get();
 
