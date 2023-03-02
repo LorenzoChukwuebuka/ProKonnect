@@ -21,6 +21,13 @@ class StudentsProguideController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
 
+            #check if student has connected with proguide
+            $student_connect = StudentsProguide::where('user_id', auth()->user()->id)->where('proguide_id', 'proguide_id')->first();
+
+            if ($student_connect != null) {
+                return \response(["code" => 3, "message" => "You have already connected to this proguide"]);
+            }
+
             #check if student has exceeded the max number of proguides
 
             $student_max = User::where('id', auth()->user()->id)->first();
