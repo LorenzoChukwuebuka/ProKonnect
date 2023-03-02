@@ -621,14 +621,22 @@ class UserAuthController extends Controller
         try {
             $id = auth()->user()->id;
             $proguides = DB::table('users')
-                ->select('users.*', 'countries.name as country_name', 'countries.short_name as country_short_name')
-                ->join('countries', 'users.country_id', '=', 'countries.id')
+                ->select('users.*', 'countries.name as country_name', 'countries.short_name as country_short_name', 'specializations.specialization as specialization_name')
+                ->join('user_specializations', 'user_specializations.user_id', '=', 'users.id')
+                ->leftJoin('specializations', 'specializations.id', '=', 'user_specializations.specialization_id')
+                ->leftJoin('countries', 'users.country_id', '=', 'countries.id')
                 ->where([
                     ['user_type', '=', 'proguide'],
                     ['users.id', '!=', $id],
 
                 ])
-                ->get();
+                ->groupBy('users.id')
+                ->get()
+                ->map(function ($proguide) {
+                    $proguide->specialization_name = [$proguide->specialization_name];
+                    return $proguide;
+                });
+
             if ($proguides->count() == 0) {
                 return response(["code" => 3, "message" => "No proguides found"]);
             }
