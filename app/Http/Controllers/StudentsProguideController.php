@@ -22,7 +22,7 @@ class StudentsProguideController extends Controller
             }
 
             #check if student has connected with proguide
-            $student_connect = StudentsProguide::where('user_id', auth()->user()->id)->where('proguide_id', 'proguide_id')->first();
+            $student_connect = StudentsProguide::where('user_id', auth()->user()->id)->where('proguide_id', $request->proguide_id)->get();
 
             if ($student_connect != null) {
                 return \response(["code" => 3, "message" => "You have already connected to this proguide"]);
