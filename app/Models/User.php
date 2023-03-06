@@ -116,5 +116,9 @@ class User extends Authenticatable
         return $this->hasMany(ProguideRating::class);
     }
 
-   
+    public function proguideConnection(){
+        return $this->hasMany(StudentsProguide::class,'proguide_id');
+    }
+
+
 }

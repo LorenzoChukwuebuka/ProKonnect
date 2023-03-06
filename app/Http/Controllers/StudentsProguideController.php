@@ -39,6 +39,7 @@ class StudentsProguideController extends Controller
             $studentProguide = StudentsProguide::create([
                 "user_id" => auth()->user()->id,
                 "proguide_id" => $request->proguide_id,
+                "status"=> "connected"
             ]);
 
             $student = User::where('id', auth()->user()->id)->first();
@@ -91,6 +92,20 @@ class StudentsProguideController extends Controller
             $student = StudentsProguide::find($id)->delete();
             return response(["code" => 1, "message" => "deleted successfully"]);
         } catch (\Throwable$th) {
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
+    public function disconnect_student_from_proguide($id,Request $request){
+        try {
+            $student = StudentsProguide::find($id);
+
+            $student->status = "disconnected" ?? $student->status;
+
+            $student->save();
+
+            return response(["code"=>1,"message"=>"successfully disconnected from proguide"]);
+        } catch (\Throwable $th) {
             return response(["code" => 3, "error" => $th->getMessage()]);
         }
     }

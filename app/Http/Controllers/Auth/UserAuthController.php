@@ -41,7 +41,7 @@ class UserAuthController extends Controller
                 'university' => [],
                 'user_type' => 'required',
                 'password' => [],
-                'referal_code' => [],
+                'referal_code' => 'required|exists:users',
             ]);
 
             if ($validator->fails()) {
