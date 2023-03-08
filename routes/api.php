@@ -101,6 +101,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/get_one_project/{id}', [ProjectController::class, 'get_projects_by_id']);
     Route::put('/edit_project/{id}', [ProjectController::class, 'edit_project']);
     Route::delete('/delete_project/{id}', [ProjectController::class, 'delete_project']);
+    Route::get('/get_projects_by_proguide_id/{id}', [ProjectController::class, 'get_projects_by_proguide_id']);
     #get user proguides
     Route::get('/get_user_proguides', [ProjectController::class, 'find_proguides_by_user_interests']);
 

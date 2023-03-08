@@ -142,6 +142,7 @@ class ProjectController extends Controller
             if ($projects->count() == 0) {
                 return response(["code" => 3, "message" => "No record found"]);
             }
+            return response(["code" => 1, "data" => $projects]);
         } catch (\Throwable$th) {
 
             return response(["code" => 3, "error" => $th->getMessage()]);
