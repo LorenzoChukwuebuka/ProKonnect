@@ -134,6 +134,20 @@ class ProjectController extends Controller
         }
     }
 
+    public function get_projects_by_proguide_id($id)
+    {
+        try {
+            $projects = Project::with('user')->where('proguide_id', $id)->latest()->get();
+
+            if ($projects->count() == 0) {
+                return response(["code" => 3, "message" => "No record found"]);
+            }
+        } catch (\Throwable$th) {
+
+            return response(["code" => 3, "error" => $th->getMessage()]);
+        }
+    }
+
     #find proguides by user interests
 
     public function find_proguides_by_user_interests(Request $request)

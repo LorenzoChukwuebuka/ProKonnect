@@ -621,8 +621,10 @@ class UserAuthController extends Controller
         try {
             $id = auth()->user()->id;
             $proguides = DB::table('users')
-                ->select('users.*', 'countries.name as country_name', 'countries.short_name as country_short_name', 'specializations.specialization as specialization_name')
+                ->select('users.*', 'countries.name as country_name', 'countries.short_name as country_short_name', 'specializations.specialization as specialization_name', 'qualifications.qualification as qualification_name')
                 ->join('user_specializations', 'user_specializations.user_id', '=', 'users.id')
+                ->join('user_qualifications', 'user_qualifications.user_id', '=', 'users.id')
+                ->leftJoin('qualifications', 'qualifications.id', '=', 'user_qualifications.qualification_id')
                 ->leftJoin('specializations', 'specializations.id', '=', 'user_specializations.specialization_id')
                 ->leftJoin('countries', 'users.country_id', '=', 'countries.id')
                 ->where([
@@ -634,6 +636,7 @@ class UserAuthController extends Controller
                 ->get()
                 ->map(function ($proguide) {
                     $proguide->specialization_name = [$proguide->specialization_name];
+                    $proguide->qualification_name = [$proguide->qualification_name];
                     return $proguide;
                 });
 
